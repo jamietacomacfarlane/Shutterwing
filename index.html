@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SHUTTERWING v1.4 Live</title>
+<style>
+:root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+.app{max-width:560px;margin:auto;min-height:100vh;padding:18px 15px 92px}.logo{font-weight:950;letter-spacing:1px;font-size:25px}.tag{font-size:11px;color:var(--lime);font-weight:900}
+.screen{display:none}.screen.on{display:block}.panel,.hero{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px;margin:12px 0}.hero{background:linear-gradient(135deg,#20331b,#121813)}
+h1{font-size:25px;margin:0 0 8px}h2{font-size:20px;margin:0 0 12px}h3{margin:0 0 8px}p{line-height:1.4}.small{font-size:12px;color:var(--muted)}.big{font-size:29px;font-weight:950}
+.btn{width:100%;border:0;border-radius:10px;padding:13px;margin:5px 0;background:var(--lime);color:#10150e;font-weight:900}.btn.alt{background:#263128;color:var(--text);border:1px solid #465347}.btn.red{background:var(--red);color:#fff}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0d120f;color:var(--text);font-size:16px;margin:5px 0 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{background:#101511;border:1px solid var(--line);border-radius:11px;padding:11px}.code{font-size:30px;letter-spacing:5px;text-align:center;font-weight:950;color:var(--lime)}
+.hand{display:flex;gap:9px;overflow-x:auto;padding:5px 0}.card{min-width:205px;min-height:285px;border:3px solid var(--lime);border-radius:14px;padding:13px;display:flex;flex-direction:column;background:#26351c}.card h3{font-size:20px;margin:18px 0 8px}.card .wp{font-size:27px;font-weight:950;margin-top:auto}
+.claimimg{width:100%;max-height:320px;object-fit:contain;border-radius:12px;background:#050706}.player{padding:10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#0d120ff2;border-top:1px solid var(--line);display:flex;justify-content:center}.navin{display:flex;width:min(560px,100%)}.nav button{flex:1;border:0;background:none;color:var(--muted);padding:13px 2px;font-size:10px}.nav button.on{color:var(--lime)}
+.toast{display:none;position:fixed;z-index:30;top:15px;left:50%;transform:translateX(-50%);width:min(90%,470px);background:#f3ead7;color:#151512;border-radius:11px;padding:11px 14px;font-weight:850}.msg{font-size:12px;padding:9px;border-radius:8px;margin-top:8px;background:#2a1917}
+
+.feedcard{background:#101511;border:1px solid var(--line);border-radius:12px;padding:10px;margin:9px 0}
+.feedmeta{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px}
+.feedimg{width:100%;max-height:260px;object-fit:contain;background:#050706;border-radius:10px;border:1px solid var(--line)}
+.statuspill{display:inline-block;padding:4px 7px;border-radius:14px;background:#283129;font-size:10px}
+
+
+.historyrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.historyrow:last-child{border-bottom:0}
+.winmark{font-weight:800}
+
+.badgegrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.badge{border:1px solid var(--line);background:#101511;border-radius:12px;padding:10px}
+.badge.locked{opacity:.38}
+.badgetitle{font-weight:800}
+
+.speciesgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.speciescard{background:#101511;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.speciesimg{width:100%;aspect-ratio:4/3;object-fit:cover;background:#050706;display:block}
+.speciesbody{padding:10px}
+.liferpill{display:inline-block;padding:3px 7px;border-radius:12px;background:var(--lime);color:#071006;font-size:10px;font-weight:900;margin-top:5px}
+@media(max-width:650px){.speciesgrid{grid-template-columns:1fr}}
+
+.speciescard{cursor:pointer}
+.modalback{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:50;padding:18px;overflow:auto}
+.modalcard{max-width:760px;margin:30px auto;background:#0d130f;border:1px solid var(--line);border-radius:18px;padding:16px}
+.speciesgallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sightingcard{background:#101511;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sightingbody{padding:10px}
+.coverpill{display:inline-block;padding:3px 7px;border-radius:12px;background:var(--lime);color:#071006;font-size:10px;font-weight:900}
+@media(max-width:650px){.speciesgallery{grid-template-columns:1fr}}
+</style></head>
+<body><div id="toast" class="toast"></div><div class="app">
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4</span></div></header>
+
+<section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
+<div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
+
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>The first live multiplayer field-test build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
+<div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
+
+<section id="play" class="screen"><h2>Play</h2><div id="nogame" class="panel"><h3>Create game</h3><input id="gname" value="Tablelands Birders"><select id="gmode"><option value="quick_flight">Quick Flight</option><option value="first_to_fifty">First to Fifty</option></select><input id="loc" placeholder="Location (optional)"><button id="create" class="btn">CREATE PRIVATE GAME</button><hr><h3>Join game</h3><input id="jcode" maxlength="6" placeholder="ABC123"><button id="join" class="btn alt">JOIN WITH CODE</button></div>
+<div id="game" style="display:none">
+<div class="panel">
+  <div class="small">LIVE GAME</div><h2 id="gamename"></h2><div id="code" class="code"></div>
+  <div class="small" style="text-align:center" id="gamestatus">Lobby</div>
+<div class="small" style="text-align:center;margin-top:5px" id="gamerules"></div>
+</div>
+<div class="grid"><div class="stat"><div class="small">MY SCORE</div><div id="score" class="big">0</div></div><div class="stat"><div class="small">PLAYERS</div><div id="pcount" class="big">1</div></div></div>
+<div class="panel"><h3>Players / scoreboard</h3><div id="players"></div></div>
+<div class="panel">
+  <h3>My score breakdown</h3>
+  <div class="small">See exactly which accepted cards make up your score.</div>
+  <div id="scorebreakdown" style="margin-top:8px">No scored claims yet.</div>
+</div>
+<div class="panel">
+  <h3>Game feed</h3>
+  <div class="small">Accepted, pending and rejected Wing Claims from this game.</div>
+  <div id="gamefeed" style="margin-top:8px">No claims yet.</div>
+</div>
+<div class="panel" id="hostpanel" style="display:none">
+  <h3>Host controls</h3>
+  <button id="startgame" class="btn">START GAME + DEAL 5</button>
+  <button id="endgame" class="btn red" style="display:none">END ROUND</button>
+  <button id="nextround" type="button" class="btn" style="display:none">START NEW ROUND + DEAL 5</button>
+  <div class="small">Host starts the round once everyone has joined.</div>
+</div>
+<div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL TO 5</button></div>
+<div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
+<div class="panel" id="effectpanel"><h3>Active effects</h3><div id="effects" class="small">No active effects.</div></div>
+<div class="panel" id="winnerpanel" style="display:none"><h2>Round complete</h2><div id="winnertext"></div><div id="roundscores" style="margin-top:12px"></div></div>
+</div></section>
+
+<section id="claims" class="screen"><h2>Wing Claims</h2><div class="panel"><div class="small" id="cfam"></div><h2 id="ctitle">Choose a card first</h2><p id="ctext"></p><div id="claimhint" class="small">Select CLAIM on one of your cards before submitting a photo.</div><input type="file" id="photo" accept="image/*">
+<div id="previewwrap" style="display:none;margin:12px 0">
+  <div class="small" style="margin-bottom:6px">Selected bird photo</div>
+  <img id="preview" alt="Selected bird photo" style="display:block;width:100%;max-height:440px;object-fit:contain;background:#050b07;border-radius:16px;border:1px solid #334b3a">
+  <div id="uploadstatus" class="small" style="margin-top:8px">Ready to submit.</div>
+</div>
+<input id="species" placeholder="Species name (optional)"><button id="submit" type="button" class="btn" onclick="window.submitWingClaim && window.submitWingClaim(event)">SUBMIT WING CLAIM</button><div id="claimmsg"></div></div><div class="panel"><h3>Waiting for my vote</h3><div id="pending" class="small">No pending claims.</div></div></section>
+
+<section id="passport" class="screen">
+<h2>Passport</h2>
+<div class="grid">
+  <div class="stat"><div class="small">ENTRIES</div><div id="pcnt" class="big">0</div></div>
+  <div class="stat"><div class="small">FEATHER POINTS</div><div id="pfp" class="big">0</div></div>
+</div>
+
+<div class="panel">
+  <h3>Birder progression</h3>
+  <div class="player">
+    <span><span class="small">LEVEL</span><br><span id="levelname" class="big">Hatchling</span></span>
+    <b id="levelnum">1</b>
+  </div>
+  <div style="height:12px;background:#111;border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-top:10px">
+    <div id="levelbar" style="height:100%;width:0%;background:var(--lime)"></div>
+  </div>
+  <div id="levelprogress" class="small" style="margin-top:7px">0 FP</div>
+  <div id="nextunlock" class="small" style="margin-top:5px"></div>
+</div>
+
+<div class="panel">
+  <h3>Achievements</h3>
+  <div id="achievements" class="small">No achievements unlocked yet.</div>
+</div>
+
+<div class="panel">
+  <h3>Career stats</h3>
+  <div class="grid">
+    <div class="stat"><div class="small">ROUNDS</div><div id="statrounds" class="big">0</div></div>
+    <div class="stat"><div class="small">WINS</div><div id="statwins" class="big">0</div></div>
+    <div class="stat"><div class="small">CLAIMS</div><div id="statclaims" class="big">0</div></div>
+    <div class="stat"><div class="small">WP EARNED</div><div id="statwp" class="big">0</div></div>
+  </div>
+  <div id="winrate" class="small" style="margin-top:8px"></div>
+</div>
+
+<div class="panel">
+  <h3>Round history</h3>
+  <div id="roundhistory" class="small">No completed rounds yet.</div>
+</div>
+
+<div class="panel">
+  <h3>Bird collection</h3>
+  <div class="small">Unique species recorded through accepted Wing Claims.</div>
+  <input id="speciessearch" placeholder="Search species…" style="margin-top:10px">
+  <div id="speciescount" class="small" style="margin-top:6px"></div>
+  <div id="plist" class="speciesgrid" style="margin-top:10px">No species recorded yet.</div>
+</div>
+
+<div id="speciesmodal" class="modalback" style="display:none">
+  <div class="modalcard">
+    <div class="player">
+      <h2 id="speciesmodaltitle" style="margin:0">Species</h2>
+      <button id="closespecies" type="button" class="btn ghost" style="width:auto;padding:8px 12px">CLOSE</button>
+    </div>
+    <div id="speciesmodalmeta" class="small" style="margin:8px 0 12px"></div>
+    <div id="speciesgallery" class="speciesgallery"></div>
+  </div>
+</div>
+</section>
+</div>
+
+<div id="nav" class="nav" style="display:none"><div class="navin"><button class="on" onclick="go('home',this)">HOME</button><button onclick="go('play',this)">PLAY</button><button onclick="go('claims',this)">CLAIMS</button><button onclick="go('passport',this)">PASSPORT</button></div></div>
+
+<script type="module">
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+const $=x=>document.getElementById(x);let sb,user,profile,game,hand=[],active,channel;
+function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
+function go(id,b){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');if(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}if(id==='passport')passport();if(id==='claims'){renderActiveClaim();pending()}}
+window.go=go;
+async function connect(){
+ try{
+  const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
+  let s=(await sb.auth.getSession()).data.session;if(!s){let r=await sb.auth.signInAnonymously({options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}});if(r.error)throw r.error}
+  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;await getProfile();$('nav').style.display='flex';$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>go('home'),400)
+ }catch(e){$('setupmsg').innerHTML='<div class="msg">'+e.message+'</div>'}
+}
+$('connect').onclick=connect;
+async function getProfile(){let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();if(r.error)throw r.error;if(!r.data){r=await sb.from('profiles').insert({id:user.id,display_name:'New Birder'}).select().single();if(r.error)throw r.error}profile=r.data;$('name').value=profile.display_name;$('hello').textContent='Good to see you, '+profile.display_name+'.';$('fp').textContent=profile.feather_points||0;$('pfp').textContent=profile.feather_points||0;$('level').textContent=Math.floor((profile.feather_points||0)/100)+1}
+$('saveName').onclick=async()=>{let n=$('name').value.trim();if(!n)return;let r=await sb.from('profiles').update({display_name:n}).eq('id',user.id).select().single();if(r.error)return toast(r.error.message);profile=r.data;localStorage.setItem('swname',n);await getProfile();toast('Name saved')};
+$('create').onclick=async()=>{let r=await sb.rpc('create_shutterwing_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);toast('Game created')};
+$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);toast('Game joined')};
+async function loadGame(id){
+ let r=await sb.from('games').select('*').eq('id',id).single();
+ if(r.error){localStorage.removeItem('swgame');return}
+ game=r.data;
+ localStorage.setItem('swgame',id);
+ $('nogame').style.display='none';$('game').style.display='block';
+ $('gamename').textContent=game.game_name;$('code').textContent=game.join_code;
+ renderGameState();
+ await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed()]);
+ subscribe();
+}
+function renderGameState(){
+ if(!game)return;
+ const host=game.host_id===user.id;
+ $('hostpanel').style.display=host?'block':'none';
+ $('startgame').style.display=(host && game.status==='lobby')?'block':'none';
+ $('endgame').style.display=(host && game.status==='active')?'block':'none';
+ $('nextround').style.display=(host && game.status==='finished')?'block':'none';
+ $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'Game in progress':'Game finished';
+ if(game.game_mode==='first_to_fifty'){
+   $('gamerules').textContent=`FIRST TO ${game.target_score||50} WP`;
+ }else{
+   $('gamerules').textContent='QUICK FLIGHT • Host ends the round';
+ }
+ if(game.status==='finished') showWinner(); else $('winnerpanel').style.display='none';
+}
+async function showWinner(){
+ let r=await sb.rpc('get_shutterwing_roster',{p_game_id:game.id});
+ if(r.error||!r.data?.length)return;
+ const sorted=[...r.data].sort((a,b)=>b.score-a.score);
+ const top=sorted[0].score;
+ const winners=sorted.filter(x=>x.score===top).map(x=>x.display_name||'Birder');
+ $('winnerpanel').style.display='block';
+ $('winnertext').innerHTML=`<div class="big">${winners.join(' & ')}</div><p>${top} WP</p>`;
+ $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
+}
+async function players(){
+ if(!game)return;
+ let r=await sb.rpc('get_shutterwing_roster',{p_game_id:game.id});
+ if(r.error){
+   // fallback to old generic roster if migration has not been applied yet
+   let f=await sb.from('game_players').select('*').eq('game_id',game.id).order('joined_at');
+   if(f.error)return;
+   $('pcount').textContent=f.data.length;
+   let me=f.data.find(x=>x.user_id===user.id);$('score').textContent=me?.score||0;
+   $('players').innerHTML=f.data.map((x,i)=>`<div class="player"><span>${x.user_id===user.id?'You':'Player '+(i+1)}</span><b>${x.score} WP</b></div>`).join('');
+   return;
+ }
+ const rows=r.data||[];
+ $('pcount').textContent=rows.length;
+ let me=rows.find(x=>x.user_id===user.id);$('score').textContent=me?.score||0;
+ $('players').innerHTML=rows.map(x=>{
+   const target=(game?.game_mode==='first_to_fifty'?(game.target_score||50):null);
+   const progress=target?`<div class="small">${Math.min(100,Math.round((x.score/target)*100))}% of ${target} WP</div>`:'';
+   return `<div class="player"><span>${x.user_id===user.id?'You — ':''}${x.display_name||'Birder'}${x.is_host?' ★':''}${progress}</span><b>${x.score} WP</b></div>`;
+ }).join('');
+}
+async function loadHand(){
+ if(!game)return;
+ let r=await sb.from('player_cards')
+   .select('id,card_id,card_state,cards(id,family,title,challenge_text,wing_points,card_type)')
+   .eq('game_id',game.id).eq('user_id',user.id).in('card_state',['hand','active']);
+ if(r.error)return;
+ hand=r.data||[];
+ $('hand').innerHTML='';
+
+ // Restore the chosen claim card after refresh/navigation if it is still in hand.
+ const savedClaimId=sessionStorage.getItem('sw_active_player_card');
+ if(savedClaimId && !active){
+   const saved=hand.find(x=>x.id===savedClaimId);
+   if(saved?.cards){
+     active={pc:saved,c:saved.cards};
+     renderActiveClaim();
+   }
+ }
+
+ hand.forEach(pc=>{
+   let c=pc.cards;
+   if(!c)return;
+   let d=document.createElement('div');
+   d.className='card';
+   const isAction=['action','special','wild'].includes(c.card_type);
+   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div><h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn">${isAction?'PLAY CARD':'CLAIM'}</button>`;
+   d.querySelector('button').onclick=()=>{
+     if(isAction){playActionCard(pc,c);}
+     else{
+       active={pc,c};
+       sessionStorage.setItem('sw_active_player_card',pc.id);
+       renderActiveClaim();
+       go('claims');
+     }
+   };
+   $('hand').appendChild(d);
+ });
+}
+function renderActiveClaim(){
+ if(!active?.pc || !active?.c){
+   $('cfam').textContent='';
+   $('ctitle').textContent='Choose a card first';
+   $('ctext').textContent='';
+   $('claimhint').textContent='Select CLAIM on one of your cards before submitting a photo.';
+   return;
+ }
+ $('cfam').textContent=active.c.family||'';
+ $('ctitle').textContent=active.c.title||active.c.id||'Selected challenge';
+ $('ctext').textContent=active.c.challenge_text||'';
+ $('claimhint').textContent=`Selected card: ${active.c.id} • ${active.c.wing_points||0} WP`;
+}
+$('deal').onclick=async()=>{
+ if(!game)return;
+ let r=await sb.rpc('refill_shutterwing_hand',{p_game_id:game.id});
+ if(r.error)return toast(r.error.message);
+ await loadHand();
+ toast('Hand refilled');
+};
+
+
+async function chooseOpponent(){
+ const r=await sb.rpc('get_shutterwing_roster',{p_game_id:game.id});
+ if(r.error||!r.data)return null;
+ const others=r.data.filter(x=>x.user_id!==user.id);
+ if(!others.length){toast('No opponent available');return null}
+ if(others.length===1)return others[0].user_id;
+ const choices=others.map((x,i)=>`${i+1}. ${x.display_name}`).join('\n');
+ const ans=prompt(`Choose opponent\n${choices}`);
+ return others[(parseInt(ans||'0',10)-1)]?.user_id||null;
+}
+async function playActionCard(pc,c){
+ if(!game)return toast('Open a game first');
+ let target=null;
+ if(['M01','M02','M04','M05','M06','M07'].includes(c.id)){
+   target=await chooseOpponent();
+   if(!target)return;
+ }
+ const r=await sb.rpc('play_shutterwing_action',{
+   p_game_id:game.id,
+   p_player_card_id:pc.id,
+   p_target_user_id:target,
+   p_extra:{}
+ });
+ if(r.error)return toast(r.error.message);
+ $('actionlog').textContent=r.data?.message||`${c.title} played`;
+ toast(`${c.title} played`);
+ await Promise.all([loadHand(),players(),reloadCurrentGame()]);
+}
+
+$('startgame').onclick=async()=>{
+ if(!game)return;
+ let r=await sb.rpc('start_shutterwing_game',{p_game_id:game.id});
+ if(r.error)return toast(r.error.message);
+ toast('Game started — 5 cards dealt to every player');
+ await reloadCurrentGame();
+};
+$('endgame').onclick=async()=>{
+ if(!game)return;
+ let r=await sb.rpc('end_shutterwing_game',{p_game_id:game.id});
+ if(r.error)return toast(r.error.message);
+ toast('Game ended');
+ await reloadCurrentGame();
+};
+$('nextround').onclick=async()=>{
+ if(!game)return;
+ $('nextround').disabled=true;
+ try{
+   let r=await sb.rpc('start_new_shutterwing_round',{p_game_id:game.id});
+   if(r.error)return toast(r.error.message);
+   toast('New round started — scores reset and 5 fresh cards dealt');
+   await reloadCurrentGame();
+ }finally{
+   $('nextround').disabled=false;
+ }
+};
+async function reloadCurrentGame(){
+ if(!game)return;
+ let r=await sb.from('games').select('*').eq('id',game.id).single();
+ if(r.error)return;
+ game=r.data;renderGameState();
+ await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed()]);
+}
+
+$('photo').onchange=()=>{
+ let f=$('photo').files[0];
+ if(!f){if($('previewwrap')) $('previewwrap').style.display='none';return;}
+ let r=new FileReader();
+ r.onload=()=>{
+   $('preview').src=r.result;
+   if($('previewwrap')) $('previewwrap').style.display='block';
+   if($('uploadstatus')) $('uploadstatus').textContent=`Ready to submit • ${f.name}`;
+ };
+ r.readAsDataURL(f);
+};
+async function submitWingClaim(event){
+ if(event){ event.preventDefault(); event.stopPropagation(); }
+ const btn=$('submit');
+ if(btn) btn.textContent='SUBMITTING…';
+
+ if(!game){
+   if(btn) btn.textContent='SUBMIT WING CLAIM';
+   return toast('Open or join a game first');
+ }
+
+ // Recover selected card if Safari has discarded the in-memory variable.
+ if(!active?.pc || !active?.c){
+   const savedClaimId=sessionStorage.getItem('sw_active_player_card');
+   const saved=hand.find(x=>x.id===savedClaimId);
+   if(saved?.cards) active={pc:saved,c:saved.cards};
+ }
+ if(!active?.pc || !active?.c){
+   renderActiveClaim();
+   if(btn) btn.textContent='SUBMIT WING CLAIM'; return toast('Choose CLAIM on a challenge card first');
+ }
+
+ let f=$('photo').files[0];
+ if(!f){if(btn) btn.textContent='SUBMIT WING CLAIM'; return toast('Choose a bird photo first');}
+
+ // Snapshot everything BEFORE any async upload, so active cannot become null mid-submit.
+ const playerCardId=active.pc.id;
+ const cardId=active.c.id;
+ const gameId=game.id;
+ const userId=user.id;
+
+ $('submit').disabled=true;
+ if($('previewwrap')) $('previewwrap').style.display='block';
+ if($('uploadstatus')) $('uploadstatus').textContent='Uploading bird photo…';
+ try{
+   let ext=(f.name.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase()||'jpg';
+   let path=`${userId}/${gameId}/${crypto.randomUUID()}.${ext}`;
+
+   let u=await sb.storage.from('wing-claims').upload(path,f,{
+     contentType:f.type||'image/jpeg',
+     upsert:false
+   });
+   if(u.error)throw u.error;
+   if($('uploadstatus')) $('uploadstatus').textContent='Photo uploaded. Creating Wing Claim…';
+
+   let r=await sb.rpc('submit_wing_claim',{
+     p_game_id:gameId,
+     p_card_id:cardId,
+     p_image_path:path,
+     p_species_name:$('species').value.trim()||null
+   });
+   if(r.error)throw r.error;
+
+   let bank=await sb.from('player_cards').update({card_state:'banked'}).eq('id',playerCardId);
+   if(bank.error)throw bank.error;
+
+   if($('uploadstatus')) $('uploadstatus').textContent='Wing Claim submitted successfully.';
+   $('claimmsg').innerHTML='<div class="msg">Wing Claim submitted. Waiting for the other player to vote.</div>';
+   active=null;
+   sessionStorage.removeItem('sw_active_player_card');
+   renderActiveClaim();
+   $('photo').value='';
+   if($('previewwrap')) $('previewwrap').style.display='none';
+   $('species').value='';
+   await Promise.all([loadHand(),pending()]);
+ }catch(e){
+   $('claimmsg').innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
+ }finally{
+   $('submit').disabled=false;
+   $('submit').textContent='SUBMIT WING CLAIM';
+ }
+
+}
+window.submitWingClaim = submitWingClaim;
+
+// Normal browser click binding as a second path.
+const submitButton = $('submit');
+if(submitButton){
+  submitButton.addEventListener('click', submitWingClaim);
+
+  // iPhone Safari fallback: some touch situations fail to dispatch click reliably.
+  let lastTouchSubmit = 0;
+  submitButton.addEventListener('touchend', (event)=>{
+    const now = Date.now();
+    if(now - lastTouchSubmit < 800) return;
+    lastTouchSubmit = now;
+    submitWingClaim(event);
+  }, {passive:false});
+}
+
+async function pending(){if(!sb||!game)return;let r=await sb.from('claims').select('id,user_id,image_path,species_name,card_id,cards(title,challenge_text)').eq('game_id',game.id).in('claim_status',['pending','challenged']);if(r.error)return;let a=r.data.filter(x=>x.user_id!==user.id);$('pending').innerHTML='';if(!a.length){$('pending').textContent='No claims waiting for your vote.';return}for(let c of a){let su=await sb.storage.from('wing-claims').createSignedUrl(c.image_path,300),d=document.createElement('div');d.className='panel';d.innerHTML=`<h3>${c.cards?.title||c.card_id}</h3><p>${c.cards?.challenge_text||''}</p>${su.data?.signedUrl?`<img class="claimimg" src="${su.data.signedUrl}">`:''}<p>${c.species_name||''}</p><button class="btn yes">ACCEPT</button><button class="btn red no">REJECT</button>`;d.querySelector('.yes').onclick=()=>vote(c.id,true);d.querySelector('.no').onclick=()=>vote(c.id,false);$('pending').appendChild(d)}}
+async function vote(id,v){let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});if(r.error)return toast(r.error.message);toast('Vote: '+r.data);await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand()])}
+
+
+async function loadProgression(){
+ if(!sb||!user)return;
+ const r=await sb.rpc('get_shutterwing_progression');
+ if(r.error)return;
+ const x=Array.isArray(r.data)?r.data[0]:r.data;
+ if(!x)return;
+
+ $('levelnum').textContent=x.level_number||1;
+ $('levelname').textContent=x.level_name||'Hatchling';
+ const pct=Math.max(0,Math.min(100,x.level_progress_percent||0));
+ $('levelbar').style.width=pct+'%';
+ $('levelprogress').textContent=x.next_level_fp
+   ? `${x.feather_points} FP • ${pct}% toward ${x.next_level_name}`
+   : `${x.feather_points} FP • Maximum current level`;
+ $('nextunlock').textContent=x.next_level_fp
+   ? `${Math.max(0,x.next_level_fp-x.feather_points)} FP to next level`
+   : 'Top level reached';
+
+ const a=await sb.rpc('get_shutterwing_achievements');
+ if(a.error)return;
+ const rows=a.data||[];
+ $('achievements').innerHTML='<div class="badgegrid">'+rows.map(b=>`
+   <div class="badge ${b.unlocked?'':'locked'}">
+     <div class="badgetitle">${b.unlocked?'✓ ':''}${b.title}</div>
+     <div class="small">${b.description}</div>
+     <div class="small" style="margin-top:4px">${b.progress_value}/${b.target_value}</div>
+   </div>`).join('')+'</div>';
+}
+
+async function loadCareerStats(){
+ if(!sb||!user)return;
+
+ const s=await sb.rpc('get_shutterwing_player_stats');
+ if(!s.error && s.data){
+   const x=Array.isArray(s.data)?s.data[0]:s.data;
+   if(x){
+     $('statrounds').textContent=x.rounds_played||0;
+     $('statwins').textContent=x.rounds_won||0;
+     $('statclaims').textContent=x.successful_claims||0;
+     $('statwp').textContent=x.total_wp_earned||0;
+     const wr=(x.rounds_played||0)>0 ? Math.round(((x.rounds_won||0)/(x.rounds_played||1))*100) : 0;
+     $('winrate').textContent=`Win rate: ${wr}%`;
+   }
+ }
+
+ const h=await sb.rpc('get_shutterwing_round_history',{p_limit:12});
+ if(h.error){
+   $('roundhistory').textContent='Round history unavailable.';
+   return;
+ }
+ const rows=h.data||[];
+ if(!rows.length){
+   $('roundhistory').textContent='No completed rounds yet.';
+   return;
+ }
+ $('roundhistory').innerHTML=rows.map(r=>`
+   <div class="historyrow">
+     <span>
+       <b>${r.game_name||'SHUTTERWING'}</b>
+       <br><span class="small">Round ${r.round_number} • ${r.game_mode_label}</span>
+       <br><span class="small">${new Date(r.completed_at).toLocaleDateString()}</span>
+     </span>
+     <span style="text-align:right">
+       <b>${r.score} WP</b>
+       <br><span class="${r.is_winner?'winmark':'small'}">${r.is_winner?'WIN':'Played'}</span>
+     </span>
+   </div>`).join('');
+}
+
+
+let speciesCollectionCache=[];
+
+function renderSpeciesCollection(rows){
+ const q=($('speciessearch')?.value||'').trim().toLowerCase();
+ const filtered=(rows||[]).filter(x=>(x.species_name||'').toLowerCase().includes(q));
+
+ $('speciescount').textContent=filtered.length===rows.length
+   ? `${rows.length} unique species recorded`
+   : `${filtered.length} of ${rows.length} species shown`;
+
+ if(!filtered.length){
+   $('plist').innerHTML='<div class="small">No matching species.</div>';
+   return;
+ }
+
+ $('plist').innerHTML='';
+ for(const x of filtered){
+   const d=document.createElement('div');
+   d.className='speciescard';
+   d.dataset.species=x.species_name;
+   d.innerHTML=`
+     <div class="speciesimg" data-cover="${encodeURIComponent(x.cover_image_path||'')}"></div>
+     <div class="speciesbody">
+       <h3 style="margin:0">${x.species_name}</h3>
+       <div class="small">${x.sighting_count} sighting${x.sighting_count===1?'':'s'}</div>
+       <div class="small">First: ${new Date(x.first_seen_at).toLocaleDateString()}</div>
+       <div class="small">Latest: ${new Date(x.last_seen_at).toLocaleDateString()}</div>
+       ${x.is_lifer?`<div class="liferpill">LIFER</div>`:''}
+     </div>`;
+   d.onclick=()=>openSpecies(x.species_name);
+   $('plist').appendChild(d);
+   const holder=d.querySelector('[data-cover]');
+   if(x.cover_image_path){
+     getSignedClaimUrl(x.cover_image_path).then(url=>{
+       if(url) holder.outerHTML=`<img class="speciesimg" src="${url}" alt="${x.species_name}">`;
+     });
+   }
+ }
+}
+
+async function openSpecies(speciesName){
+ $('speciesmodaltitle').textContent=speciesName;
+ $('speciesmodalmeta').textContent='Loading sightings…';
+ $('speciesgallery').innerHTML='';
+ $('speciesmodal').style.display='block';
+
+ const r=await sb.rpc('get_shutterwing_species_sightings',{p_species_name:speciesName});
+ if(r.error){
+   $('speciesmodalmeta').textContent=r.error.message;
+   return;
+ }
+
+ const rows=r.data||[];
+ const current=speciesCollectionCache.find(x=>x.species_name===speciesName);
+ $('speciesmodalmeta').textContent=`${rows.length} accepted sighting${rows.length===1?'':'s'} • First recorded ${current?new Date(current.first_seen_at).toLocaleDateString():'—'}`;
+
+ for(const x of rows){
+   const url=await getSignedClaimUrl(x.image_path);
+   const d=document.createElement('div');
+   d.className='sightingcard';
+   d.innerHTML=`
+     ${url?`<img class="feedimg" src="${url}" alt="${speciesName}">`:''}
+     <div class="sightingbody">
+       <div class="player">
+         <span>
+           <b>${new Date(x.recorded_at).toLocaleDateString()}</b><br>
+           <span class="small">${x.card_title||x.card_id||'Wing Claim'} • ${x.awarded_points||0} WP</span>
+         </span>
+         ${x.is_cover?'<span class="coverpill">COVER</span>':''}
+       </div>
+       ${!x.is_cover?`<button type="button" class="btn setcover" data-id="${x.passport_entry_id}">USE AS COVER</button>`:''}
+     </div>`;
+   $('speciesgallery').appendChild(d);
+ }
+
+ $('speciesgallery').querySelectorAll('.setcover').forEach(btn=>{
+   btn.onclick=async()=>{
+     btn.disabled=true;
+     const r=await sb.rpc('set_shutterwing_species_cover',{p_passport_entry_id:btn.dataset.id});
+     if(r.error){
+       btn.disabled=false;
+       return toast(r.error.message);
+     }
+     toast('Passport cover updated');
+     await passport();
+     await openSpecies(speciesName);
+   };
+ });
+}
+
+
+async function passport(){
+ if(!sb||!user)return;
+ loadCareerStats();
+ loadProgression();
+
+ const r=await sb.rpc('get_shutterwing_species_collection');
+ if(r.error){
+   $('plist').innerHTML='Bird collection unavailable.';
+   return;
+ }
+
+ const rows=r.data||[];
+ speciesCollectionCache=rows;
+
+ $('pcnt').textContent=rows.length;
+ $('pfp').textContent=profile?.feather_points||0;
+
+ renderSpeciesCollection(rows);
+}
+
+
+if($('speciessearch')){
+ $('speciessearch').addEventListener('input',()=>renderSpeciesCollection(speciesCollectionCache));
+}
+if($('closespecies')){
+ $('closespecies').onclick=()=>{$('speciesmodal').style.display='none'};
+}
+if($('speciesmodal')){
+ $('speciesmodal').addEventListener('click',(e)=>{
+   if(e.target===$('speciesmodal')) $('speciesmodal').style.display='none';
+ });
+}
+
+
+function subscribe(){
+ if(channel)sb.removeChannel(channel);
+ channel=sb.channel('sw-'+game.id)
+   .on('postgres_changes',{event:'*',schema:'public',table:'games',filter:`id=eq.${game.id}`},reloadCurrentGame)
+   .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{players();loadScoreBreakdown();})
+   .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},loadHand)
+   .on('postgres_changes',{event:'*',schema:'public',table:'claims',filter:`game_id=eq.${game.id}`},()=>{pending();loadScoreBreakdown();loadGameFeed();})
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{const a=payload.new;$('actionlog').textContent=a.message||`${a.card_id} played`;toast(a.message||'Action card played');})
+   .on('postgres_changes',{event:'*',schema:'public',table:'game_effects',filter:`game_id=eq.${game.id}`},loadEffects)
+   .subscribe();
+}
+let su=localStorage.getItem('swurl'),sk=localStorage.getItem('swkey');if(su)$('url').value=su;if(sk){$('key').value=sk;connect()}
+</script></body></html>
