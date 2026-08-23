@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v1.4.2 Live</title>
+<title>SHUTTERWING v1.4.3 Live</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -47,9 +47,16 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .sightingbody{padding:10px}
 .coverpill{display:inline-block;padding:3px 7px;border-radius:12px;background:var(--lime);color:#071006;font-size:10px;font-weight:900}
 @media(max-width:650px){.speciesgallery{grid-template-columns:1fr}}
+
+.claimbadge{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-width:18px;height:18px;padding:0 5px;margin-left:4px;
+ border-radius:999px;background:var(--lime);color:#071006;
+ font-size:10px;font-weight:900;vertical-align:middle
+}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -167,7 +174,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 </section>
 </div>
 
-<div id="nav" class="nav" style="display:none"><div class="navin"><button class="on" onclick="go('home',this)">HOME</button><button onclick="go('play',this)">PLAY</button><button onclick="go('claims',this)">CLAIMS</button><button onclick="go('passport',this)">PASSPORT</button></div></div>
+<div id="nav" class="nav" style="display:none"><div class="navin"><button class="on" onclick="go('home',this)">HOME</button><button onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button onclick="go('passport',this)">PASSPORT</button></div></div>
 
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
@@ -349,6 +356,14 @@ async function playActionCard(pc,c){
    p_extra:{}
  });
  if(r.error)return toast(r.error.message);
+
+ // Preserve the PLAY-card slot: replace a used action/special/wild card
+ // with another PLAY card instead of a random photo challenge.
+ const replacement=await sb.rpc('refill_shutterwing_play_card',{p_game_id:game.id});
+ if(replacement.error){
+   console.warn('PLAY-card replacement failed:',replacement.error.message);
+ }
+
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
  await Promise.all([loadHand(),players(),reloadCurrentGame()]);
@@ -387,6 +402,10 @@ function leaveCurrentGameLocal(){
  game=null;
  hand=[];
  active=null;
+ pendingPrimed=false;
+ lastPendingClaimIds=new Set();
+ if($('claimbadge'))$('claimbadge').style.display='none';
+ if(liveRefreshTimer){clearInterval(liveRefreshTimer);liveRefreshTimer=null;}
 
  $('game').style.display='none';
  $('nogame').style.display='block';
@@ -538,7 +557,66 @@ if(submitButton){
   }, {passive:false});
 }
 
-async function pending(){if(!sb||!game)return;let r=await sb.from('claims').select('id,user_id,image_path,species_name,card_id,cards(title,challenge_text)').eq('game_id',game.id).in('claim_status',['pending','challenged']);if(r.error)return;let a=r.data.filter(x=>x.user_id!==user.id);$('pending').innerHTML='';if(!a.length){$('pending').textContent='No claims waiting for your vote.';return}for(let c of a){let su=await sb.storage.from('wing-claims').createSignedUrl(c.image_path,300),d=document.createElement('div');d.className='panel';d.innerHTML=`<h3>${c.cards?.title||c.card_id}</h3><p>${c.cards?.challenge_text||''}</p>${su.data?.signedUrl?`<img class="claimimg" src="${su.data.signedUrl}">`:''}<p>${c.species_name||''}</p><button class="btn yes">ACCEPT</button><button class="btn red no">REJECT</button>`;d.querySelector('.yes').onclick=()=>vote(c.id,true);d.querySelector('.no').onclick=()=>vote(c.id,false);$('pending').appendChild(d)}}
+let lastPendingClaimIds=new Set();
+let pendingPrimed=false;
+
+async function pending(){
+ if(!sb||!game)return 0;
+
+ let r=await sb.from('claims')
+   .select('id,user_id,image_path,species_name,card_id,cards(title,challenge_text)')
+   .eq('game_id',game.id)
+   .in('claim_status',['pending','challenged']);
+
+ if(r.error)return 0;
+
+ let a=(r.data||[]).filter(x=>x.user_id!==user.id);
+ const badge=$('claimbadge');
+
+ if(badge){
+   badge.textContent=String(a.length);
+   badge.style.display=a.length?'inline-flex':'none';
+ }
+
+ const currentIds=new Set(a.map(x=>x.id));
+
+ // Do not alert for claims already present when the game first loads.
+ if(pendingPrimed){
+   const newClaims=a.filter(x=>!lastPendingClaimIds.has(x.id));
+   if(newClaims.length){
+     toast(newClaims.length===1
+       ? 'New Wing Claim waiting for your vote'
+       : `${newClaims.length} new Wing Claims waiting for your vote`);
+   }
+ }
+ pendingPrimed=true;
+ lastPendingClaimIds=currentIds;
+
+ $('pending').innerHTML='';
+
+ if(!a.length){
+   $('pending').textContent='No claims waiting for your vote.';
+   return 0;
+ }
+
+ for(let c of a){
+   let su=await sb.storage.from('wing-claims').createSignedUrl(c.image_path,300);
+   let d=document.createElement('div');
+   d.className='panel';
+   d.innerHTML=`
+     <h3>${c.cards?.title||c.card_id}</h3>
+     <p>${c.cards?.challenge_text||''}</p>
+     ${su.data?.signedUrl?`<img class="claimimg" src="${su.data.signedUrl}">`:''}
+     <p>${c.species_name||''}</p>
+     <button class="btn yes">ACCEPT</button>
+     <button class="btn red no">REJECT</button>`;
+   d.querySelector('.yes').onclick=()=>vote(c.id,true);
+   d.querySelector('.no').onclick=()=>vote(c.id,false);
+   $('pending').appendChild(d);
+ }
+ return a.length;
+}
+
 async function vote(id,v){let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});if(r.error)return toast(r.error.message);toast('Vote: '+r.data);await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand()])}
 
 
@@ -815,6 +893,47 @@ async function getSignedClaimUrl(path){
  return r.error?null:r.data?.signedUrl||null;
 }
 
+
+let liveRefreshTimer=null;
+let liveRefreshBusy=false;
+
+async function refreshLiveGame(){
+ if(liveRefreshBusy || !sb || !user || !game || document.hidden)return;
+ liveRefreshBusy=true;
+ try{
+   // Keep the high-value multiplayer state fresh even when a realtime event
+   // is delayed or missed by mobile Safari.
+   await Promise.all([
+     players(),
+     pending(),
+     loadScoreBreakdown(),
+     loadGameFeed(),
+     loadEffects()
+   ]);
+
+   // Check game status separately so finished/started state also catches up.
+   const gr=await sb.from('games').select('*').eq('id',game.id).maybeSingle();
+   if(!gr.error && gr.data){
+     const statusChanged=gr.data.status!==game.status;
+     game=gr.data;
+     if(statusChanged)renderGameState();
+   }
+ }catch(e){
+   console.warn('Live refresh:',e);
+ }finally{
+   liveRefreshBusy=false;
+ }
+}
+
+function startLiveRefresh(){
+ if(liveRefreshTimer)clearInterval(liveRefreshTimer);
+ liveRefreshTimer=setInterval(refreshLiveGame,4000);
+}
+
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden)refreshLiveGame();
+});
+
 function subscribe(){
  if(channel)sb.removeChannel(channel);
  channel=sb.channel('sw-'+game.id)
@@ -825,6 +944,8 @@ function subscribe(){
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{const a=payload.new;$('actionlog').textContent=a.message||`${a.card_id} played`;toast(a.message||'Action card played');})
    .on('postgres_changes',{event:'*',schema:'public',table:'game_effects',filter:`game_id=eq.${game.id}`},loadEffects)
    .subscribe();
+
+ startLiveRefresh();
 }
 let su=localStorage.getItem('swurl'),sk=localStorage.getItem('swkey');if(su)$('url').value=su;if(sk){$('key').value=sk;connect()}
 </script></body></html>
