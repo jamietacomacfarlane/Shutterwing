@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v1.4.1 Live</title>
+<title>SHUTTERWING v1.4.2 Live</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -49,7 +49,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 @media(max-width:650px){.speciesgallery{grid-template-columns:1fr}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -83,6 +83,13 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <button id="endgame" class="btn red" style="display:none">END ROUND</button>
   <button id="nextround" type="button" class="btn" style="display:none">START NEW ROUND + DEAL 5</button>
   <div class="small">Host starts the round once everyone has joined.</div>
+</div>
+
+<div class="panel" id="finishedcontrols" style="display:none">
+  <h3>Game finished</h3>
+  <div class="small">Start a fresh game with a new join code, or leave this finished game.</div>
+  <button id="playagain" type="button" class="btn" style="display:none">PLAY AGAIN — NEW GAME</button>
+  <button id="leavegame" type="button" class="btn alt">LEAVE GAME</button>
 </div>
 <div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL TO 5</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
@@ -188,7 +195,11 @@ async function loadGame(id){
  $('nogame').style.display='none';$('game').style.display='block';
  $('gamename').textContent=game.game_name;$('code').textContent=game.join_code;
  renderGameState();
- await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed()]);
+ if(game.status==='finished'){
+   await Promise.all([players(),loadScoreBreakdown(),loadGameFeed()]);
+ }else{
+   await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed()]);
+ }
  subscribe();
 }
 function renderGameState(){
@@ -197,8 +208,25 @@ function renderGameState(){
  $('hostpanel').style.display=host?'block':'none';
  $('startgame').style.display=(host && game.status==='lobby')?'block':'none';
  $('endgame').style.display=(host && game.status==='active')?'block':'none';
- $('nextround').style.display=(host && game.status==='finished')?'block':'none';
+ $('nextround').style.display='none';
+ $('finishedcontrols').style.display=(game.status==='finished')?'block':'none';
+ $('playagain').style.display=(host && game.status==='finished')?'block':'none';
  $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'Game in progress':'Game finished';
+
+ // A finished game must not look playable or carry a stale hand forward.
+ if(game.status==='finished'){
+   hand=[];
+   active=null;
+   sessionStorage.removeItem('sw_active_player_card');
+   $('hand').innerHTML='<div class="small">This game has finished.</div>';
+   $('deal').style.display='none';
+   $('actionpanel').style.display='none';
+   $('effectpanel').style.display='none';
+ }else{
+   $('deal').style.display='block';
+   $('actionpanel').style.display='block';
+   $('effectpanel').style.display='block';
+ }
  if(game.game_mode==='first_to_fifty'){
    $('gamerules').textContent=`FIRST TO ${game.target_score||50} WP`;
  }else{
@@ -350,6 +378,56 @@ $('nextround').onclick=async()=>{
    await reloadCurrentGame();
  }finally{
    $('nextround').disabled=false;
+ }
+};
+
+function leaveCurrentGameLocal(){
+ localStorage.removeItem('swgame');
+ sessionStorage.removeItem('sw_active_player_card');
+ game=null;
+ hand=[];
+ active=null;
+
+ $('game').style.display='none';
+ $('nogame').style.display='block';
+ $('hostpanel').style.display='none';
+ $('finishedcontrols').style.display='none';
+ $('winnerpanel').style.display='none';
+ $('hand').innerHTML='';
+ $('players').innerHTML='';
+ $('score').textContent='0';
+ $('pcount').textContent='0';
+ $('code').textContent='';
+ $('gamename').textContent='';
+ $('gamestatus').textContent='Lobby';
+ $('gamerules').textContent='';
+ $('deal').style.display='block';
+ $('actionpanel').style.display='block';
+ $('effectpanel').style.display='block';
+}
+
+$('leavegame').onclick=()=>{
+ leaveCurrentGameLocal();
+ toast('Left finished game');
+};
+
+$('playagain').onclick=async()=>{
+ if(!game || game.status!=='finished')return;
+ const oldGame=game;
+ $('playagain').disabled=true;
+ try{
+   let r=await sb.rpc('create_shutterwing_game',{
+     p_game_name:oldGame.game_name||$('gname').value||'Shutterwing Game',
+     p_game_mode:oldGame.game_mode||'quick_flight',
+     p_location_label:oldGame.location_label||null,
+     p_target_score:oldGame.game_mode==='first_to_fifty'?(oldGame.target_score||50):null
+   });
+   if(r.error)return toast(r.error.message);
+   leaveCurrentGameLocal();
+   await loadGame(r.data[0].game_id);
+   toast('New game created — share the new join code');
+ }finally{
+   $('playagain').disabled=false;
  }
 };
 async function reloadCurrentGame(){
