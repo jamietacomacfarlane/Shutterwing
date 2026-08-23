@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v1.4.4 Live</title>
+<title>SHUTTERWING v1.5 Live</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -54,9 +54,12 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
  border-radius:999px;background:var(--lime);color:#071006;
  font-size:10px;font-weight:900;vertical-align:middle
 }
+
+.player.scoretap{cursor:pointer}
+.player.scoretap:active{transform:scale(.995)}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.4</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.5</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -174,6 +177,17 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 </section>
 </div>
 
+<div id="scoremodal" class="modalback" style="display:none">
+  <div class="modalcard">
+    <div class="player">
+      <h2 id="scoremodaltitle" style="margin:0">Player score</h2>
+      <button id="closescore" type="button" class="btn ghost" style="width:auto;padding:8px 12px">CLOSE</button>
+    </div>
+    <div id="scoremodalmeta" class="small" style="margin:8px 0 12px"></div>
+    <div id="scoreledger"></div>
+  </div>
+</div>
+
 <div id="nav" class="nav" style="display:none"><div class="navin"><button class="on" onclick="go('home',this)">HOME</button><button onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button onclick="go('passport',this)">PASSPORT</button></div></div>
 
 <script type="module">
@@ -266,11 +280,16 @@ async function players(){
  const rows=r.data||[];
  $('pcount').textContent=rows.length;
  let me=rows.find(x=>x.user_id===user.id);$('score').textContent=me?.score||0;
- $('players').innerHTML=rows.map(x=>{
+ $('players').innerHTML='';
+ rows.forEach(x=>{
    const target=(game?.game_mode==='first_to_fifty'?(game.target_score||50):null);
    const progress=target?`<div class="small">${Math.min(100,Math.round((x.score/target)*100))}% of ${target} WP</div>`:'';
-   return `<div class="player"><span>${x.user_id===user.id?'You — ':''}${x.display_name||'Birder'}${x.is_host?' ★':''}${progress}</span><b>${x.score} WP</b></div>`;
- }).join('');
+   const d=document.createElement('div');
+   d.className='player scoretap';
+   d.innerHTML=`<span>${x.user_id===user.id?'You — ':''}${x.display_name||'Birder'}${x.is_host?' ★':''}${progress}<div class="small">Tap for scorecard</div></span><b>${x.score} WP</b>`;
+   d.onclick=()=>openPlayerScorecard(x.user_id,x.display_name||'Birder',x.score);
+   $('players').appendChild(d);
+ });
 }
 async function loadHand(){
  if(!game)return;
@@ -866,6 +885,53 @@ async function loadScoreBreakdown(){
 
 let lastGameFeedSignature='';
 
+
+async function openPlayerScorecard(playerId,displayName,totalScore){
+ if(!game||!sb)return;
+
+ $('scoremodaltitle').textContent=`${displayName} — ${totalScore} WP`;
+ $('scoremodalmeta').textContent='Loading score breakdown…';
+ $('scoreledger').innerHTML='';
+ $('scoremodal').style.display='block';
+
+ const r=await sb.rpc('get_shutterwing_player_scorecard',{
+   p_game_id:game.id,
+   p_user_id:playerId
+ });
+
+ if(r.error){
+   $('scoremodalmeta').textContent=r.error.message;
+   return;
+ }
+
+ const rows=r.data||[];
+ if(!rows.length){
+   $('scoremodalmeta').textContent='No accepted scoring claims yet.';
+   return;
+ }
+
+ const sum=rows.reduce((n,x)=>n+(x.awarded_points||0),0);
+ $('scoremodalmeta').textContent=`${rows.length} scoring claim${rows.length===1?'':'s'} • ${sum} WP recorded`;
+
+ $('scoreledger').innerHTML=rows.map(x=>{
+   const bonus=(x.awarded_points||0)>(x.base_points||0)
+     ? `<span class="pill">${x.score_note||'BONUS'}</span>`
+     : '';
+   return `<div class="historyrow">
+     <span>
+       <b>${x.card_title||x.card_id}</b><br>
+       <span class="small">${x.card_id} • base ${x.base_points||0} WP ${bonus}</span>
+       ${x.species_name?`<br><span class="small">${x.species_name}</span>`:''}
+     </span>
+     <span style="text-align:right">
+       <b>+${x.awarded_points||0} WP</b><br>
+       <span class="small">${x.resolved_at?new Date(x.resolved_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):''}</span>
+     </span>
+   </div>`;
+ }).join('');
+}
+
+
 async function loadGameFeed(){
  if(!game||!sb)return;
 
@@ -965,6 +1031,16 @@ function startLiveRefresh(){
 document.addEventListener('visibilitychange',()=>{
  if(!document.hidden)refreshLiveGame();
 });
+
+
+if($('closescore')){
+ $('closescore').onclick=()=>{$('scoremodal').style.display='none'};
+}
+if($('scoremodal')){
+ $('scoremodal').addEventListener('click',(e)=>{
+   if(e.target===$('scoremodal')) $('scoremodal').style.display='none';
+ });
+}
 
 function subscribe(){
  if(channel)sb.removeChannel(channel);
