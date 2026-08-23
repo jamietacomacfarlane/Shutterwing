@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v1.4.3 Live</title>
+<title>SHUTTERWING v1.4.4 Live</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -56,7 +56,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 }
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.3</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.4.4</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -405,6 +405,7 @@ function leaveCurrentGameLocal(){
  pendingPrimed=false;
  lastPendingClaimIds=new Set();
  lastPendingSignature='';
+ lastGameFeedSignature='';
  if($('claimbadge'))$('claimbadge').style.display='none';
  if(liveRefreshTimer){clearInterval(liveRefreshTimer);liveRefreshTimer=null;}
 
@@ -863,23 +864,45 @@ async function loadScoreBreakdown(){
 }
 
 
+let lastGameFeedSignature='';
+
 async function loadGameFeed(){
  if(!game||!sb)return;
+
  const r=await sb.rpc('get_shutterwing_game_feed',{p_game_id:game.id});
+
  if(r.error){
    $('gamefeed').innerHTML='<div class="small">Game feed unavailable.</div>';
    return;
  }
+
  const rows=r.data||[];
+
+ // Only redraw the feed when content visible to the player has actually changed.
+ const signature=rows.map(x=>[
+   x.claim_id,
+   x.claim_status,
+   x.awarded_points,
+   x.score_note,
+   x.image_path,
+   x.species_name
+ ].join(':')).join('|');
+
+ if(signature===lastGameFeedSignature)return;
+ lastGameFeedSignature=signature;
+
  if(!rows.length){
    $('gamefeed').innerHTML='<div class="small">No claims yet.</div>';
    return;
  }
+
  $('gamefeed').innerHTML='';
+
  for(const x of rows){
    const url=await getSignedClaimUrl(x.image_path);
    const d=document.createElement('div');
    d.className='feedcard';
+
    d.innerHTML=`
      <div class="feedmeta">
        <span><b>${x.display_name||'Birder'}</b><br><span class="small">${x.card_title||x.card_id}</span></span>
@@ -890,6 +913,7 @@ async function loadGameFeed(){
        <span>${x.species_name||'Species not entered'}<br><span class="small">${x.score_note||''}</span></span>
        <b>${x.awarded_points==null?'—':`+${x.awarded_points} WP`}</b>
      </div>`;
+
    $('gamefeed').appendChild(d);
  }
 }
