@@ -404,6 +404,7 @@ function leaveCurrentGameLocal(){
  active=null;
  pendingPrimed=false;
  lastPendingClaimIds=new Set();
+ lastPendingSignature='';
  if($('claimbadge'))$('claimbadge').style.display='none';
  if(liveRefreshTimer){clearInterval(liveRefreshTimer);liveRefreshTimer=null;}
 
@@ -559,6 +560,7 @@ if(submitButton){
 
 let lastPendingClaimIds=new Set();
 let pendingPrimed=false;
+let lastPendingSignature='';
 
 async function pending(){
  if(!sb||!game)return 0;
@@ -579,8 +581,9 @@ async function pending(){
  }
 
  const currentIds=new Set(a.map(x=>x.id));
+ const signature=a.map(x=>x.id).sort().join('|');
 
- // Do not alert for claims already present when the game first loads.
+ // Alert only when a genuinely new claim appears.
  if(pendingPrimed){
    const newClaims=a.filter(x=>!lastPendingClaimIds.has(x.id));
    if(newClaims.length){
@@ -591,6 +594,11 @@ async function pending(){
  }
  pendingPrimed=true;
  lastPendingClaimIds=currentIds;
+
+ // IMPORTANT: don't redraw photos every polling cycle.
+ // Rebuild the claim cards only when the actual pending set changes.
+ if(signature===lastPendingSignature)return a.length;
+ lastPendingSignature=signature;
 
  $('pending').innerHTML='';
 
