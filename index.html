@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v1.5 Live</title>
+<title>SHUTTERWING v1.6 Live</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -57,9 +57,12 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 
 .player.scoretap{cursor:pointer}
 .player.scoretap:active{transform:scale(.995)}
+
+.claimaccepted{border-color:#4f7d58}
+.claimrejected{border-color:#7d4f4f}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.5</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.6</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -87,6 +90,11 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <div class="small">Accepted, pending and rejected Wing Claims from this game.</div>
   <div id="gamefeed" style="margin-top:8px">No claims yet.</div>
 </div>
+<div class="panel" id="claimresultpanel" style="display:none">
+  <div class="small">LATEST CLAIM RESULT</div>
+  <div id="claimresulttext" style="font-weight:800;margin-top:4px"></div>
+</div>
+
 <div class="panel" id="hostpanel" style="display:none">
   <h3>Host controls</h3>
   <button id="startgame" class="btn">START GAME + DEAL 5</button>
@@ -423,6 +431,9 @@ function leaveCurrentGameLocal(){
  active=null;
  pendingPrimed=false;
  lastPendingClaimIds=new Set();
+ ownClaimResultsPrimed=false;
+ lastSeenOwnClaimResultId=null;
+ if($('claimresultpanel'))$('claimresultpanel').style.display='none';
  lastPendingSignature='';
  lastGameFeedSignature='';
  if($('claimbadge'))$('claimbadge').style.display='none';
@@ -992,6 +1003,54 @@ async function getSignedClaimUrl(path){
 }
 
 
+
+let lastSeenOwnClaimResultId=null;
+let ownClaimResultsPrimed=false;
+
+async function checkOwnClaimResults(){
+ if(!sb||!game||!user)return;
+
+ const r=await sb.rpc('get_shutterwing_latest_claim_result',{p_game_id:game.id});
+ if(r.error || !r.data)return;
+
+ const x=Array.isArray(r.data)?r.data[0]:r.data;
+ if(!x || !x.claim_id)return;
+
+ // Prime silently on first load so historical claims don't pop up as "new".
+ if(!ownClaimResultsPrimed){
+   ownClaimResultsPrimed=true;
+   lastSeenOwnClaimResultId=x.claim_id;
+   return;
+ }
+
+ if(x.claim_id===lastSeenOwnClaimResultId)return;
+ lastSeenOwnClaimResultId=x.claim_id;
+
+ const panel=$('claimresultpanel');
+ const text=$('claimresulttext');
+
+ if(x.claim_status==='accepted'){
+   const note=x.score_note && x.score_note!=='Base score'
+     ? ` • ${x.score_note}`
+     : '';
+   text.textContent=`Accepted: ${x.card_title||x.card_id} • +${x.awarded_points||0} WP${note}`;
+   panel.classList.remove('claimrejected');
+   panel.classList.add('claimaccepted');
+   panel.style.display='block';
+   toast(`Claim accepted +${x.awarded_points||0} WP`);
+ }else if(x.claim_status==='rejected'){
+   text.textContent=`Rejected: ${x.card_title||x.card_id}`;
+   panel.classList.remove('claimaccepted');
+   panel.classList.add('claimrejected');
+   panel.style.display='block';
+   toast('Wing Claim rejected');
+ }
+
+ // Refresh score and personal ledger after the result, without redrawing photo feeds.
+ await Promise.all([players(),loadScoreBreakdown(),getProfile()]);
+}
+
+
 let liveRefreshTimer=null;
 let liveRefreshBusy=false;
 
@@ -1006,7 +1065,8 @@ async function refreshLiveGame(){
      pending(),
      loadScoreBreakdown(),
      loadGameFeed(),
-     loadEffects()
+     loadEffects(),
+     checkOwnClaimResults()
    ]);
 
    // Check game status separately so finished/started state also catches up.
