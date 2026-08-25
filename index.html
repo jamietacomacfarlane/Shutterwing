@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v1.7 Live</title>
+<title>SHUTTERWING v2.0 RC1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -60,14 +60,19 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 
 .claimaccepted{border-color:#4f7d58}
 .claimrejected{border-color:#7d4f4f}
+
+.huntpill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:10px;font-weight:800;letter-spacing:.08em}
+.roundsummarygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.roundsummarybox{background:#101511;border:1px solid var(--line);border-radius:12px;padding:10px}
+@media(max-width:650px){.roundsummarygrid{grid-template-columns:1fr}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v1.7</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC1</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>The first live multiplayer field-test build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Multiplayer field release candidate.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
 
@@ -77,6 +82,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <div class="small">LIVE GAME</div><h2 id="gamename"></h2><div id="code" class="code"></div>
   <div class="small" style="text-align:center" id="gamestatus">Lobby</div>
 <div class="small" style="text-align:center;margin-top:5px" id="gamerules"></div>
+<div class="small" style="text-align:center;margin-top:5px" id="roundstatus"></div>
 </div>
 <div class="grid"><div class="stat"><div class="small">MY SCORE</div><div id="score" class="big">0</div></div><div class="stat"><div class="small">PLAYERS</div><div id="pcount" class="big">1</div></div></div>
 <div class="panel"><h3>Players / scoreboard</h3><div id="players"></div></div>
@@ -103,22 +109,28 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 
 <div class="panel" id="hostpanel" style="display:none">
   <h3>Host controls</h3>
-  <button id="startgame" class="btn">START GAME + DEAL 5</button>
-  <button id="endgame" class="btn red" style="display:none">END ROUND</button>
-  <button id="nextround" type="button" class="btn" style="display:none">START NEW ROUND + DEAL 5</button>
-  <div class="small">Host starts the round once everyone has joined.</div>
+  <button id="startgame" class="btn">START ROUND 1 + DEAL 5</button>
+  <button id="endgame" class="btn red" style="display:none">END ROUND & SHOW RESULTS</button>
+  <button id="nextround" type="button" class="btn" style="display:none">START NEXT ROUND + DEAL 5</button>
+  <div class="small">All players must be READY. Completed claims refill automatically; PLAY cards replace themselves with PLAY cards.</div>
 </div>
 
 <div class="panel" id="finishedcontrols" style="display:none">
-  <h3>Game finished</h3>
-  <div class="small">Start a fresh game with a new join code, or leave this finished game.</div>
-  <button id="playagain" type="button" class="btn" style="display:none">PLAY AGAIN — NEW GAME</button>
+  <h3>Round finished</h3>
+  <div class="small">Review the results, continue with the same players, or start a completely new game.</div>
+  <button id="nextround2" type="button" class="btn" style="display:none">START NEXT ROUND + DEAL 5</button>
+  <button id="playagain" type="button" class="btn alt" style="display:none">NEW GAME — NEW JOIN CODE</button>
   <button id="leavegame" type="button" class="btn alt">LEAVE GAME</button>
 </div>
-<div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL TO 5</button></div>
+<div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
 <div class="panel" id="effectpanel"><h3>Active effects</h3><div id="effects" class="small">No active effects.</div></div>
-<div class="panel" id="winnerpanel" style="display:none"><h2>Round complete</h2><div id="winnertext"></div><div id="roundscores" style="margin-top:12px"></div></div>
+<div class="panel" id="winnerpanel" style="display:none">
+  <h2>Round complete</h2>
+  <div id="winnertext"></div>
+  <div id="roundscores" style="margin-top:12px"></div>
+  <div id="roundsummary" style="margin-top:12px"></div>
+</div>
 </div></section>
 
 <section id="claims" class="screen"><h2>Wing Claims</h2><div class="panel"><div class="small" id="cfam"></div><h2 id="ctitle">Choose a card first</h2><p id="ctext"></p><div id="claimhint" class="small">Select CLAIM on one of your cards before submitting a photo.</div><input type="file" id="photo" accept="image/*">
@@ -247,7 +259,9 @@ function renderGameState(){
  $('nextround').style.display='none';
  $('finishedcontrols').style.display=(game.status==='finished')?'block':'none';
  $('playagain').style.display=(host && game.status==='finished')?'block':'none';
- $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'Game in progress':'Game finished';
+ if($('nextround2'))$('nextround2').style.display=(host && game.status==='finished')?'block':'none';
+ $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'HUNT IN PROGRESS':'ROUND COMPLETE';
+ $('roundstatus').innerHTML=game.status==='active'?`<span class="huntpill">ROUND ${game.current_round||1} • HUNT</span>`:`ROUND ${game.current_round||1}`;
 
  // A finished game must not look playable or carry a stale hand forward.
  if(game.status==='finished'){
@@ -273,13 +287,45 @@ function renderGameState(){
 async function showWinner(){
  let r=await sb.rpc('get_shutterwing_roster',{p_game_id:game.id});
  if(r.error||!r.data?.length)return;
+
  const sorted=[...r.data].sort((a,b)=>b.score-a.score);
  const top=sorted[0].score;
  const winners=sorted.filter(x=>x.score===top).map(x=>x.display_name||'Birder');
+
  $('winnerpanel').style.display='block';
  $('winnertext').innerHTML=`<div class="big">${winners.join(' & ')}</div><p>${top} WP</p>`;
- $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
+ $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+
+   sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
+
+ const s=await sb.rpc('get_shutterwing_round_summary',{
+   p_game_id:game.id,
+   p_round_number:game.current_round||1
+ });
+
+ if(s.error){
+   $('roundsummary').innerHTML='<div class="small">Round summary unavailable.</div>';
+   return;
+ }
+
+ const rows=s.data||[];
+ if(!rows.length){
+   $('roundsummary').innerHTML='<div class="small">No accepted claims in this round.</div>';
+   return;
+ }
+
+ $('roundsummary').innerHTML='<h3>Round results</h3><div class="roundsummarygrid">'+
+   rows.map(x=>`
+     <div class="roundsummarybox">
+       <div class="player">
+         <span><b>${x.display_name||'Birder'}</b></span>
+         <b>${x.round_wp||0} WP</b>
+       </div>
+       <div class="small">${x.cards_completed||0} card${x.cards_completed===1?'':'s'} completed</div>
+       <div class="small">${x.species_count||0} species photographed</div>
+       <div class="small">Top claim: ${x.top_claim_title||'—'} ${x.top_claim_wp!=null?`• ${x.top_claim_wp} WP`:''}</div>
+     </div>`).join('')+'</div>';
 }
+
 async function players(){
  if(!game)return;
  let r=await sb.rpc('get_shutterwing_roster',{p_game_id:game.id});
@@ -443,21 +489,31 @@ $('endgame').onclick=async()=>{
  if(!game)return;
  let r=await sb.rpc('end_shutterwing_game',{p_game_id:game.id});
  if(r.error)return toast(r.error.message);
- toast('Game ended');
+ toast('Round ended — results ready');
  await reloadCurrentGame();
 };
-$('nextround').onclick=async()=>{
+async function startNextRound(){
  if(!game)return;
- $('nextround').disabled=true;
+ const buttons=[$('nextround'),$('nextround2')].filter(Boolean);
+ buttons.forEach(b=>b.disabled=true);
  try{
    let r=await sb.rpc('start_new_shutterwing_round',{p_game_id:game.id});
    if(r.error)return toast(r.error.message);
-   toast('New round started — scores reset and 5 fresh cards dealt');
+   pendingPrimed=false;
+   lastPendingClaimIds=new Set();
+   lastPendingSignature='';
+   lastGameFeedSignature='';
+   ownClaimResultsPrimed=false;
+   lastSeenOwnClaimResultId=null;
+   if($('claimresultpanel'))$('claimresultpanel').style.display='none';
+   toast(`Round ${(game.current_round||1)+1} started — fresh hand dealt`);
    await reloadCurrentGame();
  }finally{
-   $('nextround').disabled=false;
+   buttons.forEach(b=>b.disabled=false);
  }
-};
+}
+$('nextround').onclick=startNextRound;
+if($('nextround2'))$('nextround2').onclick=startNextRound;
 
 function leaveCurrentGameLocal(){
  localStorage.removeItem('swgame');
@@ -599,7 +655,12 @@ async function submitWingClaim(event){
    $('photo').value='';
    if($('previewwrap')) $('previewwrap').style.display='none';
    $('species').value='';
-   await Promise.all([loadHand(),pending()]);
+
+   // Keep gameplay moving: replace the completed challenge automatically.
+   const refill=await sb.rpc('refill_shutterwing_hand',{p_game_id:gameId});
+   if(refill.error) console.warn('Automatic hand refill:',refill.error.message);
+
+   await Promise.all([loadHand(),pending(),players(),loadScoreBreakdown()]);
  }catch(e){
    $('claimmsg').innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
  }finally{
