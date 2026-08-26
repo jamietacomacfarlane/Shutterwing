@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC1</title>
+<title>SHUTTERWING v2.0 RC2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -65,9 +65,14 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .roundsummarygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
 .roundsummarybox{background:#101511;border:1px solid var(--line);border-radius:12px;padding:10px}
 @media(max-width:650px){.roundsummarygrid{grid-template-columns:1fr}}
+
+.servedbox{border:2px solid var(--red);background:#241715}
+.servedtitle{font-size:22px;font-weight:950;letter-spacing:.04em}
+.servedoverlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;padding:20px}
+.servedcard{width:min(92%,520px);background:#241715;border:2px solid var(--red);border-radius:18px;padding:20px}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -122,6 +127,11 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <button id="playagain" type="button" class="btn alt" style="display:none">NEW GAME — NEW JOIN CODE</button>
   <button id="leavegame" type="button" class="btn alt">LEAVE GAME</button>
 </div>
+<div class="panel servedbox" id="servedeffectpanel" style="display:none">
+  <div class="small">ACTIVE AGAINST YOU</div>
+  <div id="servedeffecttitle" class="servedtitle"></div>
+  <div id="servedeffecttext" style="margin-top:6px"></div>
+</div>
 <div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
 <div class="panel" id="effectpanel"><h3>Active effects</h3><div id="effects" class="small">No active effects.</div></div>
@@ -133,7 +143,12 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 </div>
 </div></section>
 
-<section id="claims" class="screen"><h2>Wing Claims</h2><div class="panel"><div class="small" id="cfam"></div><h2 id="ctitle">Choose a card first</h2><p id="ctext"></p><div id="claimhint" class="small">Select CLAIM on one of your cards before submitting a photo.</div><input type="file" id="photo" accept="image/*">
+<section id="claims" class="screen"><h2>Wing Claims</h2>
+<div class="panel servedbox" id="claimservedeffect" style="display:none">
+  <div class="small">BEFORE YOU CLAIM</div>
+  <div id="claimservedtitle" style="font-weight:900"></div>
+  <div id="claimservedtext" class="small" style="margin-top:5px"></div>
+</div><div class="panel"><div class="small" id="cfam"></div><h2 id="ctitle">Choose a card first</h2><p id="ctext"></p><div id="claimhint" class="small">Select CLAIM on one of your cards before submitting a photo.</div><input type="file" id="photo" accept="image/*">
 <div id="previewwrap" style="display:none;margin:12px 0">
   <div class="small" style="margin-bottom:6px">Selected bird photo</div>
   <img id="preview" alt="Selected bird photo" style="display:block;width:100%;max-height:440px;object-fit:contain;background:#050b07;border-radius:16px;border:1px solid #334b3a">
@@ -214,6 +229,17 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   </div>
 </div>
 
+<div id="servedoverlay" class="servedoverlay">
+  <div class="servedcard">
+    <div class="small">PLAY CARD</div>
+    <div class="servedtitle">YOU'VE BEEN SERVED</div>
+    <h2 id="servedoverlaytitle" style="margin-top:12px"></h2>
+    <div id="servedoverlayfrom" class="small"></div>
+    <p id="servedoverlaytext"></p>
+    <button id="servedok" type="button" class="btn">GOT IT — BACK TO HUNT</button>
+  </div>
+</div>
+
 <div id="nav" class="nav" style="display:none"><div class="navin"><button class="on" onclick="go('home',this)">HOME</button><button onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button onclick="go('passport',this)">PASSPORT</button></div></div>
 
 <script type="module">
@@ -245,8 +271,11 @@ async function loadGame(id){
  if(game.status==='finished'){
    await Promise.all([players(),loadScoreBreakdown(),loadGameFeed()]);
  }else{
-   await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed()]);
+   await Promise.all([players(),loadHand(),pending(),loadEffects(),loadMyServedEffects(),loadScoreBreakdown(),loadGameFeed()]);
  }
+ targetedActionPrimed=false;
+ lastTargetedActionId=null;
+ await checkTargetedAction();
  subscribe();
 }
 function renderGameState(){
@@ -505,6 +534,11 @@ async function startNextRound(){
    lastGameFeedSignature='';
    ownClaimResultsPrimed=false;
    lastSeenOwnClaimResultId=null;
+ targetedActionPrimed=false;
+ lastTargetedActionId=null;
+ if($('servedoverlay'))$('servedoverlay').style.display='none';
+ if($('servedeffectpanel'))$('servedeffectpanel').style.display='none';
+ if($('claimservedeffect'))$('claimservedeffect').style.display='none';
    if($('claimresultpanel'))$('claimresultpanel').style.display='none';
    toast(`Round ${(game.current_round||1)+1} started — fresh hand dealt`);
    await reloadCurrentGame();
@@ -753,7 +787,7 @@ async function pending(){
  return a.length;
 }
 
-async function vote(id,v){let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});if(r.error)return toast(r.error.message);toast('Vote: '+r.data);await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand()])}
+async function vote(id,v){let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});if(r.error)return toast(r.error.message);toast('Vote: '+r.data);await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand(),loadMyServedEffects()])}
 
 
 async function loadProgression(){
@@ -950,6 +984,97 @@ if($('speciesmodal')){
  });
 }
 
+
+
+
+let targetedActionPrimed=false;
+let lastTargetedActionId=null;
+
+function servedEffectCopy(effectType){
+ if(effectType==='banking_delay'){
+   return {
+     title:'INDIAN MYNA',
+     text:'Your next accepted Wing Claim is held. Your following accepted claim releases it.'
+   };
+ }
+ if(effectType==='camera_jam'){
+   return {
+     title:'CAMERA JAM',
+     text:'Complete a challenge before you can play another PLAY card.'
+   };
+ }
+ if(effectType==='flushed'){
+   return {
+     title:'FLUSHED',
+     text:'Complete a challenge to clear this effect.'
+   };
+ }
+ return {title:'PLAY CARD EFFECT',text:'An opponent has an active effect against you.'};
+}
+
+async function loadMyServedEffects(){
+ if(!sb||!game||!user)return;
+
+ const r=await sb.rpc('get_shutterwing_my_served_effects',{p_game_id:game.id});
+ if(r.error)return;
+
+ const rows=r.data||[];
+ const x=rows[0];
+
+ const playPanel=$('servedeffectpanel');
+ const claimPanel=$('claimservedeffect');
+
+ if(!x){
+   playPanel.style.display='none';
+   claimPanel.style.display='none';
+   return;
+ }
+
+ const copy=servedEffectCopy(x.effect_type);
+
+ $('servedeffecttitle').textContent=copy.title;
+ $('servedeffecttext').textContent=copy.text;
+ playPanel.style.display='block';
+
+ $('claimservedtitle').textContent=copy.title;
+ $('claimservedtext').textContent=copy.text;
+ claimPanel.style.display='block';
+}
+
+function showServedOverlay(x){
+ const title=x.card_id==='M01'?'INDIAN MYNA':(x.card_title||x.card_id||'PLAY CARD');
+ $('servedoverlaytitle').textContent=title;
+ $('servedoverlayfrom').textContent=`Played by ${x.from_display_name||'another birder'}`;
+ $('servedoverlaytext').textContent=x.display_message||x.message||'A PLAY card has been used against you.';
+ $('servedoverlay').style.display='flex';
+}
+
+async function checkTargetedAction(){
+ if(!sb||!game||!user)return;
+
+ const r=await sb.rpc('get_shutterwing_latest_targeted_action',{p_game_id:game.id});
+ if(r.error||!r.data)return;
+
+ const x=Array.isArray(r.data)?r.data[0]:r.data;
+ if(!x||!x.action_id)return;
+
+ if(!targetedActionPrimed){
+   targetedActionPrimed=true;
+   lastTargetedActionId=x.action_id;
+   return;
+ }
+
+ if(x.action_id===lastTargetedActionId)return;
+ lastTargetedActionId=x.action_id;
+
+ showServedOverlay(x);
+ await loadMyServedEffects();
+}
+
+$('servedok').onclick=()=>{
+ $('servedoverlay').style.display='none';
+ go('play');
+};
 
 
 async function loadEffects(){
@@ -1163,7 +1288,9 @@ async function refreshLiveGame(){
      loadScoreBreakdown(),
      loadGameFeed(),
      loadEffects(),
-     checkOwnClaimResults()
+     loadMyServedEffects(),
+     checkOwnClaimResults(),
+     checkTargetedAction()
    ]);
 
    // Check game status separately so finished/started state also catches up.
@@ -1206,7 +1333,16 @@ function subscribe(){
    .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{players();loadScoreBreakdown();})
    .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},loadHand)
    .on('postgres_changes',{event:'*',schema:'public',table:'claims',filter:`game_id=eq.${game.id}`},()=>{pending();loadScoreBreakdown();loadGameFeed();})
-   .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{const a=payload.new;$('actionlog').textContent=a.message||`${a.card_id} played`;toast(a.message||'Action card played');})
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{
+     const a=payload.new;
+     $('actionlog').textContent=a.message||`${a.card_id} played`;
+     if(a.target_user_id===user.id){
+       checkTargetedAction();
+       loadMyServedEffects();
+     }else{
+       toast(a.card_id==='M01'?'INDIAN MYNA played':(a.message||'Action card played'));
+     }
+   })
    .on('postgres_changes',{event:'*',schema:'public',table:'game_effects',filter:`game_id=eq.${game.id}`},loadEffects)
    .subscribe();
 
