@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC2</title>
+<title>SHUTTERWING v2.0 RC3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -70,9 +70,15 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .servedtitle{font-size:22px;font-weight:950;letter-spacing:.04em}
 .servedoverlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;padding:20px}
 .servedcard{width:min(92%,520px);background:#241715;border:2px solid var(--red);border-radius:18px;padding:20px}
+
+.moultbox{border:1px solid var(--lime);background:#132014}
+.moultcount{font-size:24px;font-weight:950;color:var(--lime)}
+.moultbtn{margin-top:8px;background:#263128;color:var(--text);border:1px solid #587043}
+.card.playcard{border-color:var(--blue);background:#172a31}
+.card.playcard:before{content:'PLAY CARD';font-size:10px;font-weight:950;letter-spacing:.12em;color:var(--blue)}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -131,6 +137,11 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <div class="small">ACTIVE AGAINST YOU</div>
   <div id="servedeffecttitle" class="servedtitle"></div>
   <div id="servedeffecttext" style="margin-top:6px"></div>
+</div>
+<div class="panel moultbox" id="moultpanel">
+  <div class="small">MOULT REWARDS</div>
+  <div><span id="moultcount" class="moultcount">0</span> <b>available</b></div>
+  <div id="moulttext" class="small">Earn 1 Moult for each 10 WP this round, up to 3. Spend 1 to discard any card you choose and draw a replacement.</div>
 </div>
 <div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
@@ -397,6 +408,37 @@ async function players(){
  }
 
 }
+
+async function loadMoultStatus(){
+ if(!sb||!game||!user)return null;
+ const r=await sb.rpc('get_shutterwing_moult_status',{p_game_id:game.id});
+ if(r.error){
+   if($('moultpanel'))$('moultpanel').style.display='none';
+   return null;
+ }
+ const x=Array.isArray(r.data)?r.data[0]:r.data;
+ if(!x)return null;
+ $('moultpanel').style.display='block';
+ $('moultcount').textContent=x.available_moults||0;
+ $('moulttext').textContent=`${x.base_moults||0} earned from WP${x.bonus_moults?` + ${x.bonus_moults} bonus`:''} • ${x.spent_moults||0} spent. Earn 1 per 10 WP, up to 3 per round.`;
+ return x;
+}
+
+async function moultCard(pc,c){
+ if(!game||!pc)return;
+ const ok=confirm(`Moult "${c.title}"?\n\nSpend 1 Moult and draw a replacement card.`);
+ if(!ok)return;
+
+ const r=await sb.rpc('spend_shutterwing_moult',{
+   p_game_id:game.id,
+   p_player_card_id:pc.id
+ });
+ if(r.error)return toast(r.error.message);
+
+ toast(`${c.title} discarded — replacement dealt`);
+ await Promise.all([loadHand(),players(),loadMoultStatus()]);
+}
+
 async function loadHand(){
  if(!game)return;
  let r=await sb.from('player_cards')
@@ -404,6 +446,16 @@ async function loadHand(){
    .eq('game_id',game.id).eq('user_id',user.id).in('card_state',['hand','active']);
  if(r.error)return;
  hand=r.data||[];
+ const moult=await loadMoultStatus();
+ const moultAvailable=moult?.available_moults||0;
+
+ // PLAY cards should never be hidden at the far end of the hand.
+ hand.sort((a,b)=>{
+   const ap=['action','special','wild'].includes(a.cards?.card_type)?0:1;
+   const bp=['action','special','wild'].includes(b.cards?.card_type)?0:1;
+   return ap-bp;
+ });
+
  $('hand').innerHTML='';
 
  // Restore the chosen claim card after refresh/navigation if it is still in hand.
@@ -420,10 +472,10 @@ async function loadHand(){
    let c=pc.cards;
    if(!c)return;
    let d=document.createElement('div');
-   d.className='card';
    const isAction=['action','special','wild'].includes(c.card_type);
-   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div><h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn">${isAction?'PLAY CARD':'CLAIM'}</button>`;
-   d.querySelector('button').onclick=()=>{
+   d.className='card'+(isAction?' playcard':'');
+   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div><h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${isAction?'PLAY CARD':'CLAIM'}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   d.querySelector('.maincardbtn').onclick=()=>{
      if(isAction){playActionCard(pc,c);}
      else{
        active={pc,c};
@@ -432,6 +484,8 @@ async function loadHand(){
        go('claims');
      }
    };
+   const mb=d.querySelector('.moultbtn');
+   if(mb)mb.onclick=()=>moultCard(pc,c);
    $('hand').appendChild(d);
  });
 }
@@ -539,6 +593,7 @@ async function startNextRound(){
  if($('servedoverlay'))$('servedoverlay').style.display='none';
  if($('servedeffectpanel'))$('servedeffectpanel').style.display='none';
  if($('claimservedeffect'))$('claimservedeffect').style.display='none';
+ if($('moultpanel'))$('moultpanel').style.display='none';
    if($('claimresultpanel'))$('claimresultpanel').style.display='none';
    toast(`Round ${(game.current_round||1)+1} started — fresh hand dealt`);
    await reloadCurrentGame();
@@ -787,7 +842,13 @@ async function pending(){
  return a.length;
 }
 
-async function vote(id,v){let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});if(r.error)return toast(r.error.message);toast('Vote: '+r.data);await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand(),loadMyServedEffects()])}
+async function vote(id,v){
+ let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});
+ if(r.error)return toast(r.error.message);
+ toast(v?'Claim accepted':'Claim rejected');
+ await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand(),loadMyServedEffects(),loadMoultStatus()]);
+ setTimeout(()=>go('play'),900);
+}
 
 
 async function loadProgression(){
@@ -1269,7 +1330,12 @@ async function checkOwnClaimResults(){
  }
 
  // Refresh score and personal ledger after the result, without redrawing photo feeds.
- await Promise.all([players(),loadScoreBreakdown(),getProfile()]);
+ await Promise.all([players(),loadScoreBreakdown(),getProfile(),loadHand(),loadMoultStatus()]);
+
+ // Claimant should never be stranded on the completed Wing Claims screen.
+ if($('claims').classList.contains('on')){
+   setTimeout(()=>go('play'),1100);
+ }
 }
 
 
@@ -1289,6 +1355,7 @@ async function refreshLiveGame(){
      loadGameFeed(),
      loadEffects(),
      loadMyServedEffects(),
+     loadMoultStatus(),
      checkOwnClaimResults(),
      checkTargetedAction()
    ]);
