@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC3</title>
+<title>SHUTTERWING v2.0 RC4</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -76,9 +76,13 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .moultbtn{margin-top:8px;background:#263128;color:var(--text);border:1px solid #587043}
 .card.playcard{border-color:var(--blue);background:#172a31}
 .card.playcard:before{content:'PLAY CARD';font-size:10px;font-weight:950;letter-spacing:.12em;color:var(--blue)}
+.hand{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;padding:4px 2px 12px;scrollbar-width:thin}
+.hand .card{scroll-snap-align:center;flex:0 0:min(82vw,360px);box-sizing:border-box}
+@media(min-width:700px){.hand .card{flex-basis:min(44vw,380px)}}
+@media(min-width:1050px){.hand .card{flex-basis:340px}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC3</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC4</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -87,7 +91,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
 
-<section id="play" class="screen"><h2>Play</h2><div id="nogame" class="panel"><h3>Create game</h3><input id="gname" value="Tablelands Birders"><select id="gmode"><option value="quick_flight">Quick Flight</option><option value="first_to_fifty">First to Fifty</option></select><input id="loc" placeholder="Location (optional)"><button id="create" class="btn">CREATE PRIVATE GAME</button><hr><h3>Join game</h3><input id="jcode" maxlength="6" placeholder="ABC123"><button id="join" class="btn alt">JOIN WITH CODE</button></div>
+<section id="play" class="screen"><h2>Play</h2><div id="nogame" class="panel"><h3>Multiplayer</h3><input id="gname" value="Tablelands Birders"><select id="gmode"><option value="quick_flight">Quick Flight</option><option value="first_to_fifty">First to Fifty</option></select><input id="loc" placeholder="Location (optional)"><button id="create" class="btn">HOST PRIVATE GAME</button><button type="button" class="btn alt" disabled style="opacity:.55">HOST PUBLIC GAME — COMING NEXT</button><div class="small" style="margin-top:7px">Public games need the shared-game lobby backend before they can safely be opened to anyone.</div><hr><h3>Join a private game</h3><input id="jcode" maxlength="6" placeholder="ABC123"><button id="join" class="btn alt">JOIN PRIVATE GAME WITH CODE</button></div>
 <div id="game" style="display:none">
 <div class="panel">
   <div class="small">LIVE GAME</div><h2 id="gamename"></h2><div id="code" class="code"></div>
@@ -113,8 +117,9 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 </div>
 
 <div class="panel" id="readypanel">
-  <h3>Lobby readiness</h3>
+  <h3>Ready to hunt?</h3>
   <div id="readystatus" class="small">Join the lobby, then mark yourself ready.</div>
+  <div id="myreadystate" style="font-weight:900;margin:10px 0">○ WAITING</div>
   <button id="readybtn" type="button" class="btn alt">I'M READY</button>
 </div>
 
@@ -398,7 +403,10 @@ async function players(){
  if(game?.status==='lobby'){
    const me=rows.find(x=>x.user_id===user.id);
    if(me){
-     $('readybtn').textContent=me.ready?'NOT READY':'I\'M READY';
+     $('readybtn').textContent=me.ready?'CHANGE TO NOT READY':"I'M READY";
+     if($('myreadystate')){
+       $('myreadystate').textContent=me.ready?'✓ READY':'○ WAITING';
+     }
      $('readybtn').className=me.ready?'btn':'btn alt';
    }
    const readyCount=rows.filter(x=>x.ready).length;
@@ -1302,8 +1310,13 @@ async function checkOwnClaimResults(){
  // Prime silently on first load so historical claims don't pop up as "new".
  if(!ownClaimResultsPrimed){
    ownClaimResultsPrimed=true;
+   const strandedOnClaims=$('claims').classList.contains('on') &&
+     $('claimmsg') && /waiting for the other player to vote/i.test($('claimmsg').textContent||'');
    lastSeenOwnClaimResultId=x.claim_id;
-   return;
+   if(!strandedOnClaims)return;
+   // Mobile Safari can miss the realtime event while the claim is resolving.
+   // If this screen still says "waiting" but the latest own claim is resolved,
+   // continue through the normal result handler and return the claimant to HUNT.
  }
 
  if(x.claim_id===lastSeenOwnClaimResultId)return;
@@ -1333,8 +1346,9 @@ async function checkOwnClaimResults(){
  await Promise.all([players(),loadScoreBreakdown(),getProfile(),loadHand(),loadMoultStatus()]);
 
  // Claimant should never be stranded on the completed Wing Claims screen.
+ if($('claimmsg')) $('claimmsg').innerHTML='';
  if($('claims').classList.contains('on')){
-   setTimeout(()=>go('play'),1100);
+   setTimeout(()=>go('play'),650);
  }
 }
 
