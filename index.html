@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC4</title>
+<title>SHUTTERWING v2.0 RC5</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -82,25 +82,55 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 @media(min-width:1050px){.hand .card{flex-basis:340px}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC4</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC5</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
 <section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Multiplayer field release candidate.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
-<div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
+<div class="panel" id="homegamepanel" style="display:none">
+      <div class="small">CURRENT GAME</div>
+      <h3 id="homegamename">—</h3>
+      <div id="homegamestate" class="small">—</div>
+      <button id="homegotogame" class="btn">RETURN TO GAME</button>
+      <button id="homeleavegame" class="btn alt">LEAVE GAME</button>
+    </div>
+    <div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
 
-<section id="play" class="screen"><h2>Play</h2><div id="nogame" class="panel"><h3>Multiplayer</h3><input id="gname" value="Tablelands Birders"><select id="gmode"><option value="quick_flight">Quick Flight</option><option value="first_to_fifty">First to Fifty</option></select><input id="loc" placeholder="Location (optional)"><button id="create" class="btn">HOST PRIVATE GAME</button><button type="button" class="btn alt" disabled style="opacity:.55">HOST PUBLIC GAME — COMING NEXT</button><div class="small" style="margin-top:7px">Public games need the shared-game lobby backend before they can safely be opened to anyone.</div><hr><h3>Join a private game</h3><input id="jcode" maxlength="6" placeholder="ABC123"><button id="join" class="btn alt">JOIN PRIVATE GAME WITH CODE</button></div>
+<section id="play" class="screen"><h2>Play</h2><div id="nogame">
+<div class="panel"><h3>Host a game</h3>
+<input id="gname" value="Tablelands Birders">
+<select id="gmode"><option value="quick_flight">Quick Flight</option><option value="first_to_fifty">First to Fifty</option></select>
+<input id="loc" placeholder="Location label (optional)">
+<label class="small"><input id="newlatejoin" type="checkbox" checked style="width:auto;margin-right:8px"> Allow players to join after the hunt starts</label>
+<button id="createpublic" class="btn">HOST PUBLIC GAME</button>
+<button id="create" class="btn alt">HOST PRIVATE GAME</button>
+<div class="small">Public games appear in the lobby. Private games can only be joined with the 6-character code.</div>
+</div>
+<div class="panel"><h3>Public games</h3>
+<div class="small">Open games you can join right now.</div>
+<button id="refreshpublic" class="btn alt">REFRESH PUBLIC GAMES</button>
+<div id="publicgames" style="margin-top:10px">No games loaded yet.</div>
+</div>
+<div class="panel"><h3>Join a private game</h3>
+<input id="jcode" maxlength="6" placeholder="ABC123">
+<button id="join" class="btn alt">JOIN PRIVATE GAME WITH CODE</button>
+</div></div>
 <div id="game" style="display:none">
 <div class="panel">
   <div class="small">LIVE GAME</div><h2 id="gamename"></h2><div id="code" class="code"></div>
   <div class="small" style="text-align:center" id="gamestatus">Lobby</div>
 <div class="small" style="text-align:center;margin-top:5px" id="gamerules"></div>
 <div class="small" style="text-align:center;margin-top:5px" id="roundstatus"></div>
+  <div class="small" style="text-align:center;margin-top:5px" id="visibilitystatus"></div>
 </div>
 <div class="grid"><div class="stat"><div class="small">MY SCORE</div><div id="score" class="big">0</div></div><div class="stat"><div class="small">PLAYERS</div><div id="pcount" class="big">1</div></div></div>
 <div class="panel"><h3>Players / scoreboard</h3><div id="players"></div></div>
+<div class="panel">
+  <h3>Game activity</h3>
+  <div id="gameactivity" class="small">No activity yet.</div>
+</div>
 <div class="panel">
   <h3>My score breakdown</h3>
   <div class="small">See exactly which accepted cards make up your score.</div>
@@ -123,8 +153,13 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <button id="readybtn" type="button" class="btn alt">I'M READY</button>
 </div>
 
+<div class="panel">
+  <button id="leaveactivegame" type="button" class="btn alt">LEAVE THIS GAME</button>
+</div>
 <div class="panel" id="hostpanel" style="display:none">
   <h3>Host controls</h3>
+  <label class="small"><input id="allowlatejoin" type="checkbox" style="width:auto;margin-right:8px"> Allow late joining</label>
+  <div id="latejoinnote" class="small" style="margin-bottom:8px"></div>
   <button id="startgame" class="btn">START ROUND 1 + DEAL 5</button>
   <button id="endgame" class="btn red" style="display:none">END ROUND & SHOW RESULTS</button>
   <button id="nextround" type="button" class="btn" style="display:none">START NEXT ROUND + DEAL 5</button>
@@ -268,14 +303,16 @@ async function connect(){
  try{
   const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
   let s=(await sb.auth.getSession()).data.session;if(!s){let r=await sb.auth.signInAnonymously({options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}});if(r.error)throw r.error}
-  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;await getProfile();$('nav').style.display='flex';$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>go('home'),400)
+  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;await getProfile();$('nav').style.display='flex';$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
  }catch(e){$('setupmsg').innerHTML='<div class="msg">'+e.message+'</div>'}
 }
 $('connect').onclick=connect;
 async function getProfile(){let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();if(r.error)throw r.error;if(!r.data){r=await sb.from('profiles').insert({id:user.id,display_name:'New Birder'}).select().single();if(r.error)throw r.error}profile=r.data;$('name').value=profile.display_name;$('hello').textContent='Good to see you, '+profile.display_name+'.';$('fp').textContent=profile.feather_points||0;$('pfp').textContent=profile.feather_points||0;$('level').textContent=Math.floor((profile.feather_points||0)/100)+1}
 $('saveName').onclick=async()=>{let n=$('name').value.trim();if(!n)return;let r=await sb.from('profiles').update({display_name:n}).eq('id',user.id).select().single();if(r.error)return toast(r.error.message);profile=r.data;localStorage.setItem('swname',n);await getProfile();toast('Name saved')};
-$('create').onclick=async()=>{let r=await sb.rpc('create_shutterwing_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);toast('Game created')};
-$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);toast('Game joined')};
+$('create').onclick=async()=>{let r=await sb.rpc('create_shutterwing_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null});if(r.error)return toast(r.error.message);await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:r.data[0].game_id,p_visibility:'private',p_allow_late_joining:$('newlatejoin').checked});await loadGame(r.data[0].game_id);toast('Private game created')};
+$('createpublic').onclick=async()=>{let r=await sb.rpc('create_shutterwing_public_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null,p_allow_late_joining:$('newlatejoin').checked});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);toast('Public game created')};
+$('refreshpublic').onclick=()=>loadPublicGames();
+$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});await loadGame(r.data[0].game_id);toast('Private game joined')};
 async function loadGame(id){
  let r=await sb.from('games').select('*').eq('id',id).single();
  if(r.error){localStorage.removeItem('swgame');return}
@@ -285,9 +322,9 @@ async function loadGame(id){
  $('gamename').textContent=game.game_name;$('code').textContent=game.join_code;
  renderGameState();
  if(game.status==='finished'){
-   await Promise.all([players(),loadScoreBreakdown(),loadGameFeed()]);
+   await Promise.all([players(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
  }else{
-   await Promise.all([players(),loadHand(),pending(),loadEffects(),loadMyServedEffects(),loadScoreBreakdown(),loadGameFeed()]);
+   await Promise.all([players(),loadHand(),pending(),loadEffects(),loadMyServedEffects(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
  }
  targetedActionPrimed=false;
  lastTargetedActionId=null;
@@ -307,6 +344,14 @@ function renderGameState(){
  if($('nextround2'))$('nextround2').style.display=(host && game.status==='finished')?'block':'none';
  $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'HUNT IN PROGRESS':'ROUND COMPLETE';
  $('roundstatus').innerHTML=game.status==='active'?`<span class="huntpill">ROUND ${game.current_round||1} • HUNT</span>`:`ROUND ${game.current_round||1}`;
+ $('visibilitystatus').textContent=(game.visibility==='public'?'PUBLIC GAME':'PRIVATE GAME')+(game.allow_late_joining?' • LATE JOINING ON':' • LATE JOINING OFF');
+ if($('allowlatejoin')) $('allowlatejoin').checked=!!game.allow_late_joining;
+ if($('latejoinnote')) $('latejoinnote').textContent=game.allow_late_joining?'New players may join during an active hunt.':'Joining closes once the hunt starts.';
+ if($('homegamepanel')){
+   $('homegamepanel').style.display='block';
+   $('homegamename').textContent=game.game_name||'SHUTTERWING game';
+   $('homegamestate').textContent=(game.status==='active'?'Hunt in progress':game.status==='lobby'?'Lobby':'Round complete')+' • '+(game.visibility==='public'?'Public':'Private');
+ }
 
  // A finished game must not look playable or carry a stale hand forward.
  if(game.status==='finished'){
@@ -675,8 +720,63 @@ async function reloadCurrentGame(){
  let r=await sb.from('games').select('*').eq('id',game.id).single();
  if(r.error)return;
  game=r.data;renderGameState();
- await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed()]);
+ await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
 }
+
+
+async function loadPublicGames(){
+ if(!sb)return;
+ $('publicgames').innerHTML='<div class="small">Looking for open games…</div>';
+ const r=await sb.rpc('list_shutterwing_public_games');
+ if(r.error){$('publicgames').innerHTML='<div class="msg">'+r.error.message+'</div>';return;}
+ const rows=r.data||[];
+ if(!rows.length){$('publicgames').innerHTML='<div class="small">No public games are open right now. You can host one above.</div>';return;}
+ $('publicgames').innerHTML=rows.map(x=>`
+   <div class="player" style="align-items:flex-start">
+    <span><b>${x.game_name||'SHUTTERWING game'}</b><br>
+    <span class="small">${x.host_name||'Birder'} • ${x.player_count}/${x.max_players} players • ${x.status==='active'?'HUNT LIVE — late join':'Lobby'}</span></span>
+    <button class="btn alt" style="width:auto;margin:0;padding:9px 12px" data-public-join="${x.game_id}">JOIN</button>
+   </div>`).join('');
+ document.querySelectorAll('[data-public-join]').forEach(b=>b.onclick=async()=>{
+   b.disabled=true;
+   const r=await sb.rpc('join_shutterwing_public_game',{p_game_id:b.dataset.publicJoin});
+   if(r.error){b.disabled=false;return toast(r.error.message);}
+   await loadGame(b.dataset.publicJoin);
+   toast('Joined public game');
+ });
+}
+
+async function loadGameActivity(){
+ if(!sb||!game||!$('gameactivity'))return;
+ const r=await sb.rpc('get_shutterwing_game_activity',{p_game_id:game.id});
+ if(r.error){$('gameactivity').textContent='Activity unavailable.';return;}
+ const rows=r.data||[];
+ if(!rows.length){$('gameactivity').textContent='No activity yet.';return;}
+ $('gameactivity').innerHTML=rows.map(x=>`<div style="padding:5px 0;border-bottom:1px solid var(--line)">${x.message}</div>`).join('');
+}
+
+async function leaveGameServer(){
+ if(!sb||!game)return;
+ const oldName=profile?.display_name||'Player';
+ const r=await sb.rpc('leave_shutterwing_game',{p_game_id:game.id});
+ if(r.error)return toast(r.error.message);
+ leaveCurrentGameLocal();
+ if($('homegamepanel'))$('homegamepanel').style.display='none';
+ await loadPublicGames();
+ toast(oldName+' left the game');
+}
+
+$('leaveactivegame').onclick=leaveGameServer;
+$('homeleavegame').onclick=leaveGameServer;
+$('homegotogame').onclick=()=>go('play');
+$('allowlatejoin').onchange=async()=>{
+ if(!game)return;
+ const r=await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:game.id,p_visibility:game.visibility||'private',p_allow_late_joining:$('allowlatejoin').checked});
+ if(r.error){$('allowlatejoin').checked=!$('allowlatejoin').checked;return toast(r.error.message);}
+ game.allow_late_joining=$('allowlatejoin').checked;
+ renderGameState();
+ toast(game.allow_late_joining?'Late joining ON':'Late joining OFF');
+};
 
 $('photo').onchange=()=>{
  let f=$('photo').files[0];
@@ -1411,7 +1511,7 @@ function subscribe(){
  if(channel)sb.removeChannel(channel);
  channel=sb.channel('sw-'+game.id)
    .on('postgres_changes',{event:'*',schema:'public',table:'games',filter:`id=eq.${game.id}`},reloadCurrentGame)
-   .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{players();loadScoreBreakdown();})
+   .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{players();loadScoreBreakdown();loadGameActivity();})
    .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},loadHand)
    .on('postgres_changes',{event:'*',schema:'public',table:'claims',filter:`game_id=eq.${game.id}`},()=>{pending();loadScoreBreakdown();loadGameFeed();})
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{
