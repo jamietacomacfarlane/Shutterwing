@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC5.2</title>
+<title>SHUTTERWING v2.0 RC5.3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -82,7 +82,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 @media(min-width:1050px){.hand .card{flex-basis:340px}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC5.2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC5.3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -1454,18 +1454,21 @@ async function checkOwnClaimResults(){
  if(!x || !x.claim_id)return;
 
  // Prime silently on first load so historical claims don't pop up as "new".
+ // Exception: if the claimant is visibly stranded on Wing Claims waiting for a
+ // vote that has already resolved, process that result immediately.
+ let forceProcessResolvedClaim=false;
  if(!ownClaimResultsPrimed){
    ownClaimResultsPrimed=true;
    const strandedOnClaims=$('claims').classList.contains('on') &&
      $('claimmsg') && /waiting for the other player to vote/i.test($('claimmsg').textContent||'');
-   lastSeenOwnClaimResultId=x.claim_id;
-   if(!strandedOnClaims)return;
-   // Mobile Safari can miss the realtime event while the claim is resolving.
-   // If this screen still says "waiting" but the latest own claim is resolved,
-   // continue through the normal result handler and return the claimant to HUNT.
+   if(!strandedOnClaims){
+     lastSeenOwnClaimResultId=x.claim_id;
+     return;
+   }
+   forceProcessResolvedClaim=true;
  }
 
- if(x.claim_id===lastSeenOwnClaimResultId)return;
+ if(!forceProcessResolvedClaim && x.claim_id===lastSeenOwnClaimResultId)return;
  lastSeenOwnClaimResultId=x.claim_id;
 
  const panel=$('claimresultpanel');
