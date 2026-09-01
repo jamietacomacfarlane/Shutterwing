@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC5.3</title>
+<title>SHUTTERWING v2.0 RC6</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -82,12 +82,12 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 @media(min-width:1050px){.hand .card{flex-basis:340px}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC5.3</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Multiplayer field release candidate.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Multiplayer gameplay polish build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -887,7 +887,7 @@ async function submitWingClaim(event){
    if(bank.error)throw bank.error;
 
    if($('uploadstatus')) $('uploadstatus').textContent='Wing Claim submitted successfully.';
-   $('claimmsg').innerHTML='<div class="msg">Wing Claim submitted. Waiting for the other player to vote.</div>';
+   $('claimmsg').innerHTML='<div class="msg">Wing Claim submitted. You can keep hunting while the other player votes.</div>';
    active=null;
    sessionStorage.removeItem('sw_active_player_card');
    renderActiveClaim();
@@ -900,6 +900,8 @@ async function submitWingClaim(event){
    if(refill.error) console.warn('Automatic hand refill:',refill.error.message);
 
    await Promise.all([loadHand(),pending(),players(),loadScoreBreakdown()]);
+   toast('Wing Claim sent — keep hunting');
+   setTimeout(()=>go('play'),250);
  }catch(e){
    $('claimmsg').innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
  }finally{
@@ -993,11 +995,17 @@ async function pending(){
 }
 
 async function vote(id,v){
- let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});
- if(r.error)return toast(r.error.message);
- toast(v?'Claim accepted':'Claim rejected');
- await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand(),loadMyServedEffects(),loadMoultStatus()]);
- setTimeout(()=>go('play'),900);
+ const buttons=[...document.querySelectorAll('#pending button')];
+ buttons.forEach(b=>b.disabled=true);
+ try{
+   let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});
+   if(r.error)return toast(r.error.message);
+   toast(v?'Claim accepted — back to the hunt':'Claim rejected — back to the hunt');
+   await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand(),loadMyServedEffects(),loadMoultStatus()]);
+   setTimeout(()=>go('play'),300);
+ }finally{
+   buttons.forEach(b=>b.disabled=false);
+ }
 }
 
 
@@ -1497,7 +1505,7 @@ async function checkOwnClaimResults(){
  // Claimant should never be stranded on the completed Wing Claims screen.
  if($('claimmsg')) $('claimmsg').innerHTML='';
  if($('claims').classList.contains('on')){
-   setTimeout(()=>go('play'),650);
+   setTimeout(()=>go('play'),300);
  }
 }
 
