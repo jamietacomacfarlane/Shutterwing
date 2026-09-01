@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC5.1</title>
+<title>SHUTTERWING v2.0 RC5.2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -82,7 +82,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 @media(min-width:1050px){.hand .card{flex-basis:340px}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC5.1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC5.2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -312,7 +312,7 @@ $('saveName').onclick=async()=>{let n=$('name').value.trim();if(!n)return;let r=
 $('create').onclick=async()=>{let r=await sb.rpc('create_shutterwing_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null});if(r.error)return toast(r.error.message);await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:r.data[0].game_id,p_visibility:'private',p_allow_late_joining:$('newlatejoin').checked});await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game created')};
 $('createpublic').onclick=async()=>{let r=await sb.rpc('create_shutterwing_public_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null,p_allow_late_joining:$('newlatejoin').checked});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Public game created')};
 $('refreshpublic').onclick=()=>loadPublicGames();
-$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game joined')};
+$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});resetGameSpecificUI();await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game joined')};
 function resetGameSpecificUI(){
  active=null;
  hand=[];
@@ -339,6 +339,13 @@ function resetGameSpecificUI(){
  if($('claimservedeffect')) $('claimservedeffect').style.display='none';
  if($('moultpanel')) $('moultpanel').style.display='none';
  if($('claimbadge')) $('claimbadge').style.display='none';
+ if($('score')) $('score').textContent='0';
+ if($('pcount')) $('pcount').textContent='0';
+ if($('players')) $('players').innerHTML='';
+ if($('scorebreakdown')) $('scorebreakdown').innerHTML='<div class="small">No scored claims yet.</div>';
+ if($('gamefeed')) $('gamefeed').innerHTML='<div class="small">No claims yet.</div>';
+ if($('gameactivity')) $('gameactivity').innerHTML='<div class="small">No activity yet.</div>';
+ if($('scoremodal')) $('scoremodal').style.display='none';
 }
 async function ensureFiveCardHand(){
  if(!sb||!game||game.status==='finished')return;
@@ -454,10 +461,13 @@ async function showWinner(){
 
 async function players(){
  if(!game)return;
- let r=await sb.rpc('get_shutterwing_roster',{p_game_id:game.id});
+ const requestGameId=game.id;
+ let r=await sb.rpc('get_shutterwing_roster',{p_game_id:requestGameId});
+ if(!game || game.id!==requestGameId)return;
  if(r.error){
    // fallback to old generic roster if migration has not been applied yet
-   let f=await sb.from('game_players').select('*').eq('game_id',game.id).order('joined_at');
+   let f=await sb.from('game_players').select('*').eq('game_id',requestGameId).order('joined_at');
+   if(!game || game.id!==requestGameId)return;
    if(f.error)return;
    $('pcount').textContent=f.data.length;
    let me=f.data.find(x=>x.user_id===user.id);$('score').textContent=me?.score||0;
@@ -700,6 +710,8 @@ function leaveCurrentGameLocal(){
  game=null;
  if($('claimmsg'))$('claimmsg').innerHTML='';
  if(liveRefreshTimer){clearInterval(liveRefreshTimer);liveRefreshTimer=null;}
+ if(channel && sb){sb.removeChannel(channel);channel=null;}
+ liveRefreshBusy=false;
 
  $('game').style.display='none';
  $('nogame').style.display='block';
@@ -769,6 +781,7 @@ async function loadPublicGames(){
    b.disabled=true;
    const r=await sb.rpc('join_shutterwing_public_game',{p_game_id:b.dataset.publicJoin});
    if(r.error){b.disabled=false;return toast(r.error.message);}
+   resetGameSpecificUI();
    await loadGame(b.dataset.publicJoin);
    await ensureFiveCardHand();
    toast('Joined public game');
@@ -1290,7 +1303,9 @@ async function loadEffects(){
 
 async function loadScoreBreakdown(){
  if(!game||!sb)return;
- const r=await sb.rpc('get_shutterwing_score_breakdown',{p_game_id:game.id});
+ const requestGameId=game.id;
+ const r=await sb.rpc('get_shutterwing_score_breakdown',{p_game_id:requestGameId});
+ if(!game || game.id!==requestGameId)return;
  if(r.error){
    $('scorebreakdown').innerHTML='<div class="small">Score breakdown unavailable.</div>';
    return;
@@ -1365,8 +1380,10 @@ async function openPlayerScorecard(playerId,displayName,totalScore){
 
 async function loadGameFeed(){
  if(!game||!sb)return;
+ const requestGameId=game.id;
 
- const r=await sb.rpc('get_shutterwing_game_feed',{p_game_id:game.id});
+ const r=await sb.rpc('get_shutterwing_game_feed',{p_game_id:requestGameId});
+ if(!game || game.id!==requestGameId)return;
 
  if(r.error){
    $('gamefeed').innerHTML='<div class="small">Game feed unavailable.</div>';
