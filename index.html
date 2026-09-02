@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 REBUILD 1</title>
+<title>SHUTTERWING v2.0 RC7 REBUILD 2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -396,9 +396,33 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   padding:9px 12px!important;
 }
 
+
+/* RC7 REBUILD 2 — cleaner HUNT screen */
+body.hunt-active #play #nogame,
+body.hunt-active #play #game > .panel:not(#servedeffectpanel):not(#moultpanel):not(#actionpanel):not(#effectpanel),
+body.hunt-active #play #game > .grid,
+body.hunt-active #play #game > #winnerpanel{
+  display:none!important;
+}
+body.hunt-active #play #game > .panel:has(#hand){
+  display:block!important;
+}
+body.hunt-active #play #servedeffectpanel,
+body.hunt-active #play #moultpanel,
+body.hunt-active #play #actionpanel,
+body.hunt-active #play #effectpanel{
+  display:block;
+}
+.hunt-tools-note{
+  margin:0 0 10px;
+  font-size:11px;
+  opacity:.7;
+  text-align:center;
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 REBUILD 1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 REBUILD 2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -408,7 +432,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <button id="homePlayLarge" class="home-launch-button" type="button">PLAY SHUTTERWING</button>
   <div id="homePlayNote" class="home-launch-note">Host or join a game, then head straight into the hunt.</div>
 </div>
-<div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Illustrated card diagram build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Your SHUTTERWING home base.</p></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -417,13 +441,19 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
       <button id="homegotogame" class="btn">RETURN TO GAME</button>
       <button id="homeleavegame" class="btn alt">LEAVE GAME</button>
     </div>
-    <div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
+    <div class="panel" id="homegamecontrols">
+  <h3>Game setup & control</h3>
+  <div class="small">Host, join, check players, ready up or manage the round.</div>
+  <button id="homeManageGame" type="button" class="btn alt">GAME SETUP / LOBBY</button>
+</div>
+<div class="panel"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
 
 <section id="play" class="screen">
 <div class="play-clean-header">
   <div class="play-clean-title">SHUTTERWING • HUNT</div>
   <button id="playBackHome" class="btn play-home-button" type="button">HOME</button>
 </div>
+<div class="hunt-tools-note">Your cards and active effects stay here. Game setup and round control live on HOME.</div>
 <h2>Play</h2><div id="nogame">
 <div class="panel"><h3>Host a game</h3>
 <input id="gname" value="Tablelands Birders">
@@ -641,6 +671,18 @@ window.go=go;
 const homePlayLarge=$('homePlayLarge');
 const homePlayNote=$('homePlayNote');
 const playBackHome=$('playBackHome');
+const homeManageGame=$('homeManageGame');
+
+function setHuntView(on){
+ document.body.classList.toggle('hunt-active',!!on);
+}
+
+if(homeManageGame){
+ homeManageGame.onclick=()=>{
+   setHuntView(false);
+   go('play');
+ };
+}
 
 if(homePlayLarge){
   homePlayLarge.onclick=()=>{
@@ -652,12 +694,16 @@ if(homePlayLarge){
       toast('The game is still in the lobby');
       return;
     }
+    setHuntView(true);
     go('play');
   };
 }
 
 if(playBackHome){
-  playBackHome.onclick=()=>go('home');
+  playBackHome.onclick=()=>{
+    setHuntView(false);
+    go('home');
+  };
 }
 
 function refreshHomeLaunch(){
