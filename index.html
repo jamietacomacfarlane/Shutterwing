@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.1</title>
+<title>SHUTTERWING v2.0 RC6.2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -86,14 +86,75 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .hand .card{scroll-snap-align:center;flex:0 0:min(82vw,360px);box-sizing:border-box}
 @media(min-width:700px){.hand .card{flex-basis:min(44vw,380px)}}
 @media(min-width:1050px){.hand .card{flex-basis:340px}}
+
+/* RC6.2 — PLAY / WILD presentation */
+.card.playcard,.card.wildcard,.card.specialcard{position:relative;overflow:hidden}
+.card.playcard:after,.card.wildcard:after,.card.specialcard:after{
+  content:'';position:absolute;inset:-35% -20% auto auto;width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.055);pointer-events:none
+}
+.cardart{
+  min-height:118px;margin:10px 0 12px;border-radius:15px;border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:flex-end;justify-content:space-between;padding:14px;overflow:hidden;position:relative;
+  background:
+    radial-gradient(circle at 76% 22%,rgba(255,255,255,.17),transparent 22%),
+    linear-gradient(145deg,rgba(255,255,255,.07),rgba(0,0,0,.18))
+}
+.cardart:before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 0 42%,rgba(255,255,255,.055) 42% 48%,transparent 48% 100%);
+  transform:translateX(-25%)
+}
+.cardartmark{font-size:46px;font-weight:1000;line-height:.85;letter-spacing:-.06em;opacity:.92;z-index:1}
+.cardartname{font-size:11px;font-weight:950;letter-spacing:.15em;text-align:right;z-index:1}
+.card.playcard .cardart{background:
+  radial-gradient(circle at 78% 18%,rgba(87,196,255,.26),transparent 24%),
+  linear-gradient(145deg,#21495a,#10252d 65%,#0c171b)}
+.card.wildcard .cardart{background:
+  radial-gradient(circle at 75% 18%,rgba(255,213,112,.34),transparent 23%),
+  linear-gradient(145deg,#664716,#2d200d 62%,#171007)}
+.card.specialcard .cardart{background:
+  radial-gradient(circle at 75% 18%,rgba(214,171,255,.3),transparent 23%),
+  linear-gradient(145deg,#51346a,#281936 62%,#160e1d)}
+.card.playcard h3,.card.wildcard h3,.card.specialcard h3{margin-top:6px}
+.card.playcard .maincardbtn{background:#49b9df;color:#071117}
+.card.wildcard .maincardbtn{background:#e8b74c;color:#171006}
+.card.specialcard .maincardbtn{background:#c09be8;color:#150d1c}
+
+.servedoverlay{backdrop-filter:blur(3px)}
+.servedcard{
+  position:relative;overflow:hidden;
+  background:linear-gradient(155deg,#4b1713,#24100f 58%,#100a09);
+  box-shadow:0 22px 70px rgba(0,0,0,.62),0 0 0 5px rgba(192,67,52,.12)
+}
+.servedcard:before{
+  content:'PLAY';position:absolute;right:-8px;top:-16px;font-size:88px;font-weight:1000;
+  letter-spacing:-.08em;color:rgba(255,255,255,.045);transform:rotate(8deg)
+}
+.servedtitle{font-size:30px;line-height:1;font-weight:1000;color:#ff8b78;text-shadow:0 2px 18px rgba(255,88,62,.2)}
+.servedburst{
+  margin:14px 0;border-radius:16px;padding:18px;border:1px solid rgba(255,255,255,.12);
+  background:radial-gradient(circle at 80% 15%,rgba(255,153,120,.23),transparent 28%),rgba(0,0,0,.18)
+}
+.servedburstmark{font-size:52px;font-weight:1000;letter-spacing:-.06em}
+.wildflash{
+  position:fixed;inset:0;z-index:81;background:rgba(5,4,1,.9);display:none;align-items:center;justify-content:center;padding:20px
+}
+.wildflashcard{
+  width:min(92%,520px);border-radius:22px;padding:24px;border:2px solid #e8b74c;
+  background:radial-gradient(circle at 72% 17%,rgba(255,214,110,.28),transparent 25%),linear-gradient(145deg,#51370e,#1b1307 70%);
+  box-shadow:0 22px 80px rgba(0,0,0,.65),0 0 0 5px rgba(232,183,76,.1)
+}
+.wildflashtitle{font-size:34px;font-weight:1000;letter-spacing:-.03em;color:#ffd977}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Multiplayer gameplay polish build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>PLAY + WILD presentation build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -288,12 +349,23 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 
 <div id="servedoverlay" class="servedoverlay">
   <div class="servedcard">
-    <div class="small">PLAY CARD</div>
+    <div class="small">SHUTTERWING PLAY CARD</div>
     <div class="servedtitle">YOU'VE BEEN SERVED</div>
-    <h2 id="servedoverlaytitle" style="margin-top:12px"></h2>
-    <div id="servedoverlayfrom" class="small"></div>
-    <p id="servedoverlaytext"></p>
-    <button id="servedok" type="button" class="btn">GOT IT — BACK TO HUNT</button>
+    <div class="servedburst">
+      <div id="servedoverlaytitle" class="servedburstmark"></div>
+      <div id="servedoverlayfrom" class="small" style="margin-top:8px"></div>
+      <p id="servedoverlaytext" style="margin-bottom:0"></p>
+    </div>
+    <button id="servedok" type="button" class="btn">BACK TO THE HUNT</button>
+  </div>
+</div>
+
+<div id="wildflash" class="wildflash">
+  <div class="wildflashcard">
+    <div class="small">WILD WING</div>
+    <div class="wildflashtitle" id="wildflashtitle">RULES ARE BENDABLE</div>
+    <p id="wildflashtext"></p>
+    <button id="wildflashok" type="button" class="btn">PLAY IT</button>
   </div>
 </div>
 
@@ -305,6 +377,25 @@ const $=x=>document.getElementById(x);let sb,user,profile,game,hand=[],active,ch
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
 function go(id,b){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');if(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}if(id==='passport')passport();if(id==='claims'){renderActiveClaim();pending()}}
 window.go=go;
+
+function artMark(c){
+  const marks={
+    'M01':'MYNA','M02':'PERCH','M03':'NOT!','M04':'MOB','M05':'MOVE','M06':'SWOOP','M07':'JAM','M08':'FLOCK',
+    'WW01':'x2','WW02':'MOULT','WW03':'BEST','WW04':'2ND','WW05':'STEAL','WW06':'LUCK','WW07':'WILD',
+    'W03':'x2'
+  };
+  return marks[c.id] || (c.card_type==='wild'?'WILD':(c.card_type==='special'?'SPECIAL':'PLAY'));
+}
+function showWildFlash(c,thenDo){
+  if(!$('wildflash')){ thenDo(); return; }
+  $('wildflashtitle').textContent=c.title||'WILD WING';
+  $('wildflashtext').textContent=c.challenge_text||'Bend the rules.';
+  $('wildflash').style.display='flex';
+  $('wildflashok').onclick=()=>{
+    $('wildflash').style.display='none';
+    thenDo();
+  };
+}
 async function connect(){
  try{
   const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
@@ -583,21 +674,24 @@ async function loadHand(){
    const wildPhotoClaim=c.id==='WW03';
    d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')));
    const buttonLabel=wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM'));
-   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div><h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div>${isAction?`<div class="cardart"><div class="cardartmark">${artMark(c)}</div><div class="cardartname">${isWild?'WILD WING':(isSpecial?'SPECIAL':'PLAY')}</div></div>`:''}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
    d.querySelector('.maincardbtn').onclick=()=>{
-     if(wildPhotoClaim){
-       active={pc,c};
-       sessionStorage.setItem('sw_active_player_card',pc.id);
-       renderActiveClaim();
-       toast('WILD WING — show us your best shot');
-       go('claims');
-     }else if(isAction){playActionCard(pc,c);}
-     else{
-       active={pc,c};
-       sessionStorage.setItem('sw_active_player_card',pc.id);
-       renderActiveClaim();
-       go('claims');
-     }
+     const act=()=>{
+       if(wildPhotoClaim){
+         active={pc,c};
+         sessionStorage.setItem('sw_active_player_card',pc.id);
+         renderActiveClaim();
+         toast('WILD WING — show us your best shot');
+         go('claims');
+       }else if(isAction){playActionCard(pc,c);}
+       else{
+         active={pc,c};
+         sessionStorage.setItem('sw_active_player_card',pc.id);
+         renderActiveClaim();
+         go('claims');
+       }
+     };
+     if(isWild || isSpecial) showWildFlash(c,act); else act();
    };
    const mb=d.querySelector('.moultbtn');
    if(mb)mb.onclick=()=>moultCard(pc,c);
