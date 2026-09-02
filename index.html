@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6</title>
+<title>SHUTTERWING v2.0 RC6.1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -76,13 +76,19 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .moultbtn{margin-top:8px;background:#263128;color:var(--text);border:1px solid #587043}
 .card.playcard{border-color:var(--blue);background:#172a31}
 .card.playcard:before{content:'PLAY CARD';font-size:10px;font-weight:950;letter-spacing:.12em;color:var(--blue)}
+.card.wildcard{border-color:#d9a441;background:linear-gradient(145deg,#33250f,#1a140b);box-shadow:0 0 0 1px rgba(217,164,65,.18) inset}
+.card.wildcard:before{content:'WILD WING';font-size:10px;font-weight:950;letter-spacing:.14em;color:#f3c765}
+.card.specialcard{border-color:#b78ce3;background:linear-gradient(145deg,#261a31,#16101e)}
+.card.specialcard:before{content:'SPECIAL';font-size:10px;font-weight:950;letter-spacing:.14em;color:#d2b2f2}
+.card.wildcard h3,.card.specialcard h3{font-size:22px}
+.card.wildcard .wp{color:#f3c765}
 .hand{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;padding:4px 2px 12px;scrollbar-width:thin}
 .hand .card{scroll-snap-align:center;flex:0 0:min(82vw,360px);box-sizing:border-box}
 @media(min-width:700px){.hand .card{flex-basis:min(44vw,380px)}}
 @media(min-width:1050px){.hand .card{flex-basis:340px}}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.1</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -572,10 +578,20 @@ async function loadHand(){
    if(!c)return;
    let d=document.createElement('div');
    const isAction=['action','special','wild'].includes(c.card_type);
-   d.className='card'+(isAction?' playcard':'');
-   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div><h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${isAction?'PLAY CARD':'CLAIM'}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   const isWild=c.card_type==='wild';
+   const isSpecial=c.card_type==='special';
+   const wildPhotoClaim=c.id==='WW03';
+   d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')));
+   const buttonLabel=wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM'));
+   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div><h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
    d.querySelector('.maincardbtn').onclick=()=>{
-     if(isAction){playActionCard(pc,c);}
+     if(wildPhotoClaim){
+       active={pc,c};
+       sessionStorage.setItem('sw_active_player_card',pc.id);
+       renderActiveClaim();
+       toast('WILD WING — show us your best shot');
+       go('claims');
+     }else if(isAction){playActionCard(pc,c);}
      else{
        active={pc,c};
        sessionStorage.setItem('sw_active_player_card',pc.id);
