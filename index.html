@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7.0</title>
+<title>SHUTTERWING v2.0 RC7.1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -387,14 +387,33 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 /* RC7.0 Second Chance */
 .secondchancebox{display:none;margin:14px 0;padding:16px;border-radius:17px;border:2px solid #e2b44d;background:linear-gradient(145deg,rgba(92,62,10,.62),rgba(31,22,8,.8))}
 .secondchancebox h3{margin:3px 0 7px;color:#ffd977}
+
+/* RC7.1 — visual, audible and vibration game alerts */
+.gamealert{
+  position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(2,6,7,.9);backdrop-filter:blur(5px)
+}
+.gamealertcard{
+  width:min(94%,560px);border-radius:22px;padding:22px;text-align:center;
+  border:3px solid #c7ef72;background:linear-gradient(155deg,#20311a,#0e1510);
+  box-shadow:0 26px 90px rgba(0,0,0,.7)
+}
+.gamealerticon{font-size:58px;line-height:1;font-weight:1000;margin-bottom:9px}
+.gamealerttitle{font-size:31px;line-height:1.03;font-weight:1000;color:#d9ff87}
+.gamealerttext{font-size:16px;line-height:1.35;margin:12px 0 16px}
+.alertsettings{
+  margin:10px 0;padding:12px;border:1px solid rgba(255,255,255,.11);
+  border-radius:13px;background:rgba(255,255,255,.025)
+}
+.alertstatus{font-size:11px;opacity:.72;margin-top:5px}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7.0</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7.1</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Second Chance gameplay build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Round + empty-hand alert build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -430,6 +449,10 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <div class="small" style="text-align:center" id="gamestatus">Lobby</div>
 <div class="small" style="text-align:center;margin-top:5px" id="gamerules"></div>
 <div class="small" style="text-align:center;margin-top:5px" id="roundstatus"></div>
+<div class="alertsettings">
+  <button id="enablealerts" type="button" class="btn alt">ENABLE GAME ALERTS</button>
+  <div id="alertstatus" class="alertstatus">Visual alerts are on. Tap once to enable sound; vibration works where the device/browser supports it.</div>
+</div>
   <div class="small" style="text-align:center;margin-top:5px" id="visibilitystatus"></div>
 </div>
 <div class="grid"><div class="stat"><div class="small">MY SCORE</div><div id="score" class="big">0</div></div><div class="stat"><div class="small">PLAYERS</div><div id="pcount" class="big">1</div></div></div>
@@ -596,6 +619,15 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   </div>
 </div>
 
+<div id="gamealert" class="gamealert" aria-hidden="true">
+  <div class="gamealertcard" role="alertdialog" aria-modal="true" aria-labelledby="gamealerttitle">
+    <div id="gamealerticon" class="gamealerticon">!</div>
+    <div id="gamealerttitle" class="gamealerttitle">GAME ALERT</div>
+    <div id="gamealerttext" class="gamealerttext"></div>
+    <button id="gamealertok" type="button" class="btn">GOT IT</button>
+  </div>
+</div>
+
 <div id="cardfocus" class="cardfocus" aria-hidden="true">
   <div class="cardfocuspanel" role="dialog" aria-modal="true" aria-labelledby="cardfocustitle">
     <div class="cardfocustop">
@@ -646,6 +678,125 @@ const $=x=>document.getElementById(x);let sb,user,profile,game,hand=[],active,ch
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
 function go(id,b){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');if(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}if(id==='passport')passport();if(id==='claims'){renderActiveClaim();pending()}}
 window.go=go;
+
+let swAudioCtx=null;
+let alertsUnlocked=false;
+let lastKnownGameStatus=null;
+let emptyHandAlerted=new Set();
+
+async function unlockGameAlerts(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC){
+      if(!swAudioCtx)swAudioCtx=new AC();
+      if(swAudioCtx.state==='suspended')await swAudioCtx.resume();
+    }
+    alertsUnlocked=true;
+    localStorage.setItem('sw_alerts_enabled','1');
+    $('enablealerts').textContent='GAME ALERTS ENABLED';
+    $('alertstatus').textContent='Visual + sound alerts enabled. Vibration will also fire if this device/browser supports it.';
+    playAlertTone('ready');
+    if(navigator.vibrate)navigator.vibrate(80);
+    toast('Game alerts enabled');
+  }catch(e){
+    alertsUnlocked=false;
+    $('alertstatus').textContent='Visual alerts are on. Sound could not be enabled on this browser.';
+  }
+}
+$('enablealerts').onclick=unlockGameAlerts;
+
+function playAlertTone(kind='notice'){
+  if(!alertsUnlocked||!swAudioCtx)return;
+  try{
+    const now=swAudioCtx.currentTime;
+    const pattern=kind==='round' ? [660,880,1040] : kind==='empty' ? [420,420,620] : [700];
+    pattern.forEach((freq,i)=>{
+      const osc=swAudioCtx.createOscillator();
+      const gain=swAudioCtx.createGain();
+      osc.type='sine';osc.frequency.value=freq;
+      gain.gain.setValueAtTime(0.0001,now+i*.16);
+      gain.gain.exponentialRampToValueAtTime(.16,now+i*.16+.015);
+      gain.gain.exponentialRampToValueAtTime(.0001,now+i*.16+.12);
+      osc.connect(gain);gain.connect(swAudioCtx.destination);
+      osc.start(now+i*.16);osc.stop(now+i*.16+.14);
+    });
+  }catch(e){}
+}
+
+function vibrateAlert(kind='notice'){
+  if(!navigator.vibrate)return;
+  try{
+    navigator.vibrate(kind==='round'?[180,90,180,90,260]:kind==='empty'?[250,120,250]:[120]);
+  }catch(e){}
+}
+
+function showGameAlert(title,message,kind='notice'){
+  $('gamealerticon').textContent=kind==='round'?'✓':kind==='empty'?'0':'!';
+  $('gamealerttitle').textContent=title;
+  $('gamealerttext').textContent=message;
+  $('gamealert').style.display='flex';
+  $('gamealert').setAttribute('aria-hidden','false');
+  playAlertTone(kind);
+  vibrateAlert(kind);
+}
+function closeGameAlert(){
+  $('gamealert').style.display='none';
+  $('gamealert').setAttribute('aria-hidden','true');
+}
+$('gamealertok').onclick=closeGameAlert;
+$('gamealert').onclick=e=>{if(e.target===$('gamealert'))closeGameAlert();};
+
+function checkRoundStatusAlert(nextGame,previousStatus){
+  if(!nextGame)return;
+  if(previousStatus==='active' && nextGame.status==='finished'){
+    showGameAlert(
+      `ROUND ${nextGame.current_round||1} COMPLETE`,
+      'The host has ended the round. Results are ready.',
+      'round'
+    );
+  }
+  lastKnownGameStatus=nextGame.status;
+}
+
+async function checkEmptyHands(){
+  if(!sb||!game||game.status!=='active')return;
+  const requestGameId=game.id;
+  const [pc,roster]=await Promise.all([
+    sb.from('player_cards')
+      .select('user_id,card_state')
+      .eq('game_id',requestGameId)
+      .in('card_state',['hand','active']),
+    sb.rpc('get_shutterwing_roster',{p_game_id:requestGameId})
+  ]);
+  if(pc.error||roster.error||game?.id!==requestGameId)return;
+
+  const counts=new Map();
+  (pc.data||[]).forEach(x=>counts.set(x.user_id,(counts.get(x.user_id)||0)+1));
+  const currentZeros=new Set();
+
+  (roster.data||[]).forEach(p=>{
+    const pid=p.user_id||p.player_id||p.id;
+    if(!pid)return;
+    const count=counts.get(pid)||0;
+    if(count===0){
+      currentZeros.add(pid);
+      if(!emptyHandAlerted.has(pid)){
+        const name=p.display_name||'A player';
+        showGameAlert(
+          'NO CARDS LEFT',
+          pid===user.id ? 'You have no playable cards. The host should refill or move the game on.' : `${name} has no playable cards left.`,
+          'empty'
+        );
+      }
+    }
+  });
+  emptyHandAlerted=currentZeros;
+}
+
+if(localStorage.getItem('sw_alerts_enabled')==='1'){
+  $('enablealerts').textContent='TAP TO RE-ENABLE SOUND';
+  $('alertstatus').textContent='Visual alerts are on. Tap once after opening the app to unlock sound on this device.';
+}
 
 function artMark(c){
   const marks={
@@ -1025,6 +1176,8 @@ async function loadGame(id){
  let r=await sb.from('games').select('*').eq('id',id).single();
  if(r.error){localStorage.removeItem('swgame');return}
  game=r.data;
+ lastKnownGameStatus=game.status;
+ emptyHandAlerted=new Set();
  localStorage.setItem('swgame',id);
  $('nogame').style.display='none';$('game').style.display='block';
  $('gamename').textContent=game.game_name;$('code').textContent=game.join_code;
@@ -1439,10 +1592,13 @@ $('playagain').onclick=async()=>{
 };
 async function reloadCurrentGame(){
  if(!game)return;
+ const previousStatus=game.status;
  let r=await sb.from('games').select('*').eq('id',game.id).single();
  if(r.error)return;
- game=r.data;renderGameState();
- await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
+ game=r.data;
+ checkRoundStatusAlert(game,previousStatus);
+ renderGameState();
+ await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity(),checkEmptyHands()]);
 }
 
 
@@ -2257,9 +2413,14 @@ async function refreshLiveGame(){
    // Check game status separately so finished/started state also catches up.
    const gr=await sb.from('games').select('*').eq('id',game.id).maybeSingle();
    if(!gr.error && gr.data){
-     const statusChanged=gr.data.status!==game.status;
+     const previousStatus=game.status;
+     const statusChanged=gr.data.status!==previousStatus;
      game=gr.data;
-     if(statusChanged)renderGameState();
+     if(statusChanged){
+       checkRoundStatusAlert(game,previousStatus);
+       renderGameState();
+     }
+     await checkEmptyHands();
    }
  }catch(e){
    console.warn('Live refresh:',e);
@@ -2292,7 +2453,7 @@ function subscribe(){
  channel=sb.channel('sw-'+game.id)
    .on('postgres_changes',{event:'*',schema:'public',table:'games',filter:`id=eq.${game.id}`},reloadCurrentGame)
    .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{players();loadScoreBreakdown();loadGameActivity();})
-   .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},loadHand)
+   .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},()=>{loadHand();checkEmptyHands();})
    .on('postgres_changes',{event:'*',schema:'public',table:'claims',filter:`game_id=eq.${game.id}`},()=>{pending();loadScoreBreakdown();loadGameFeed();})
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{
      const a=payload.new;
