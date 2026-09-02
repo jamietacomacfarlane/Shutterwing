@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.8</title>
+<title>SHUTTERWING v2.0 RC7.0</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -384,14 +384,17 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .cardfocusactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .cardfocusactions .btn{flex:1 1 180px}
 
+/* RC7.0 Second Chance */
+.secondchancebox{display:none;margin:14px 0;padding:16px;border-radius:17px;border:2px solid #e2b44d;background:linear-gradient(145deg,rgba(92,62,10,.62),rgba(31,22,8,.8))}
+.secondchancebox h3{margin:3px 0 7px;color:#ffd977}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.8</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7.0</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Open-hand card focus build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Second Chance gameplay build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -448,6 +451,14 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 <div class="panel" id="claimresultpanel" style="display:none">
   <div class="small">LATEST CLAIM RESULT</div>
   <div id="claimresulttext" style="font-weight:800;margin-top:4px"></div>
+</div>
+
+<div id="secondchancebox" class="secondchancebox">
+  <div class="small">WILD WING • WW04</div>
+  <h3>SECOND CHANCE</h3>
+  <p>Your claim was rejected. Burn Second Chance and submit a different photo for the same challenge.</p>
+  <button id="usesecondchance" type="button" class="btn">USE SECOND CHANCE</button>
+  <button id="skipsecondchance" type="button" class="btn">LET IT GO</button>
 </div>
 
 <div class="panel" id="readypanel">
@@ -939,6 +950,8 @@ $('cardfocusprimary').onclick=()=>{
       renderActiveClaim();
       toast('WILD WING — show us your best shot');
       go('claims');
+    }else if(c.id==='WW04'){
+      toast('Second Chance activates automatically after a rejected claim.');
     }else if(isAction){
       playActionCard(pc,c);
     }else{
@@ -1238,7 +1251,7 @@ async function loadHand(){
          renderActiveClaim();
          toast('WILD WING — show us your best shot');
          go('claims');
-       }else if(isAction){playActionCard(pc,c);}
+       }else if(c.id==='WW04'){toast('Second Chance activates automatically after a rejected claim.');}else if(isAction){playActionCard(pc,c);}
        else{
          active={pc,c};
          sessionStorage.setItem('sw_active_player_card',pc.id);
@@ -2118,6 +2131,46 @@ async function getSignedClaimUrl(path){
 
 
 
+
+let pendingSecondChance=null;
+async function findSecondChanceCard(){
+ if(!game||!user)return null;
+ const r=await sb.from('player_cards')
+  .select('id,card_id,card_state,cards(id,family,title,challenge_text,wing_points,card_type)')
+  .eq('game_id',game.id).eq('user_id',user.id).eq('card_id','WW04')
+  .in('card_state',['hand','active']).limit(1);
+ return r.error?null:(r.data?.[0]||null);
+}
+async function offerSecondChance(result){
+ const sc=await findSecondChanceCard();
+ if(!sc)return false;
+ pendingSecondChance={result,sc};
+ $('secondchancebox').style.display='block';
+ toast('Second Chance is available');
+ return true;
+}
+function hideSecondChance(){ $('secondchancebox').style.display='none'; pendingSecondChance=null; }
+$('skipsecondchance').onclick=()=>{hideSecondChance();go('play');};
+$('usesecondchance').onclick=async()=>{
+ if(!pendingSecondChance)return;
+ const {sc,result}=pendingSecondChance;
+ const spent=await sb.from('player_cards').update({card_state:'played'})
+  .eq('id',sc.id).eq('game_id',game.id).eq('user_id',user.id);
+ if(spent.error)return toast(spent.error.message);
+ await loadHand();
+ const target=hand.find(x=>x.card_id===result.card_id);
+ if(!target?.cards){hideSecondChance();toast('Second Chance spent — select the challenge again');go('play');return;}
+ active={pc:target,c:target.cards};
+ sessionStorage.setItem('sw_active_player_card',target.id);
+ hideSecondChance();
+ if($('photo'))$('photo').value='';
+ if($('preview')){$('preview').src='';$('preview').style.display='none';}
+ if($('species'))$('species').value='';
+ if($('claimmsg'))$('claimmsg').innerHTML='';
+ renderActiveClaim();
+ toast('SECOND CHANCE — submit a different photo');
+ go('claims');
+};
 let lastSeenOwnClaimResultId=null;
 let ownClaimResultsPrimed=false;
 
@@ -2166,6 +2219,7 @@ async function checkOwnClaimResults(){
    panel.classList.add('claimrejected');
    panel.style.display='block';
    toast('Wing Claim rejected');
+   await offerSecondChance(x);
  }
 
  // Refresh score and personal ledger after the result, without redrawing photo feeds.
@@ -2174,7 +2228,7 @@ async function checkOwnClaimResults(){
  // Claimant should never be stranded on the completed Wing Claims screen.
  if($('claimmsg')) $('claimmsg').innerHTML='';
  if($('claims').classList.contains('on')){
-   setTimeout(()=>go('play'),300);
+   if(!pendingSecondChance)setTimeout(()=>go('play'),300);
  }
 }
 
