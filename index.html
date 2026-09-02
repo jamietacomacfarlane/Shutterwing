@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7.2</title>
+<title>SHUTTERWING v2.0 RC7.2.2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -407,7 +407,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 }
 .alertstatus{font-size:11px;opacity:.72;margin-top:5px}
 
-/* RC7.2 — Home-first UX */
+/* RC7.2.2 — Home-first UX */
 .homeplayhero{
   margin:16px 0;padding:18px;border-radius:20px;text-align:center;
   border:1px solid rgba(255,255,255,.12);
@@ -429,7 +429,6 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .modechip span{display:block;font-size:10px;opacity:.67;margin-top:3px;line-height:1.15}
 .modechip.selected{outline:2px solid #c7ef72;background:rgba(199,239,114,.09)}
 @media(max-width:560px){.modegrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
 .hunttop{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   margin-bottom:10px;padding:9px 11px;border-radius:13px;
@@ -439,18 +438,9 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .huntscore{font-size:20px;font-weight:1000}
 .hunthomebtn{padding:9px 11px!important;min-width:auto!important}
 
-/* On PLAY, hide dashboard-style panels. The hand and active effects remain. */
-#play .lobbyonly,
-#play .dashboardonly,
-#play #readypanel,
-#play #scorebreakdown,
-#play #gamefeed,
-#play #gameactivity,
-#play .alertsettings{display:none!important}
-#play .panel{margin-top:8px}
-
+</style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7.2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7.2.2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -460,7 +450,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <button id="bigplaybutton" type="button" class="homeplaybtn">PLAY SHUTTERWING</button>
   <div id="homeplaysub" class="homeplaysub">Start or return to the hunt.</div>
 </div>
-<div class="panel dashboardonly" id="gamemodepanel">
+<div class="panel" id="gamemodepanel">
   <div class="small">GAME MODE</div>
   <div class="modegrid" id="modegrid">
     <button class="modechip selected" data-mode="social" type="button"><strong>SOCIAL</strong><span>Classic multiplayer</span></button>
@@ -470,9 +460,9 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
     <button class="modechip" data-mode="serious" type="button"><strong>SERIOUS</strong><span>Photography focus</span></button>
     <button class="modechip" data-mode="quick" type="button"><strong>QUICK</strong><span>Short hunt</span></button>
   </div>
-  <div class="small" style="margin-top:8px">Mode framework only in RC7.2. SOCIAL remains the live ruleset while the other modes are built.</div>
+  <div class="small" style="margin-top:8px">SOCIAL is the active ruleset in this build. The other modes are the next expansion.</div>
 </div>
-<div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Home-first hunt interface build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Home-first hunt interface — repaired build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -752,40 +742,33 @@ function renderModeSelection(){
  document.querySelectorAll('#modegrid .modechip').forEach(b=>{
    b.classList.toggle('selected',b.dataset.mode===selectedGameMode);
  });
- if($('huntmode'))$('huntmode').textContent=`${selectedGameMode.toUpperCase().replace('_',' ')} • HUNT`;
+ if($('huntmode'))$('huntmode').textContent=`${selectedGameMode.toUpperCase()} • HUNT`;
 }
 document.querySelectorAll('#modegrid .modechip').forEach(b=>{
  b.onclick=()=>{
-   const requested=b.dataset.mode;
-   if(requested!=='social'){
-     toast(`${b.querySelector('strong').textContent} mode is coming next. SOCIAL rules remain active for this build.`);
-   }
-   selectedGameMode=requested;
+   selectedGameMode=b.dataset.mode;
    localStorage.setItem('sw_game_mode',selectedGameMode);
    renderModeSelection();
+   if(selectedGameMode!=='social')toast(`${b.querySelector('strong').textContent} mode is coming next.`);
  };
 });
 renderModeSelection();
 
 $('bigplaybutton').onclick=()=>{
- if(!game){
-   toast('Host or join a game first');
-   return;
- }
- if(game.status==='lobby'){
-   toast('Game is still in the lobby');
-   return;
- }
+ if(!game){toast('Host or join a game first');return;}
+ if(game.status==='lobby'){toast('Game is still in the lobby');return;}
  go('play');
 };
 $('hunttohome').onclick=()=>go('home');
 
 function updateHuntHeader(){
- if($('huntscore'))$('huntscore').textContent=`${Number(me?.score||0)} WP`;
+ const scoreEl=$('score');
+ const scoreValue=scoreEl ? Number(scoreEl.textContent||0) : 0;
+ if($('huntscore'))$('huntscore').textContent=`${scoreValue} WP`;
  if($('huntmode'))$('huntmode').textContent=`${selectedGameMode.toUpperCase()} • HUNT`;
  if($('bigplaybutton')){
    $('bigplaybutton').textContent=game?.status==='active'?'RETURN TO HUNT':'PLAY SHUTTERWING';
-   $('homeplaysub').textContent=game?.status==='active'?'Your hand is waiting.':'Start or return to the hunt.';
+   if($('homeplaysub'))$('homeplaysub').textContent=game?.status==='active'?'Your hand is waiting.':'Start or return to the hunt.';
  }
 }
 
