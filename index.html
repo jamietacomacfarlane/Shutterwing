@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.5</title>
+<title>SHUTTERWING v2.0 RC6.6</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -218,14 +218,136 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   border:1px solid rgba(255,255,255,.1)
 }
 
+
+/* RC6.6 — Fully open hand */
+#hand,
+.hand,
+.cards,
+.cardhand,
+#cardhand,
+#handcards{
+  overflow-x:visible !important;
+  overflow-y:visible !important;
+  scroll-snap-type:none !important;
+  -webkit-overflow-scrolling:auto !important;
+}
+
+/* Main hand container: five cards visible at once on tablet/desktop */
+#hand,
+.hand,
+.cardhand,
+#cardhand,
+#handcards{
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:10px !important;
+  align-items:stretch !important;
+  padding:8px 0 14px !important;
+}
+
+/* Prevent old swipe/fixed-width rules from forcing cards off screen */
+#hand .card,
+.hand .card,
+.cardhand .card,
+#cardhand .card,
+#handcards .card{
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  margin:0 !important;
+  scroll-snap-align:none !important;
+}
+
+/* Compact card treatment so five cards remain readable */
+#hand .card h3,
+.hand .card h3,
+.cardhand .card h3,
+#cardhand .card h3,
+#handcards .card h3{
+  font-size:clamp(14px,1.55vw,20px) !important;
+  line-height:1.08 !important;
+}
+#hand .card p,
+.hand .card p,
+.cardhand .card p,
+#cardhand .card p,
+#handcards .card p{
+  font-size:clamp(11px,1.15vw,14px) !important;
+  line-height:1.25 !important;
+}
+#hand .cardvisual,
+.hand .cardvisual,
+.cardhand .cardvisual,
+#cardhand .cardvisual,
+#handcards .cardvisual{
+  min-height:100px !important;
+}
+#hand .cardvisual img,
+.hand .cardvisual img,
+.cardhand .cardvisual img,
+#cardhand .cardvisual img,
+#handcards .cardvisual img,
+#hand .cardvisual .fallback,
+.hand .cardvisual .fallback,
+.cardhand .cardvisual .fallback,
+#cardhand .cardvisual .fallback,
+#handcards .cardvisual .fallback{
+  height:100px !important;
+}
+#hand .cardvisual .familymark,
+.hand .cardvisual .familymark,
+.cardhand .cardvisual .familymark,
+#cardhand .cardvisual .familymark,
+#handcards .cardvisual .familymark{
+  font-size:28px !important;
+}
+#hand .btn,
+.hand .btn,
+.cardhand .btn,
+#cardhand .btn,
+#handcards .btn{
+  padding:9px 8px !important;
+  font-size:11px !important;
+}
+
+/* iPad portrait and smaller screens: still fully open, using 3 + 2 rows rather than swiping */
+@media (max-width:900px){
+  #hand,
+  .hand,
+  .cardhand,
+  #cardhand,
+  #handcards{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+
+/* Narrow phones: all cards remain visible in a 2-column grid */
+@media (max-width:560px){
+  #hand,
+  .hand,
+  .cardhand,
+  #cardhand,
+  #handcards{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  #hand .card:last-child:nth-child(odd),
+  .hand .card:last-child:nth-child(odd),
+  .cardhand .card:last-child:nth-child(odd),
+  #cardhand .card:last-child:nth-child(odd),
+  #handcards .card:last-child:nth-child(odd){
+    grid-column:1 / -1;
+  }
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.5</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.6</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Full deck visual identity build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Open-hand gameplay build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -321,7 +443,8 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   <div><span id="moultcount" class="moultcount">0</span> <b>available</b></div>
   <div id="moulttext" class="small">Earn 1 Moult for each 10 WP this round, up to 3. Spend 1 to discard any card you choose and draw a replacement.</div>
 </div>
-<div class="panel"><h3>My private hand</h3><div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
+<div class="panel"><h3>My private hand</h3><div class="small" style="margin:12px 0 4px;font-weight:900;letter-spacing:.12em">YOUR FULL HAND</div>
+<div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
 <div class="panel" id="effectpanel"><h3>Active effects</h3><div id="effects" class="small">No active effects.</div></div>
 <div class="panel" id="winnerpanel" style="display:none">
