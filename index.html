@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.7</title>
+<title>SHUTTERWING v2.0 RC6.8</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -349,14 +349,49 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   .cardvisual img,.cardvisual .fallback{height:118px !important}
 }
 
+
+/* RC6.8 — open hand + tap-to-focus card view */
+.cardvisual{cursor:pointer}
+.card h3{cursor:pointer}
+.cardfocus{
+  position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(2,6,8,.88);backdrop-filter:blur(5px)
+}
+.cardfocuspanel{
+  width:min(94vw,620px);max-height:90%;overflow:auto;
+  border-radius:22px;padding:18px;border:1px solid rgba(255,255,255,.15);
+  background:linear-gradient(155deg,#172126,#0b1114);
+  box-shadow:0 28px 90px rgba(0,0,0,.65)
+}
+.cardfocusart{border-radius:18px;overflow:hidden;margin:10px 0 14px}
+.cardfocusart .cardvisual{margin:0;min-height:250px!important}
+.cardfocusart .cardvisual img,
+.cardfocusart .cardvisual .fallback{height:250px!important}
+.cardfocustop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.cardfocusclose{
+  flex:0 0 auto;min-width:46px;min-height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06);color:#fff;font-size:22px;font-weight:900
+}
+.cardfocusmeta{font-size:11px;font-weight:900;letter-spacing:.11em;opacity:.7}
+.cardfocuswp{
+  display:inline-block;margin-top:8px;padding:7px 10px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);font-weight:950
+}
+.cardfocushint{
+  margin-top:12px;padding:12px;border-radius:14px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);font-size:13px;line-height:1.35
+}
+.cardfocusactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.cardfocusactions .btn{flex:1 1 180px}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.7</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.8</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Illustrated card diagram build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Open-hand card focus build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -547,6 +582,26 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
     </div>
     <div id="scoremodalmeta" class="small" style="margin:8px 0 12px"></div>
     <div id="scoreledger"></div>
+  </div>
+</div>
+
+<div id="cardfocus" class="cardfocus" aria-hidden="true">
+  <div class="cardfocuspanel" role="dialog" aria-modal="true" aria-labelledby="cardfocustitle">
+    <div class="cardfocustop">
+      <div>
+        <div id="cardfocusmeta" class="cardfocusmeta"></div>
+        <h2 id="cardfocustitle" style="margin:5px 0 0"></h2>
+      </div>
+      <button id="cardfocusclose" class="cardfocusclose" type="button" aria-label="Close">×</button>
+    </div>
+    <div id="cardfocusart" class="cardfocusart"></div>
+    <p id="cardfocustext"></p>
+    <div id="cardfocuswp" class="cardfocuswp"></div>
+    <div id="cardfocushint" class="cardfocushint"></div>
+    <div class="cardfocusactions">
+      <button id="cardfocusprimary" type="button" class="btn">USE CARD</button>
+      <button id="cardfocusback" type="button" class="btn">BACK TO HAND</button>
+    </div>
   </div>
 </div>
 
@@ -834,6 +889,68 @@ function showWildFlash(c,thenDo){
     thenDo();
   };
 }
+
+let focusedCard=null;
+function cardDifficulty(c){
+  const wp=Number(c?.wing_points||0);
+  if(['action','wild','special'].includes(c?.card_type)) return 'RULE-BENDER';
+  if(wp<=2) return 'QUICK WIN';
+  if(wp<=4) return 'SKILL SHOT';
+  if(wp<=6) return 'BIG HUNT';
+  return 'JACKPOT';
+}
+function openCardFocus(pc,c){
+  focusedCard={pc,c};
+  $('cardfocusmeta').textContent=`${familyLabel(c)} • ${c.id} • ${cardDifficulty(c)}`;
+  $('cardfocustitle').textContent=c.title||c.id;
+  $('cardfocusart').innerHTML=cardVisualHTML(c);
+  $('cardfocustext').textContent=c.challenge_text||'';
+  $('cardfocuswp').textContent=['action','wild','special'].includes(c.card_type)?familyLabel(c):`${c.wing_points||0} WP`;
+  $('cardfocushint').textContent=
+    c.card_type==='action' ? 'PLAY card — use it when the timing gives you an advantage.' :
+    c.card_type==='wild' ? 'WILD WING — bends the normal rules of the hunt.' :
+    c.card_type==='special' ? 'SPECIAL card — powerful, so choose the moment carefully.' :
+    'Challenge card — capture the photograph described above, then submit your Wing Claim.';
+  const wildPhotoClaim=c.id==='WW03';
+  $('cardfocusprimary').textContent=wildPhotoClaim?'SHOW MY BEST':(['action','wild','special'].includes(c.card_type)?'PLAY CARD':'CLAIM THIS CARD');
+  $('cardfocus').style.display='flex';
+  $('cardfocus').setAttribute('aria-hidden','false');
+}
+function closeCardFocus(){
+  $('cardfocus').style.display='none';
+  $('cardfocus').setAttribute('aria-hidden','true');
+  focusedCard=null;
+}
+$('cardfocusclose').onclick=closeCardFocus;
+$('cardfocusback').onclick=closeCardFocus;
+$('cardfocus').onclick=(e)=>{ if(e.target===$('cardfocus')) closeCardFocus(); };
+$('cardfocusprimary').onclick=()=>{
+  if(!focusedCard)return;
+  const {pc,c}=focusedCard;
+  closeCardFocus();
+  const wildPhotoClaim=c.id==='WW03';
+  const isWild=c.card_type==='wild';
+  const isSpecial=c.card_type==='special';
+  const isAction=['action','special','wild'].includes(c.card_type);
+  const act=()=>{
+    if(wildPhotoClaim){
+      active={pc,c};
+      sessionStorage.setItem('sw_active_player_card',pc.id);
+      renderActiveClaim();
+      toast('WILD WING — show us your best shot');
+      go('claims');
+    }else if(isAction){
+      playActionCard(pc,c);
+    }else{
+      active={pc,c};
+      sessionStorage.setItem('sw_active_player_card',pc.id);
+      renderActiveClaim();
+      go('claims');
+    }
+  };
+  if(isWild||isSpecial) showWildFlash(c,act); else act();
+};
+
 async function connect(){
  try{
   const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
@@ -1131,6 +1248,10 @@ async function loadHand(){
      };
      if(isWild || isSpecial) showWildFlash(c,act); else act();
    };
+   const visual=d.querySelector('.cardvisual');
+   const titleEl=d.querySelector('h3');
+   if(visual) visual.onclick=(e)=>{e.preventDefault();e.stopPropagation();openCardFocus(pc,c);};
+   if(titleEl) titleEl.onclick=(e)=>{e.preventDefault();e.stopPropagation();openCardFocus(pc,c);};
    const mb=d.querySelector('.moultbtn');
    if(mb)mb.onclick=()=>moultCard(pc,c);
    $('hand').appendChild(d);
