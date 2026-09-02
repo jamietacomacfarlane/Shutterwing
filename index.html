@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.4</title>
+<title>SHUTTERWING v2.0 RC6.5</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -190,14 +190,42 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 }
 .cardvisual .badge,.cardvisual .ownerbadge{backdrop-filter:blur(5px)}
 
+
+/* RC6.5 — Full deck family identities */
+.card.family-behaviour{box-shadow:0 10px 26px rgba(28,66,36,.18)}
+.card.family-feather{box-shadow:0 10px 26px rgba(31,60,88,.18)}
+.card.family-shutter{box-shadow:0 10px 26px rgba(72,49,96,.18)}
+.card.family-wedge-tail{box-shadow:0 10px 26px rgba(86,57,24,.18)}
+.card.family-play{box-shadow:0 10px 28px rgba(29,93,114,.24)}
+.card.family-wild-wing{box-shadow:0 10px 28px rgba(125,88,19,.24)}
+
+.cardfamilyflag{
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;
+  font-size:10px;font-weight:950;letter-spacing:.11em;opacity:.9
+}
+.cardfamilydot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.family-behaviour .cardfamilyflag{color:#8fc58c}
+.family-feather .cardfamilyflag{color:#8db7dc}
+.family-shutter .cardfamilyflag{color:#b8a0d5}
+.family-wedge-tail .cardfamilyflag{color:#e1bd79}
+.family-play .cardfamilyflag{color:#72d2ef}
+.family-wild-wing .cardfamilyflag{color:#ffd76c}
+
+.cardvisual .challengehint{
+  position:absolute;left:12px;bottom:10px;z-index:3;
+  font-size:10px;font-weight:950;letter-spacing:.1em;
+  padding:6px 8px;border-radius:999px;background:rgba(0,0,0,.48);
+  border:1px solid rgba(255,255,255,.1)
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.4</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.5</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Australian base deck artwork build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Full deck visual identity build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -455,19 +483,97 @@ function svgArt(label, bird, bg1, bg2, accent){
   return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
 }
 
+
+function svgChallengeArt(label, title, type, bg1, bg2, accent){
+  const shapes = {
+    behaviour:`<path d="M180 312 C250 258 319 248 378 267 C427 282 465 315 500 357 C446 350 397 355 348 372 C304 387 257 394 207 378 Z" fill="#f4efe5" opacity=".92"/>
+      <circle cx="385" cy="270" r="8" fill="#101010"/><path d="M420 284 L488 300 L425 313 Z" fill="${accent}"/>`,
+    feather:`<path d="M245 340 C298 222 408 164 551 180 C450 236 371 296 306 390 Z" fill="#f4efe5" opacity=".9"/>
+      <path d="M296 348 C360 300 414 263 493 222" stroke="${accent}" stroke-width="9" opacity=".8"/>`,
+    shutter:`<circle cx="420" cy="274" r="118" fill="none" stroke="#f4efe5" stroke-width="18" opacity=".9"/>
+      <circle cx="420" cy="274" r="48" fill="none" stroke="${accent}" stroke-width="14" opacity=".9"/>
+      <path d="M317 192 L365 133 H481 L528 192" fill="none" stroke="#f4efe5" stroke-width="15"/>`,
+    wedge:`<path d="M204 336 C289 240 348 225 420 278 C490 222 562 233 648 336 C560 315 493 324 420 367 C349 325 281 314 204 336 Z" fill="#f4efe5" opacity=".92"/>`,
+    play:`<path d="M222 337 C305 245 370 221 430 269 C492 218 561 242 630 337 C554 319 489 329 430 370 C370 328 305 319 222 337 Z" fill="#eaf8fb" opacity=".95"/>
+      <path d="M510 168 L550 228 L620 234 L566 279 L581 348 L517 312 L457 350 L468 280 L414 236 L484 226 Z" fill="${accent}" opacity=".55"/>`,
+    wild:`<path d="M217 340 C303 226 370 217 430 272 C493 214 566 239 642 340 C558 315 493 330 430 373 C367 329 300 316 217 340 Z" fill="#fff1c2" opacity=".94"/>
+      <circle cx="575" cy="165" r="70" fill="${accent}" opacity=".35"/>`
+  };
+  const motif = shapes[type] || shapes.feather;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+    <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/></linearGradient></defs>
+    <rect width="800" height="450" fill="url(#g2)"/>
+    <circle cx="670" cy="80" r="155" fill="${accent}" opacity=".13"/>
+    <path d="M0 375 C140 310 265 392 403 346 S663 315 800 364 V450 H0Z" fill="#050807" opacity=".5"/>
+    ${motif}
+    <text x="38" y="62" fill="white" opacity=".72" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="4">${label}</text>
+    <text x="38" y="112" fill="white" font-family="Arial,sans-serif" font-size="40" font-weight="900">${title}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+
 const CARD_ART = {
-  'F14': {src:svgArt('AUSTRALIAN BASE DECK','AUSSIE CHARACTER','#1e513e','#10241c','#e5b84b'),label:'BASE AUSTRALIA'},
-  'W01': {src:svgArt('AUSTRALIAN BASE DECK','RAPTOR!','#553d1f','#17120b','#e7a83c'),label:'BASE AUSTRALIA'},
-  'W02': {src:svgArt('AUSTRALIAN BASE DECK','HUNTING RAPTOR','#4c351c','#15100a','#d89231'),label:'BASE AUSTRALIA'},
-  'W04': {src:svgArt('AUSTRALIAN BASE DECK','LIFER!','#315c48','#101f19','#e2c15e'),label:'BASE AUSTRALIA'},
-  'W05': {src:svgArt('AUSTRALIAN BASE DECK','CHOOSE YOUR QUARRY','#60451f','#21170b','#efc05b'),label:'BASE AUSTRALIA'},
-  'W06': {src:svgArt('AUSTRALIAN BASE DECK','HOLY SHOT!','#59331f','#1d0e09','#ffb34d'),label:'BASE AUSTRALIA'},
-  'M01': {src:svgArt('PLAY CARD','INDIAN MYNA','#21495a','#10252d','#65c9e8'),label:'PLAY'},
-  'M06': {src:svgArt('PLAY CARD','SWOOP','#244c5d','#0e222a','#70d0ed'),label:'PLAY'},
-  'M08': {src:svgArt('PLAY CARD','FLOCK','#244b5b','#10232b','#69c6e4'),label:'PLAY'},
-  'WW01':{src:svgArt('WILD WING','CALL YOUR SHOT','#664716','#211707','#ffd46b'),label:'WILD WING'},
-  'WW02':{src:svgArt('WILD WING','FREE MOULT','#664716','#211707','#ffd46b'),label:'WILD WING'},
-  'WW03':{src:svgArt('WILD WING','SHOW US YOUR BEST','#664716','#211707','#ffd46b'),label:'WILD WING'}
+  'B01': {src:svgChallengeArt('BEHAVIOUR','LUNCH!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B02': {src:svgChallengeArt('BEHAVIOUR','GOTCHA!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B03': {src:svgChallengeArt('BEHAVIOUR','INCOMING!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B04': {src:svgChallengeArt('BEHAVIOUR','LIFT OFF!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B05': {src:svgChallengeArt('BEHAVIOUR','SING FOR ME','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B06': {src:svgChallengeArt('BEHAVIOUR','BATH TIME','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B07': {src:svgChallengeArt('BEHAVIOUR','SHAKE IT OFF','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B08': {src:svgChallengeArt('BEHAVIOUR','FAMILY TIME','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B09': {src:svgChallengeArt('BEHAVIOUR','LOVE BIRDS','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B10': {src:svgChallengeArt('BEHAVIOUR','SHOWDOWN','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B11': {src:svgChallengeArt('BEHAVIOUR','THE HUNTER','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'B12': {src:svgChallengeArt('BEHAVIOUR','NEST BUILDER','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
+  'F01': {src:svgChallengeArt('FEATHER','TWO FOR ONE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F02': {src:svgChallengeArt('FEATHER','RARE MOMENT','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F03': {src:svgChallengeArt('FEATHER','FAMILY AFFAIR','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F04': {src:svgChallengeArt('FEATHER','TINY & MIGHTY','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F05': {src:svgChallengeArt('FEATHER','COLOUR COLLECTOR','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F06': {src:svgChallengeArt('FEATHER','BLACK & WHITE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F07': {src:svgChallengeArt('FEATHER','WATER WINGS','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F08': {src:svgChallengeArt('FEATHER','PARROT PARTY','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F09': {src:svgChallengeArt('FEATHER','BUSH BIRD','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F10': {src:svgChallengeArt('FEATHER','GRASSLAND WANDERER','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F11': {src:svgChallengeArt('FEATHER','LONG LEGS','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F12': {src:svgChallengeArt('FEATHER','BIG BEAK','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F13': {src:svgChallengeArt('FEATHER','LITTLE TREASURE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F14': {src:svgChallengeArt('FEATHER','AUSSIE CHARACTER','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F15': {src:svgChallengeArt('FEATHER','NEVER BEFORE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F16': {src:svgChallengeArt('FEATHER','MYSTERY BIRD','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F17': {src:svgChallengeArt('FEATHER',"THREE'S COMPANY",'feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'F18': {src:svgChallengeArt('FEATHER','LOCAL HERO','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
+  'S01': {src:svgChallengeArt('SHUTTER','EYE SPY','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S02': {src:svgChallengeArt('SHUTTER','CLEAN SHOT','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S03': {src:svgChallengeArt('SHUTTER','CREAMY DREAMY','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S04': {src:svgChallengeArt('SHUTTER','FILL THE FRAME','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S05': {src:svgChallengeArt('SHUTTER','HABITAT HERO','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S06': {src:svgChallengeArt('SHUTTER','MIRROR MIRROR','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S07': {src:svgChallengeArt('SHUTTER','WINGS FROZEN','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S08': {src:svgChallengeArt('SHUTTER','MOTION','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S09': {src:svgChallengeArt('SHUTTER','GOLDEN WINGS','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S10': {src:svgChallengeArt('SHUTTER','BACKLIT','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S11': {src:svgChallengeArt('SHUTTER','SILHOUETTE','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S12': {src:svgChallengeArt('SHUTTER','PERFECT PERCH','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S13': {src:svgChallengeArt('SHUTTER','LOW DOWN','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'S14': {src:svgChallengeArt('SHUTTER','COVER SHOT','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
+  'W01': {src:svgChallengeArt('WEDGE-TAIL','RAPTOR!','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
+  'W02': {src:svgChallengeArt('WEDGE-TAIL','HUNTING RAPTOR','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
+  'W03': {src:svgChallengeArt('WEDGE-TAIL','DOUBLE WING','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
+  'W04': {src:svgChallengeArt('WEDGE-TAIL','LIFER!','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
+  'W05': {src:svgChallengeArt('WEDGE-TAIL','CHOOSE YOUR QUARRY','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
+  'W06': {src:svgChallengeArt('WEDGE-TAIL','HOLY SHOT!','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
+  'M01': {src:svgChallengeArt('PLAY','INDIAN MYNA','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M02': {src:svgChallengeArt('PLAY','CHANGE OF PERCH','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M03': {src:svgChallengeArt('PLAY','NOT SHARP!','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M04': {src:svgChallengeArt('PLAY','MOBBED','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M05': {src:svgChallengeArt('PLAY','FLUSHED','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M06': {src:svgChallengeArt('PLAY','SWOOP','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M07': {src:svgChallengeArt('PLAY','CAMERA JAM','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'M08': {src:svgChallengeArt('PLAY','FLOCK','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
+  'WW01': {src:svgChallengeArt('WILD WING','CALL YOUR SHOT','wild','#664716','#2d200d','#ffd46b'),label:'WILD WING'},
+  'WW02': {src:svgChallengeArt('WILD WING','FREE MOULT','wild','#664716','#2d200d','#ffd46b'),label:'WILD WING'},
+  'WW03': {src:svgChallengeArt('WILD WING','SHOW US YOUR BEST','wild','#664716','#2d200d','#ffd46b'),label:'WILD WING'},
 };
 
 function familySlug(c){
@@ -804,7 +910,7 @@ async function loadHand(){
    const wildPhotoClaim=c.id==='WW03';
    d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')));
    const buttonLabel=wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM'));
-   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   d.innerHTML=`<div class="cardfamilyflag"><span class="cardfamilydot"></span>${familyLabel(c)} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
    d.querySelector('.maincardbtn').onclick=()=>{
      const act=()=>{
        if(wildPhotoClaim){
