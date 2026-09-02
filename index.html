@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.2</title>
+<title>SHUTTERWING v2.0 RC6.3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -147,14 +147,48 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 }
 .wildflashtitle{font-size:34px;font-weight:1000;letter-spacing:-.03em;color:#ffd977}
 
+
+/* RC6.3 — Card artwork foundation */
+.cardvisual{
+  margin:10px 0 12px;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);min-height:150px;
+  position:relative;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(0,0,0,.2));
+}
+.cardvisual img{width:100%;height:150px;object-fit:cover;display:block}
+.cardvisual .fallback{
+  height:150px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:16px;position:relative;overflow:hidden
+}
+.cardvisual .fallback:before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 76% 18%,rgba(255,255,255,.16),transparent 22%),
+  linear-gradient(145deg,rgba(255,255,255,.08),rgba(0,0,0,.18))
+}
+.cardvisual .familymark{font-size:44px;font-weight:1000;line-height:.9;letter-spacing:-.06em;z-index:1}
+.cardvisual .familyname{font-size:11px;font-weight:950;letter-spacing:.14em;text-align:right;z-index:1}
+.cardvisual .badge,.cardvisual .ownerbadge{
+  position:absolute;top:10px;z-index:2;padding:6px 9px;border-radius:999px;
+  background:rgba(0,0,0,.58);border:1px solid rgba(255,255,255,.15);
+  font-size:10px;font-weight:900
+}
+.cardvisual .badge{left:10px;letter-spacing:.1em}
+.cardvisual .ownerbadge{right:10px}
+.cardvisual.behaviour .fallback{background:linear-gradient(145deg,#315a2c,#172e18)}
+.cardvisual.feather .fallback{background:linear-gradient(145deg,#3a556f,#192838)}
+.cardvisual.shutter .fallback{background:linear-gradient(145deg,#54436b,#21192d)}
+.cardvisual.wedge-tail .fallback{background:linear-gradient(145deg,#6a4b24,#2b1e0e)}
+.cardvisual.play .fallback{background:linear-gradient(145deg,#21495a,#10252d)}
+.cardvisual.wild-wing .fallback{background:linear-gradient(145deg,#664716,#2d200d)}
+.cardvisual.special .fallback{background:linear-gradient(145deg,#51346a,#281936)}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>PLAY + WILD presentation build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Card artwork foundation build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -385,6 +419,58 @@ function artMark(c){
     'W03':'x2'
   };
   return marks[c.id] || (c.card_type==='wild'?'WILD':(c.card_type==='special'?'SPECIAL':'PLAY'));
+}
+
+const CARD_ART = {
+  // Future base/regional art URLs go here by card ID.
+  // Example: 'F14': {src:'https://...', label:'BASE AUSTRALIA'}
+};
+
+function familySlug(c){
+  const f=(c.family||'').toLowerCase().replace(/\s+/g,'-');
+  if(c.card_type==='action') return 'play';
+  if(c.card_type==='wild') return 'wild-wing';
+  if(c.card_type==='special') return 'special';
+  return f || 'feather';
+}
+function familyLabel(c){
+  if(c.card_type==='action') return 'PLAY';
+  if(c.card_type==='wild') return 'WILD WING';
+  if(c.card_type==='special') return 'SPECIAL';
+  return (c.family||'SHUTTERWING').toUpperCase();
+}
+function cardArtSource(c){
+  const personal=localStorage.getItem('sw_cardart_'+c.id);
+  if(personal) return {src:personal,label:'MY PHOTO',personal:true};
+  return CARD_ART[c.id] || null;
+}
+function cardFallbackHTML(c){
+  const slug=familySlug(c);
+  return `<div class="cardvisual ${slug}">
+    <div class="badge">${familyLabel(c)}</div>
+    <div class="fallback">
+      <div class="familymark">${artMark(c)}</div>
+      <div class="familyname">${c.title}</div>
+    </div>
+  </div>`;
+}
+function cardVisualHTML(c){
+  const art=cardArtSource(c);
+  const slug=familySlug(c);
+  if(art && art.src){
+    return `<div class="cardvisual ${slug}">
+      <div class="badge">${familyLabel(c)}</div>
+      ${art.personal?'<div class="ownerbadge">MY PHOTO</div>':''}
+      <img src="${art.src}" alt="${c.title} artwork">
+    </div>`;
+  }
+  return cardFallbackHTML(c);
+}
+function setPersonalCardArt(cardId,dataUrl){
+  if(cardId && dataUrl) localStorage.setItem('sw_cardart_'+cardId,dataUrl);
+}
+function clearPersonalCardArt(cardId){
+  if(cardId) localStorage.removeItem('sw_cardart_'+cardId);
 }
 function showWildFlash(c,thenDo){
   if(!$('wildflash')){ thenDo(); return; }
@@ -674,7 +760,7 @@ async function loadHand(){
    const wildPhotoClaim=c.id==='WW03';
    d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')));
    const buttonLabel=wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM'));
-   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div>${isAction?`<div class="cardart"><div class="cardartmark">${artMark(c)}</div><div class="cardartname">${isWild?'WILD WING':(isSpecial?'SPECIAL':'PLAY')}</div></div>`:''}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   d.innerHTML=`<div class="small">${c.family} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
    d.querySelector('.maincardbtn').onclick=()=>{
      const act=()=>{
        if(wildPhotoClaim){
