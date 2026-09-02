@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 REBUILD 2</title>
+<title>SHUTTERWING v2.0 RC7 REBUILD 3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -420,9 +420,59 @@ body.hunt-active #play #effectpanel{
   text-align:center;
 }
 
+
+/* RC7 REBUILD 3 — Home dashboard organization */
+.home-section-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:12px 0;
+}
+.home-section-card{
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  padding:14px;
+  background:rgba(255,255,255,.025);
+}
+.home-section-card h3{margin:0 0 8px}
+.home-section-card .small{line-height:1.35}
+.home-game-mode{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.home-mode-pill{
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.03);
+  font-size:11px;
+  font-weight:800;
+}
+.home-mode-pill.active{
+  background:rgba(199,239,114,.12);
+  border-color:#c7ef72;
+  color:#dfff98;
+}
+.home-score-line{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+}
+.home-score-big{
+  font-size:30px;
+  font-weight:1000;
+  line-height:1;
+}
+@media(max-width:650px){
+  .home-section-grid{grid-template-columns:1fr}
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 REBUILD 2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 REBUILD 3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -431,7 +481,49 @@ body.hunt-active #play #effectpanel{
 <div class="home-launch">
   <button id="homePlayLarge" class="home-launch-button" type="button">PLAY SHUTTERWING</button>
   <div id="homePlayNote" class="home-launch-note">Host or join a game, then head straight into the hunt.</div>
+
 </div>
+
+<div class="home-section-grid" id="homeDashboard">
+  <div class="home-section-card">
+    <div class="small">CURRENT GAME</div>
+    <div class="home-score-line">
+      <div>
+        <h3 id="homeGameTitle">No active game</h3>
+        <div id="homeGameStatus" class="small">Host or join a game to begin.</div>
+      </div>
+      <div class="home-score-big" id="homeScore">0 WP</div>
+    </div>
+  </div>
+
+  <div class="home-section-card">
+    <div class="small">GAME MODE</div>
+    <h3 id="homeModeTitle">Social</h3>
+    <div class="home-game-mode">
+      <span class="home-mode-pill active">SOCIAL</span>
+      <span class="home-mode-pill">SOLO</span>
+      <span class="home-mode-pill">FAMILY</span>
+      <span class="home-mode-pill">WILD</span>
+      <span class="home-mode-pill">SERIOUS</span>
+      <span class="home-mode-pill">QUICK</span>
+    </div>
+    <div class="small" style="margin-top:8px">Other modes are coming next. Social remains the live ruleset.</div>
+  </div>
+
+  <div class="home-section-card">
+    <div class="small">PLAYERS & ROUND</div>
+    <h3 id="homePlayersCount">0 players</h3>
+    <div id="homeRoundStatus" class="small">No round running.</div>
+  </div>
+
+  <div class="home-section-card">
+    <div class="small">HOST CONTROLS</div>
+    <h3>Game setup</h3>
+    <div class="small">Host, join, ready up, start or finish a round from one place.</div>
+    <button id="homeDashboardManage" type="button" class="btn alt" style="margin-top:10px">OPEN GAME CONTROLS</button>
+  </div>
+</div>
+
 <div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Your SHUTTERWING home base.</p></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
@@ -706,7 +798,49 @@ if(playBackHome){
   };
 }
 
+
+function refreshHomeDashboard(){
+  if($('homeScore')){
+    const scoreEl=$('score');
+    $('homeScore').textContent=`${scoreEl ? Number(scoreEl.textContent||0) : 0} WP`;
+  }
+
+  if(!game){
+    if($('homeGameTitle'))$('homeGameTitle').textContent='No active game';
+    if($('homeGameStatus'))$('homeGameStatus').textContent='Host or join a game to begin.';
+    if($('homePlayersCount'))$('homePlayersCount').textContent='0 players';
+    if($('homeRoundStatus'))$('homeRoundStatus').textContent='No round running.';
+    return;
+  }
+
+  if($('homeGameTitle')){
+    $('homeGameTitle').textContent=game.status==='active'?'Hunt in progress':'Current game';
+  }
+  if($('homeGameStatus')){
+    $('homeGameStatus').textContent=`${(game.visibility||'private').toUpperCase()} • ${game.status.toUpperCase()}`;
+  }
+
+  const rosterRows=document.querySelectorAll('#players .player, #players .row, #players [data-user-id]');
+  if($('homePlayersCount')){
+    const c=rosterRows.length;
+    $('homePlayersCount').textContent=`${c} player${c===1?'':'s'}`;
+  }
+
+  if($('homeRoundStatus')){
+    const round=game.current_round||1;
+    $('homeRoundStatus').textContent=game.status==='active' ? `Round ${round} is live.` : `Round ${round} • ${game.status}`;
+  }
+}
+
+if($('homeDashboardManage')){
+  $('homeDashboardManage').onclick=()=>{
+    setHuntView(false);
+    go('play');
+  };
+}
+
 function refreshHomeLaunch(){
+  refreshHomeDashboard();
   if(!homePlayLarge||!homePlayNote)return;
   if(game && game.status==='active'){
     homePlayLarge.textContent='RETURN TO HUNT';
