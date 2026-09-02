@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.3</title>
+<title>SHUTTERWING v2.0 RC6.4</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -181,14 +181,23 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 .cardvisual.wild-wing .fallback{background:linear-gradient(145deg,#664716,#2d200d)}
 .cardvisual.special .fallback{background:linear-gradient(145deg,#51346a,#281936)}
 
+
+/* RC6.4 — Australian base artwork */
+.cardvisual img{filter:saturate(1.04) contrast(1.02)}
+.cardvisual:after{
+  content:'';position:absolute;inset:auto 0 0;height:38%;
+  background:linear-gradient(transparent,rgba(0,0,0,.28));pointer-events:none
+}
+.cardvisual .badge,.cardvisual .ownerbadge{backdrop-filter:blur(5px)}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.3</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.4</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Card artwork foundation build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Australian base deck artwork build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -421,9 +430,44 @@ function artMark(c){
   return marks[c.id] || (c.card_type==='wild'?'WILD':(c.card_type==='special'?'SPECIAL':'PLAY'));
 }
 
+function svgArt(label, bird, bg1, bg2, accent){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/>
+    </linearGradient>
+    <radialGradient id="sun"><stop stop-color="${accent}" stop-opacity=".55"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#g)"/>
+  <circle cx="620" cy="95" r="150" fill="url(#sun)"/>
+  <path d="M0 345 C120 285 210 370 330 320 S560 285 800 335 V450 H0Z" fill="#07100c" opacity=".55"/>
+  <path d="M0 382 C145 330 260 410 420 355 S655 330 800 372 V450 H0Z" fill="#050807" opacity=".75"/>
+  <path d="M470 315 C485 252 525 204 586 196 C633 190 674 215 687 249 C700 282 678 306 650 317
+           C675 326 699 344 716 369 L678 369 C654 344 632 333 603 331
+           C570 337 538 337 510 326 L487 370 L459 370 L482 322 Z" fill="#f3ead7" opacity=".94"/>
+  <circle cx="630" cy="231" r="7" fill="#080808"/>
+  <path d="M681 247 L746 260 L686 273 Z" fill="${accent}"/>
+  <path d="M541 323 L520 401 M585 331 L579 401" stroke="#f3ead7" stroke-width="10" stroke-linecap="round"/>
+  <path d="M420 404 H710" stroke="#d0b078" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+  <text x="38" y="62" fill="white" opacity=".72" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="4">${label}</text>
+  <text x="38" y="110" fill="white" font-family="Arial,sans-serif" font-size="46" font-weight="900">${bird}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+
 const CARD_ART = {
-  // Future base/regional art URLs go here by card ID.
-  // Example: 'F14': {src:'https://...', label:'BASE AUSTRALIA'}
+  'F14': {src:svgArt('AUSTRALIAN BASE DECK','AUSSIE CHARACTER','#1e513e','#10241c','#e5b84b'),label:'BASE AUSTRALIA'},
+  'W01': {src:svgArt('AUSTRALIAN BASE DECK','RAPTOR!','#553d1f','#17120b','#e7a83c'),label:'BASE AUSTRALIA'},
+  'W02': {src:svgArt('AUSTRALIAN BASE DECK','HUNTING RAPTOR','#4c351c','#15100a','#d89231'),label:'BASE AUSTRALIA'},
+  'W04': {src:svgArt('AUSTRALIAN BASE DECK','LIFER!','#315c48','#101f19','#e2c15e'),label:'BASE AUSTRALIA'},
+  'W05': {src:svgArt('AUSTRALIAN BASE DECK','CHOOSE YOUR QUARRY','#60451f','#21170b','#efc05b'),label:'BASE AUSTRALIA'},
+  'W06': {src:svgArt('AUSTRALIAN BASE DECK','HOLY SHOT!','#59331f','#1d0e09','#ffb34d'),label:'BASE AUSTRALIA'},
+  'M01': {src:svgArt('PLAY CARD','INDIAN MYNA','#21495a','#10252d','#65c9e8'),label:'PLAY'},
+  'M06': {src:svgArt('PLAY CARD','SWOOP','#244c5d','#0e222a','#70d0ed'),label:'PLAY'},
+  'M08': {src:svgArt('PLAY CARD','FLOCK','#244b5b','#10232b','#69c6e4'),label:'PLAY'},
+  'WW01':{src:svgArt('WILD WING','CALL YOUR SHOT','#664716','#211707','#ffd46b'),label:'WILD WING'},
+  'WW02':{src:svgArt('WILD WING','FREE MOULT','#664716','#211707','#ffd46b'),label:'WILD WING'},
+  'WW03':{src:svgArt('WILD WING','SHOW US YOUR BEST','#664716','#211707','#ffd46b'),label:'WILD WING'}
 };
 
 function familySlug(c){
@@ -459,7 +503,7 @@ function cardVisualHTML(c){
   const slug=familySlug(c);
   if(art && art.src){
     return `<div class="cardvisual ${slug}">
-      <div class="badge">${familyLabel(c)}</div>
+      <div class="badge">${art.label||familyLabel(c)}</div>
       ${art.personal?'<div class="ownerbadge">MY PHOTO</div>':''}
       <img src="${art.src}" alt="${c.title} artwork">
     </div>`;
