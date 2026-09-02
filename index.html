@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC6.6</title>
+<title>SHUTTERWING v2.0 RC6.7</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -340,14 +340,23 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
   }
 }
 
+
+/* RC6.7 — clearer challenge diagrams */
+.cardvisual{min-height:128px !important}
+.cardvisual img,.cardvisual .fallback{height:128px !important}
+@media (max-width:560px){
+  .cardvisual{min-height:118px !important}
+  .cardvisual img,.cardvisual .fallback{height:118px !important}
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.6</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC6.7</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
-<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Open-hand gameplay build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
+<section id="home" class="screen"><div class="hero"><h1 id="hello">Ready to go birding?</h1><p>Illustrated card diagram build.</p><button class="btn" onclick="go('play')">PLAY</button></div>
 <div class="grid"><div class="stat"><div class="small">FEATHER POINTS</div><div id="fp" class="big">0</div></div><div class="stat"><div class="small">LEVEL</div><div id="level" class="big">1</div></div></div>
 <div class="panel" id="homegamepanel" style="display:none">
       <div class="small">CURRENT GAME</div>
@@ -608,29 +617,99 @@ function svgArt(label, bird, bg1, bg2, accent){
 
 
 function svgChallengeArt(label, title, type, bg1, bg2, accent){
-  const shapes = {
-    behaviour:`<path d="M180 312 C250 258 319 248 378 267 C427 282 465 315 500 357 C446 350 397 355 348 372 C304 387 257 394 207 378 Z" fill="#f4efe5" opacity=".92"/>
-      <circle cx="385" cy="270" r="8" fill="#101010"/><path d="M420 284 L488 300 L425 313 Z" fill="${accent}"/>`,
-    feather:`<path d="M245 340 C298 222 408 164 551 180 C450 236 371 296 306 390 Z" fill="#f4efe5" opacity=".9"/>
-      <path d="M296 348 C360 300 414 263 493 222" stroke="${accent}" stroke-width="9" opacity=".8"/>`,
-    shutter:`<circle cx="420" cy="274" r="118" fill="none" stroke="#f4efe5" stroke-width="18" opacity=".9"/>
-      <circle cx="420" cy="274" r="48" fill="none" stroke="${accent}" stroke-width="14" opacity=".9"/>
-      <path d="M317 192 L365 133 H481 L528 192" fill="none" stroke="#f4efe5" stroke-width="15"/>`,
-    wedge:`<path d="M204 336 C289 240 348 225 420 278 C490 222 562 233 648 336 C560 315 493 324 420 367 C349 325 281 314 204 336 Z" fill="#f4efe5" opacity=".92"/>`,
-    play:`<path d="M222 337 C305 245 370 221 430 269 C492 218 561 242 630 337 C554 319 489 329 430 370 C370 328 305 319 222 337 Z" fill="#eaf8fb" opacity=".95"/>
-      <path d="M510 168 L550 228 L620 234 L566 279 L581 348 L517 312 L457 350 L468 280 L414 236 L484 226 Z" fill="${accent}" opacity=".55"/>`,
-    wild:`<path d="M217 340 C303 226 370 217 430 272 C493 214 566 239 642 340 C558 315 493 330 430 373 C367 329 300 316 217 340 Z" fill="#fff1c2" opacity=".94"/>
-      <circle cx="575" cy="165" r="70" fill="${accent}" opacity=".35"/>`
-  };
-  const motif = shapes[type] || shapes.feather;
+  const T=(title||'').toUpperCase();
+
+  const bird=(x=430,y=270,s=1,flip=1)=>`
+    <g transform="translate(${x} ${y}) scale(${s*flip} ${s})">
+      <ellipse cx="0" cy="28" rx="82" ry="47" fill="#f5efe3"/>
+      <circle cx="63" cy="-8" r="35" fill="#f5efe3"/>
+      <path d="M93 -8 L150 8 L96 22 Z" fill="${accent}"/>
+      <circle cx="72" cy="-15" r="5.5" fill="#0b0b0b"/>
+      <path d="M-65 22 L-137 -4 L-84 54 Z" fill="#e5ded2"/>
+      <path d="M-12 66 L-18 118 M35 66 L42 118" stroke="#eee5d5" stroke-width="9" stroke-linecap="round"/>
+    </g>`;
+
+  const flying=(x=420,y=250,s=1)=>`
+    <g transform="translate(${x} ${y}) scale(${s})">
+      <path d="M0 28 C-105 -62 -196 -72 -276 -18 C-177 -6 -101 34 -20 82
+               C-2 92 18 92 36 82 C119 32 197 -6 292 -18 C211 -73 118 -61 17 28 Z"
+            fill="#f5efe3"/>
+      <circle cx="18" cy="27" r="27" fill="#f5efe3"/>
+      <path d="M42 28 L95 42 L44 52 Z" fill="${accent}"/>
+      <circle cx="25" cy="20" r="4.5" fill="#111"/>
+    </g>`;
+
+  const camera=()=>`
+    <g transform="translate(390 245)">
+      <rect x="-150" y="-72" width="300" height="190" rx="26" fill="#f3ede2"/>
+      <path d="M-86 -72 L-45 -125 H55 L96 -72" fill="#f3ede2"/>
+      <circle cx="0" cy="24" r="72" fill="${bg2}" stroke="${accent}" stroke-width="16"/>
+      <circle cx="0" cy="24" r="32" fill="#111822"/>
+      <circle cx="105" cy="-34" r="12" fill="${accent}"/>
+    </g>`;
+
+  const feather=()=>`
+    <g transform="translate(420 245) rotate(-18)">
+      <path d="M-35 155 C-15 20 72 -116 205 -144 C148 -34 79 72 -35 155 Z" fill="#f5efe3"/>
+      <path d="M-32 151 C39 79 99 11 168 -91" stroke="${accent}" stroke-width="10" fill="none"/>
+      <path d="M42 78 L-3 27 M83 28 L36 -22 M122 -25 L76 -69" stroke="${bg2}" stroke-width="8" opacity=".7"/>
+    </g>`;
+
+  const nest=()=>`
+    ${bird(435,238,.78)}
+    <path d="M300 360 Q420 290 545 360 Q420 420 300 360 Z" fill="#b89058"/>
+    <path d="M315 350 L525 378 M340 330 L500 390 M370 320 L480 398" stroke="#6c4d2a" stroke-width="9"/>`;
+
+  const water=()=>`
+    ${bird(430,240,.78)}
+    <path d="M90 350 Q180 320 270 350 T450 350 T630 350 T810 350" fill="none" stroke="${accent}" stroke-width="12" opacity=".8"/>
+    <path d="M130 388 Q220 358 310 388 T490 388 T670 388" fill="none" stroke="#f5efe3" stroke-width="6" opacity=".5"/>`;
+
+  const pair=()=>`${bird(335,260,.68)}${bird(555,260,.68,-1)}`;
+
+  const prey=()=>`
+    ${bird(420,240,.8)}
+    <path d="M410 354 q38 -34 78 0 q-40 35 -78 0Z" fill="${accent}"/>
+    <circle cx="478" cy="350" r="4" fill="#111"/>`;
+
+  const perch=()=>`
+    ${bird(440,235,.82)}
+    <path d="M145 370 Q390 315 690 355" fill="none" stroke="#c69b62" stroke-width="18" stroke-linecap="round"/>`;
+
+  const silhouettes=()=>`
+    <g fill="#080a09">${flying(405,245,.95)}</g>`;
+
+  let motif;
+  if(type==='shutter') motif=camera();
+  else if(type==='wild') motif=flying(420,250,.9);
+  else if(type==='play') motif=flying(420,250,.9);
+  else if(type==='wedge') motif=flying(420,245,1.05);
+  else if(type==='feather') motif=feather();
+  else motif=bird(430,255,.85);
+
+  // Challenge-specific visual storytelling.
+  if(/NEST BUILDER/.test(T)) motif=nest();
+  else if(/BATH TIME|WATER WINGS|MIRROR MIRROR/.test(T)) motif=water();
+  else if(/LOVE BIRDS|FAMILY TIME|FAMILY AFFAIR|TWO FOR ONE|THREE'S COMPANY|PARROT PARTY/.test(T)) motif=pair();
+  else if(/GOTCHA|THE HUNTER|HUNTING RAPTOR/.test(T)) motif=prey();
+  else if(/INCOMING|LIFT OFF|WINGS FROZEN|RAPTOR|SWOOP|FLOCK/.test(T)) motif=flying(420,250,.95);
+  else if(/PERFECT PERCH|SING FOR ME|AUSSIE CHARACTER|LOCAL HERO/.test(T)) motif=perch();
+  else if(/SILHOUETTE|BACKLIT/.test(T)) motif=silhouettes();
+  else if(/EYE SPY|CLEAN SHOT|CREAMY DREAMY|FILL THE FRAME|HABITAT HERO|MOTION|GOLDEN WINGS|LOW DOWN|COVER SHOT/.test(T)) motif=camera();
+  else if(/COLOUR COLLECTOR|BLACK & WHITE|BIG BEAK|LITTLE TREASURE|LONG LEGS|BUSH BIRD|GRASSLAND WANDERER|MYSTERY BIRD|NEVER BEFORE|RARE MOMENT|TINY & MIGHTY/.test(T)) motif=feather();
+
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
-    <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/></linearGradient></defs>
+    <defs>
+      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/></linearGradient>
+      <radialGradient id="glow"><stop stop-color="${accent}" stop-opacity=".32"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>
+    </defs>
     <rect width="800" height="450" fill="url(#g2)"/>
-    <circle cx="670" cy="80" r="155" fill="${accent}" opacity=".13"/>
-    <path d="M0 375 C140 310 265 392 403 346 S663 315 800 364 V450 H0Z" fill="#050807" opacity=".5"/>
+    <circle cx="650" cy="95" r="170" fill="url(#glow)"/>
+    <path d="M0 382 C145 325 270 403 420 357 S660 325 800 370 V450 H0Z" fill="#050807" opacity=".46"/>
     ${motif}
-    <text x="38" y="62" fill="white" opacity=".72" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="4">${label}</text>
-    <text x="38" y="112" fill="white" font-family="Arial,sans-serif" font-size="40" font-weight="900">${title}</text>
+    <rect x="25" y="24" width="330" height="104" rx="18" fill="#050807" opacity=".34"/>
+    <text x="43" y="59" fill="white" opacity=".76" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="4">${label}</text>
+    <text x="43" y="105" fill="white" font-family="Arial,sans-serif" font-size="35" font-weight="900">${title}</text>
   </svg>`;
   return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
 }
