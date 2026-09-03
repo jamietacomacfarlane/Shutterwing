@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 SOLO 1.2</title>
+<title>SHUTTERWING v2.0 RC7 SOLO 1.3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -504,9 +504,35 @@ body.solo-hunt #soloBanner{display:block!important}
 #soloPhotoInput{width:100%;margin:8px 0 10px}
 #soloPhotoPreview{width:100%;max-height:48vh;object-fit:contain;border-radius:14px;background:#050805;margin-top:8px}
 #soloConfirmClaim:disabled{opacity:.4}
+
+/* RC7 SOLO 1.3 — dedicated Solo Hunt screen */
+body.solo-hunt #play #gamepanel,
+body.solo-hunt #play #readypanel,
+body.solo-hunt #play #hostpanel,
+body.solo-hunt #play #moultpanel,
+body.solo-hunt #play #actionpanel,
+body.solo-hunt #play #servedeffectpanel,
+body.solo-hunt #play #effectpanel,
+body.solo-hunt #play #gamefeedpanel,
+body.solo-hunt #play #activitypanel,
+body.solo-hunt #play #playerspanel,
+body.solo-hunt #play #leavegamepanel{
+  display:none!important;
+}
+body.solo-hunt #play .hunt-tools-note{display:none!important}
+body.solo-hunt #play #soloBanner{display:block!important;margin-top:12px}
+body.solo-hunt #play #handpanel{display:block!important}
+body.solo-hunt #play #hand{margin-top:8px!important}
+.solo-only-title{display:none}
+body.solo-hunt #play .solo-only-title{display:block!important}
+body.solo-hunt nav [data-page="claims"],
+body.solo-hunt nav [data-page="passport"],
+body.solo-hunt .bottomnav [data-page="claims"],
+body.solo-hunt .bottomnav [data-page="passport"]{display:none!important}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -590,13 +616,15 @@ body.solo-hunt #soloBanner{display:block!important}
   <div class="play-clean-title">SHUTTERWING • HUNT</div>
   <button id="playBackHome" class="btn play-home-button" type="button">HOME</button>
 </div>
-<div class="hunt-tools-note">Your cards and active effects stay here. Game setup and round control live on HOME.</div><div id="soloBanner" class="panel" style="display:none">
+<div class="hunt-tools-note">Your cards and active effects stay here. Game setup and round control live on HOME.</div><div class="solo-only-title"><h2 style="margin:6px 0 0">Solo Hunt</h2><div class="small">Complete photo challenges and build your own score.</div></div>
+<div id="soloBanner" class="panel" style="display:none">
  <div class="small">SOLO HUNT</div>
  <div style="display:flex;justify-content:space-between;align-items:end;gap:12px">
   <div><strong id="soloCompleted" style="font-size:24px">0</strong><div class="small">CARDS COMPLETED</div></div>
   <div style="text-align:right"><strong id="soloScore" style="font-size:30px">0 WP</strong><div class="small">SOLO SCORE</div></div>
  </div>
  <button id="soloRefillHand" type="button" class="btn alt" style="margin-top:10px">REFILL SOLO HAND</button>
+<button id="soloEndFromPlay" type="button" class="btn alt" style="margin-top:8px">END SOLO HUNT</button>
 </div>
 <h2>Play</h2><div id="nogame">
 <div class="panel"><h3>Host a game</h3>
@@ -938,6 +966,7 @@ renderSoloState();
 if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
 if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
 if($('soloRefillHand'))$('soloRefillHand').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
+if($('soloEndFromPlay'))$('soloEndFromPlay').onclick=endSolo;
 
 function refreshHomeDashboard(){
  const scoreEl=$('score');
