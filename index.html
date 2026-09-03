@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 REBUILD 4</title>
+<title>SHUTTERWING v2.0 RC7 SOLO 1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -494,9 +494,12 @@ body.hunt-active #play #effectpanel{
   .home-current-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+/* RC7 SOLO 1 */
+body.solo-hunt #soloBanner{display:block!important}
+.solo-complete{width:100%;margin-top:8px;padding:11px;border:0;border-radius:12px;font-weight:1000;background:#c7ef72;color:#0b1209}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 REBUILD 4</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -554,7 +557,14 @@ body.hunt-active #play #effectpanel{
     <button class="home-mode-pill" data-mode="serious" type="button">SERIOUS</button>
     <button class="home-mode-pill" data-mode="quick" type="button">QUICK</button>
   </div>
-  <div class="small" style="margin-top:8px">Mode selection will apply when creating a game. SOCIAL remains the live ruleset in this rebuild.</div>
+  <div class="small" id="modeHelp" style="margin-top:8px">SOCIAL is multiplayer. SOLO starts a one-photographer hunt.</div>
+</div>
+<div class="panel" id="soloLaunchPanel" style="display:none">
+  <div class="small">SOLO HUNT</div>
+  <h3 style="margin:4px 0 6px">Just you, your camera and the birds.</h3>
+  <div class="small">Five challenge cards. No voting and no sabotage. Complete a card, score its WP and draw another.</div>
+  <button id="startSoloHunt" type="button" class="btn" style="margin-top:12px">START SOLO HUNT</button>
+  <button id="endSoloHunt" type="button" class="btn alt" style="display:none;margin-top:8px">END SOLO HUNT</button>
 </div>
 
 <div class="hero compact-profile"><h2 id="hello">Ready to go birding?</h2><p>Your profile settings are below.</p></div>
@@ -573,7 +583,13 @@ body.hunt-active #play #effectpanel{
   <div class="play-clean-title">SHUTTERWING • HUNT</div>
   <button id="playBackHome" class="btn play-home-button" type="button">HOME</button>
 </div>
-<div class="hunt-tools-note">Your cards and active effects stay here. Game setup and round control live on HOME.</div>
+<div class="hunt-tools-note">Your cards and active effects stay here. Game setup and round control live on HOME.</div><div id="soloBanner" class="panel" style="display:none">
+ <div class="small">SOLO HUNT</div>
+ <div style="display:flex;justify-content:space-between;align-items:end;gap:12px">
+  <div><strong id="soloCompleted" style="font-size:24px">0</strong><div class="small">CARDS COMPLETED</div></div>
+  <div style="text-align:right"><strong id="soloScore" style="font-size:30px">0 WP</strong><div class="small">SOLO SCORE</div></div>
+ </div>
+</div>
 <h2>Play</h2><div id="nogame">
 <div class="panel"><h3>Host a game</h3>
 <input id="gname" value="Tablelands Birders">
@@ -798,6 +814,7 @@ function setHuntView(on){
 
 if(homePlayLarge){
   homePlayLarge.onclick=()=>{
+    if(soloActive){buildSoloHand(false);setHuntView(true);go('play');return;}
     if(!game){
       toast('Host or join a game first');
       return;
@@ -822,6 +839,68 @@ if(playBackHome){
 
 let selectedHomeMode=localStorage.getItem('sw_selected_mode')||'social';
 
+let soloActive=localStorage.getItem('sw_solo_active')==='1';
+let soloScore=Number(localStorage.getItem('sw_solo_score')||0);
+let soloCompleted=Number(localStorage.getItem('sw_solo_completed')||0);
+let soloHand=[];
+const SOLO_CARD_IDS=['B01','B02','B03','B04','B05','B06','B07','B08','B09','B10','B11','B12','F01','F02','F03','F04','F05','F06','F07','F08','F09','F10','F11','F12','F13','F14','F15','F16','F17','F18','S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','W01','W02','W04','W05','W06'];
+
+function saveSolo(){
+ localStorage.setItem('sw_solo_active',soloActive?'1':'0');
+ localStorage.setItem('sw_solo_score',String(soloScore));
+ localStorage.setItem('sw_solo_completed',String(soloCompleted));
+ localStorage.setItem('sw_solo_hand',JSON.stringify(soloHand.map(c=>c.id)));
+}
+function renderSoloState(){
+ document.body.classList.toggle('solo-hunt',soloActive);
+ if($('soloLaunchPanel'))$('soloLaunchPanel').style.display=selectedHomeMode==='solo'?'block':'none';
+ if($('startSoloHunt'))$('startSoloHunt').style.display=soloActive?'none':'block';
+ if($('endSoloHunt'))$('endSoloHunt').style.display=soloActive?'block':'none';
+ if($('soloScore'))$('soloScore').textContent=`${soloScore} WP`;
+ if($('soloCompleted'))$('soloCompleted').textContent=soloCompleted;
+}
+async function loadSoloDeck(){
+ const r=await sb.from('cards').select('*').eq('active',true).in('id',SOLO_CARD_IDS);
+ if(r.error){toast(r.error.message);return [];}
+ return r.data||[];
+}
+async function buildSoloHand(force=false){
+ const deck=await loadSoloDeck(); if(!deck.length)return;
+ const saved=JSON.parse(localStorage.getItem('sw_solo_hand')||'[]');
+ if(!force&&saved.length)soloHand=saved.map(id=>deck.find(c=>c.id===id)).filter(Boolean);
+ while(soloHand.length<5){
+   const choices=deck.filter(c=>!soloHand.some(h=>h.id===c.id));
+   if(!choices.length)break;
+   soloHand.push(choices[Math.floor(Math.random()*choices.length)]);
+ }
+ soloHand=soloHand.slice(0,5); saveSolo(); renderSoloHand();
+}
+function renderSoloHand(){
+ if(!soloActive)return;
+ const h=$('hand'); if(!h)return; h.innerHTML='';
+ soloHand.forEach(c=>{
+   const d=document.createElement('div'); d.className='card';
+   d.innerHTML=`<div class="small">${c.family||'CHALLENGE'} • ${Number(c.wing_points||0)} WP</div><h3>${c.title||'Challenge'}</h3><div>${c.challenge_text||''}</div><button type="button" class="solo-complete">COMPLETE +${Number(c.wing_points||0)} WP</button>`;
+   d.querySelector('.solo-complete').onclick=()=>completeSoloCard(c.id); h.appendChild(d);
+ });
+}
+async function completeSoloCard(id){
+ const c=soloHand.find(x=>x.id===id); if(!c)return;
+ soloScore+=Number(c.wing_points||0); soloCompleted++; soloHand=soloHand.filter(x=>x.id!==id);
+ saveSolo(); toast(`Solo challenge complete — +${Number(c.wing_points||0)} WP`);
+ await buildSoloHand(true); renderSoloState();
+}
+async function startSolo(){
+ selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
+ localStorage.setItem('sw_selected_mode','solo'); saveSolo(); renderHomeModePills(); renderSoloState();
+ await buildSoloHand(true); setHuntView(true); go('play');
+}
+function endSolo(){
+ soloActive=false; soloHand=[]; saveSolo(); document.body.classList.remove('solo-hunt');
+ renderSoloState(); go('home'); toast(`Solo Hunt finished — ${soloScore} WP`);
+}
+
+
 function renderHomeModePills(){
  document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
    b.classList.toggle('active',b.dataset.mode===selectedHomeMode);
@@ -834,10 +913,14 @@ document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
    selectedHomeMode=b.dataset.mode;
    localStorage.setItem('sw_selected_mode',selectedHomeMode);
    renderHomeModePills();
-   if(selectedHomeMode!=='social')toast(`${b.textContent} mode is coming next.`);
+   renderSoloState();
+   if(!['social','solo'].includes(selectedHomeMode))toast(`${b.textContent} mode is coming next.`);
  };
 });
 renderHomeModePills();
+renderSoloState();
+if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
+if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
 
 function refreshHomeDashboard(){
  const scoreEl=$('score');
@@ -877,7 +960,9 @@ if($('homeDashboardManage')){
 
 function refreshHomeLaunch(){
   refreshHomeDashboard();
+  renderSoloState();
   if(!homePlayLarge||!homePlayNote)return;
+  if(soloActive){homePlayLarge.textContent='RETURN TO SOLO HUNT';homePlayNote.textContent='Your solo hand is waiting.';return;}
   if(game && game.status==='active'){
     homePlayLarge.textContent='RETURN TO HUNT';
     homePlayNote.textContent='Your current game is active.';
@@ -1381,6 +1466,7 @@ async function moultCard(pc,c){
 }
 
 async function loadHand(){
+ if(soloActive){renderSoloHand();return;}
  if(!game)return;
  let r=await sb.from('player_cards')
    .select('id,card_id,card_state,cards(id,family,title,challenge_text,wing_points,card_type)')
