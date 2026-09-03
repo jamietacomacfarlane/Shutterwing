@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 SOLO 1.3</title>
+<title>SHUTTERWING v2.0 RC7 SOLO 1.4</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -530,9 +530,22 @@ body.solo-hunt nav [data-page="passport"],
 body.solo-hunt .bottomnav [data-page="claims"],
 body.solo-hunt .bottomnav [data-page="passport"]{display:none!important}
 
+
+/* RC7 SOLO 1.4 — restore hand + solo home state */
+body.solo-hunt #play #handpanel,
+body.solo-hunt #play .panel:has(#hand),
+body.solo-hunt #play #hand{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+body.solo-hunt #play #handpanel{
+  margin-top:10px!important;
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.3</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.4</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -850,7 +863,7 @@ function setHuntView(on){
 
 if(homePlayLarge){
   homePlayLarge.onclick=()=>{
-    if(soloActive){buildSoloHand(false);setHuntView(true);go('play');return;}
+    if(soloActive){buildSoloHand(false);setHuntView(true);go('play');setTimeout(()=>renderSoloHand(),120);return;}
     if(!game){
       toast('Host or join a game first');
       return;
@@ -938,6 +951,7 @@ async function startSolo(){
  selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
  localStorage.setItem('sw_selected_mode','solo'); saveSolo(); renderHomeModePills(); renderSoloState();
  await buildSoloHand(true); setHuntView(true); go('play');
+ setTimeout(()=>renderSoloHand(),120);
 }
 function endSolo(){
  soloActive=false; soloHand=[]; saveSolo(); document.body.classList.remove('solo-hunt');
@@ -980,6 +994,16 @@ function refreshHomeDashboard(){
  if($('homeFeatherPoints'))$('homeFeatherPoints').textContent=fp;
  if($('homeLevel'))$('homeLevel').textContent=level;
  renderHomeModePills();
+
+ if(soloActive){
+   if($('homeGameTitle'))$('homeGameTitle').textContent='Solo Hunt';
+   if($('homeGameStatus'))$('homeGameStatus').textContent=`${soloCompleted} cards completed`;
+   if($('homeModeCompact'))$('homeModeCompact').textContent='SOLO';
+   if($('homeRoundCompact'))$('homeRoundCompact').textContent='—';
+   if($('homePlayersCompact'))$('homePlayersCompact').textContent='1';
+   if($('homeScore'))$('homeScore').textContent=soloScore;
+   return;
+ }
 
  if(!game){
    if($('homeGameTitle'))$('homeGameTitle').textContent='No active game';
