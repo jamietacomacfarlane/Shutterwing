@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 SOLO 1</title>
+<title>SHUTTERWING v2.0 RC7 SOLO 1.2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -497,9 +497,16 @@ body.hunt-active #play #effectpanel{
 /* RC7 SOLO 1 */
 body.solo-hunt #soloBanner{display:block!important}
 .solo-complete{width:100%;margin-top:8px;padding:11px;border:0;border-radius:12px;font-weight:1000;background:#c7ef72;color:#0b1209}
+/* RC7 SOLO 1.1 */
+.solo-claim-modal{position:fixed;inset:0;z-index:125;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,7,.92)}
+.solo-claim-card{width:min(94%,620px);max-height:92vh;overflow:auto;padding:20px;border-radius:20px;background:#111b15;border:2px solid #c7ef72}
+.solo-claim-wp{font-size:24px;font-weight:1000;color:#dfff98;margin:10px 0}
+#soloPhotoInput{width:100%;margin:8px 0 10px}
+#soloPhotoPreview{width:100%;max-height:48vh;object-fit:contain;border-radius:14px;background:#050805;margin-top:8px}
+#soloConfirmClaim:disabled{opacity:.4}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -589,6 +596,7 @@ body.solo-hunt #soloBanner{display:block!important}
   <div><strong id="soloCompleted" style="font-size:24px">0</strong><div class="small">CARDS COMPLETED</div></div>
   <div style="text-align:right"><strong id="soloScore" style="font-size:30px">0 WP</strong><div class="small">SOLO SCORE</div></div>
  </div>
+ <button id="soloRefillHand" type="button" class="btn alt" style="margin-top:10px">REFILL SOLO HAND</button>
 </div>
 <h2>Play</h2><div id="nogame">
 <div class="panel"><h3>Host a game</h3>
@@ -865,9 +873,10 @@ async function loadSoloDeck(){
  return r.data||[];
 }
 async function buildSoloHand(force=false){
- const deck=await loadSoloDeck(); if(!deck.length)return;
- const saved=JSON.parse(localStorage.getItem('sw_solo_hand')||'[]');
- if(!force&&saved.length)soloHand=saved.map(id=>deck.find(c=>c.id===id)).filter(Boolean);
+ const deck=await loadSoloDeck();
+ if(!deck.length){toast('Solo cards could not be loaded — tap REFILL SOLO HAND');return;}
+ let saved=[];try{saved=JSON.parse(localStorage.getItem('sw_solo_hand')||'[]');}catch(e){}
+ if(!force&&soloHand.length===0&&saved.length)soloHand=saved.map(id=>deck.find(c=>c.id===id)).filter(Boolean);
  while(soloHand.length<5){
    const choices=deck.filter(c=>!soloHand.some(h=>h.id===c.id));
    if(!choices.length)break;
@@ -875,21 +884,28 @@ async function buildSoloHand(force=false){
  }
  soloHand=soloHand.slice(0,5); saveSolo(); renderSoloHand();
 }
+let soloClaimCard=null;
+let soloPhotoData=null;
 function renderSoloHand(){
  if(!soloActive)return;
  const h=$('hand'); if(!h)return; h.innerHTML='';
  soloHand.forEach(c=>{
    const d=document.createElement('div'); d.className='card';
-   d.innerHTML=`<div class="small">${c.family||'CHALLENGE'} • ${Number(c.wing_points||0)} WP</div><h3>${c.title||'Challenge'}</h3><div>${c.challenge_text||''}</div><button type="button" class="solo-complete">COMPLETE +${Number(c.wing_points||0)} WP</button>`;
-   d.querySelector('.solo-complete').onclick=()=>completeSoloCard(c.id); h.appendChild(d);
+   d.innerHTML=`<div class="small">${c.family||'CHALLENGE'} • ${Number(c.wing_points||0)} WP</div><h3>${c.title||'Challenge'}</h3><div>${c.challenge_text||''}</div><button type="button" class="solo-complete">CLAIM THIS CARD</button>`;
+   d.querySelector('.solo-complete').onclick=()=>openSoloClaim(c.id); h.appendChild(d);
  });
 }
-async function completeSoloCard(id){
+function openSoloClaim(id){
  const c=soloHand.find(x=>x.id===id); if(!c)return;
- soloScore+=Number(c.wing_points||0); soloCompleted++; soloHand=soloHand.filter(x=>x.id!==id);
- saveSolo(); toast(`Solo challenge complete — +${Number(c.wing_points||0)} WP`);
- await buildSoloHand(true); renderSoloState();
+ soloClaimCard=c;soloPhotoData=null;
+ $('soloClaimTitle').textContent=c.title||'Challenge';
+ $('soloClaimChallenge').textContent=c.challenge_text||'';
+ $('soloClaimWP').textContent=`${Number(c.wing_points||0)} WP`;
+ $('soloPhotoInput').value='';$('soloPhotoPreview').src='';$('soloPhotoPreview').style.display='none';
+ $('soloConfirmClaim').disabled=true;$('soloClaimModal').style.display='flex';
 }
+function closeSoloClaim(){$('soloClaimModal').style.display='none';soloClaimCard=null;soloPhotoData=null;}
+
 async function startSolo(){
  selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
  localStorage.setItem('sw_selected_mode','solo'); saveSolo(); renderHomeModePills(); renderSoloState();
@@ -921,6 +937,7 @@ renderHomeModePills();
 renderSoloState();
 if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
 if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
+if($('soloRefillHand'))$('soloRefillHand').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
 
 function refreshHomeDashboard(){
  const scoreEl=$('score');
@@ -2528,4 +2545,37 @@ function subscribe(){
  startLiveRefresh();
 }
 let su=localStorage.getItem('swurl'),sk=localStorage.getItem('swkey');if(su)$('url').value=su;if(sk){$('key').value=sk;connect()}
-</script></body></html>
+
+$('soloPhotoInput').onchange=e=>{
+ const f=e.target.files?.[0];
+ if(!f){soloPhotoData=null;$('soloConfirmClaim').disabled=true;return;}
+ const reader=new FileReader();
+ reader.onload=()=>{soloPhotoData=reader.result;$('soloPhotoPreview').src=reader.result;$('soloPhotoPreview').style.display='block';$('soloConfirmClaim').disabled=false;};
+ reader.readAsDataURL(f);
+};
+$('soloRetryPhoto').onclick=()=>{$('soloPhotoInput').value='';soloPhotoData=null;$('soloPhotoPreview').src='';$('soloPhotoPreview').style.display='none';$('soloConfirmClaim').disabled=true;$('soloPhotoInput').click();};
+$('soloCancelClaim').onclick=closeSoloClaim;
+$('soloConfirmClaim').onclick=async()=>{
+ if(!soloClaimCard||!soloPhotoData){toast('Add a photo before claiming this card');return;}
+ const c=soloClaimCard;
+ soloScore+=Number(c.wing_points||0);soloCompleted++;soloHand=soloHand.filter(x=>x.id!==c.id);
+ const history=JSON.parse(localStorage.getItem('sw_solo_history')||'[]');
+ history.unshift({card_id:c.id,title:c.title,wp:Number(c.wing_points||0),completed_at:new Date().toISOString()});
+ localStorage.setItem('sw_solo_history',JSON.stringify(history.slice(0,50)));
+ saveSolo();closeSoloClaim();toast(`Claim recorded — +${Number(c.wing_points||0)} WP`);
+ await buildSoloHand(true);renderSoloState();
+};
+if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloState();}catch(e){console.error('Solo restore',e);}},900);}
+</script><div id="soloClaimModal" class="solo-claim-modal" style="display:none">
+ <div class="solo-claim-card">
+  <div class="small">SOLO PHOTO CLAIM</div><h2 id="soloClaimTitle">Challenge</h2>
+  <div id="soloClaimChallenge"></div><div id="soloClaimWP" class="solo-claim-wp">0 WP</div>
+  <input id="soloPhotoInput" type="file" accept="image/*" capture="environment">
+  <img id="soloPhotoPreview" alt="Solo claim preview" style="display:none">
+  <div class="small" style="margin-top:10px">Check that your photo genuinely meets the challenge. Solo mode uses self-verification.</div>
+  <button id="soloConfirmClaim" type="button" class="btn" disabled>CLAIM IT</button>
+  <button id="soloRetryPhoto" type="button" class="btn alt">RETRY PHOTO</button>
+  <button id="soloCancelClaim" type="button" class="btn alt">CANCEL</button>
+ </div>
+</div>
+</body></html>
