@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC6</title>
+<title>SHUTTERWING CORE RC7</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC6 — consolidated Social + Solo core */
+/* CORE RC7 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC6 — Solo completion + local results */
+/* CORE RC7 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC6 — cleaner live Hunt */
+/* CORE RC7 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC6 — Solo isolation + compact Home */
+/* CORE RC7 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,20 +631,26 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC6 — navigation gating + release-mode discipline */
+/* CORE RC7 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CORE RC6 — single authoritative navigation router */
+/* CORE RC7 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
+
+/* CORE RC7 — Solo UI is now structurally inside the main app shell */
+#solo{width:100%}
+#solo.on{display:block!important}
+#solo .solo-page-shell{width:100%}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC6</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC7</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -927,6 +933,58 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
   </div>
 </div>
 </section>
+
+
+<div id="soloClaimModal" class="solo-claim-modal" style="display:none">
+ <div class="solo-claim-card">
+  <div class="small">SOLO PHOTO CLAIM</div><h2 id="soloClaimTitle">Challenge</h2>
+  <div id="soloClaimChallenge"></div><div id="soloClaimWP" class="solo-claim-wp">0 WP</div>
+  <input id="soloPhotoInput" type="file" accept="image/*" capture="environment">
+  <img id="soloPhotoPreview" alt="Solo claim preview" style="display:none">
+  <div class="small" style="margin-top:10px">Check that your photo genuinely meets the challenge. Solo mode uses self-verification.</div>
+  <button id="soloConfirmClaim" type="button" class="btn" disabled>CLAIM IT</button>
+  <button id="soloRetryPhoto" type="button" class="btn alt">RETRY PHOTO</button>
+  <button id="soloCancelClaim" type="button" class="btn alt">CANCEL</button>
+ </div>
+</div>
+
+<section id="solo" class="screen">
+  <div class="solo-page-shell">
+    <div class="solo-topbar">
+      <div>
+        <div class="small">SHUTTERWING • SOLO</div>
+        <h2 style="margin:2px 0 0">Solo Hunt</h2>
+      </div>
+      <button id="soloHomeBtn" type="button" class="btn alt">HOME</button>
+    </div>
+
+    <div class="panel solo-score-panel">
+      <div>
+        <strong id="soloPageCompleted">0</strong>
+        <div class="small">CARDS COMPLETED</div>
+      </div>
+      <div style="text-align:right">
+        <strong id="soloPageScore">0 WP</strong>
+        <div class="small">SOLO SCORE</div>
+      </div>
+    </div>
+
+    <div class="solo-status" id="soloStatus">Five cards ready. Choose a challenge when you see the shot.</div>
+    <div class="panel">
+      <div class="small">YOUR FIVE-CARD HAND</div>
+      <div id="soloHand" class="solo-hand-grid"></div>
+      <div id="soloEmptyHelp" class="small" style="margin-top:10px">The deck did not load. Tap REFILL SOLO HAND once. If it remains empty, stop testing and report this screen.</div>
+      <div id="soloClaimHistoryPanel" class="panel" style="margin-top:12px">
+        <div class="small">SOLO CLAIMS</div>
+        <div id="soloClaimHistory" class="small" style="margin-top:8px">No Solo claims yet.</div>
+      </div>
+      <button id="soloPageRefill" type="button" class="btn alt" style="margin-top:12px">REFILL SOLO HAND</button>
+    </div>
+
+    <button id="soloPageEnd" type="button" class="btn alt solo-end">END SOLO HUNT</button>
+  </div>
+</section>
+
 </div>
 
 <div id="scoremodal" class="modalback" style="display:none">
@@ -1180,6 +1238,7 @@ go=function(requested,b){
    renderSoloState();
    renderSoloClaimHistory();
    setTimeout(()=>renderSoloHand(),40);
+   window.scrollTo({top:0,left:0,behavior:'auto'});
    return;
  }
  if(id==='play'){
@@ -1196,6 +1255,7 @@ window.go=go;
 renderHomeModePills();
 renderSoloState();
 loadSoloResults();
+setTimeout(()=>refreshHomeLaunch(),0);
 if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
 if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
 if($('soloRefillHand'))$('soloRefillHand').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
@@ -2885,54 +2945,5 @@ if($('homeDashboardManage')){
  };
 }
 
-</script><div id="soloClaimModal" class="solo-claim-modal" style="display:none">
- <div class="solo-claim-card">
-  <div class="small">SOLO PHOTO CLAIM</div><h2 id="soloClaimTitle">Challenge</h2>
-  <div id="soloClaimChallenge"></div><div id="soloClaimWP" class="solo-claim-wp">0 WP</div>
-  <input id="soloPhotoInput" type="file" accept="image/*" capture="environment">
-  <img id="soloPhotoPreview" alt="Solo claim preview" style="display:none">
-  <div class="small" style="margin-top:10px">Check that your photo genuinely meets the challenge. Solo mode uses self-verification.</div>
-  <button id="soloConfirmClaim" type="button" class="btn" disabled>CLAIM IT</button>
-  <button id="soloRetryPhoto" type="button" class="btn alt">RETRY PHOTO</button>
-  <button id="soloCancelClaim" type="button" class="btn alt">CANCEL</button>
- </div>
-</div>
-
-<section id="solo" class="screen">
-  <div class="solo-page-shell">
-    <div class="solo-topbar">
-      <div>
-        <div class="small">SHUTTERWING • SOLO</div>
-        <h2 style="margin:2px 0 0">Solo Hunt</h2>
-      </div>
-      <button id="soloHomeBtn" type="button" class="btn alt">HOME</button>
-    </div>
-
-    <div class="panel solo-score-panel">
-      <div>
-        <strong id="soloPageCompleted">0</strong>
-        <div class="small">CARDS COMPLETED</div>
-      </div>
-      <div style="text-align:right">
-        <strong id="soloPageScore">0 WP</strong>
-        <div class="small">SOLO SCORE</div>
-      </div>
-    </div>
-
-    <div class="solo-status" id="soloStatus">Five cards ready. Choose a challenge when you see the shot.</div>
-    <div class="panel">
-      <div class="small">YOUR FIVE-CARD HAND</div>
-      <div id="soloHand" class="solo-hand-grid"></div>
-      <div id="soloEmptyHelp" class="small" style="margin-top:10px">The deck did not load. Tap REFILL SOLO HAND once. If it remains empty, stop testing and report this screen.</div>
-      <div id="soloClaimHistoryPanel" class="panel" style="margin-top:12px">
-        <div class="small">SOLO CLAIMS</div>
-        <div id="soloClaimHistory" class="small" style="margin-top:8px">No Solo claims yet.</div>
-      </div>
-      <button id="soloPageRefill" type="button" class="btn alt" style="margin-top:12px">REFILL SOLO HAND</button>
-    </div>
-
-    <button id="soloPageEnd" type="button" class="btn alt solo-end">END SOLO HUNT</button>
-  </div>
-</section>
-
+</script>
 </body></html>
