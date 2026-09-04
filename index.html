@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING BETA CANDIDATE 1</title>
+<title>SHUTTERWING PRIVATE BETA 1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* BETA CANDIDATE 1 — consolidated Social + Solo core */
+/* PRIVATE BETA 1 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* BETA CANDIDATE 1 — Solo completion + local results */
+/* PRIVATE BETA 1 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* BETA CANDIDATE 1 — cleaner live Hunt */
+/* PRIVATE BETA 1 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* BETA CANDIDATE 1 — Solo isolation + compact Home */
+/* PRIVATE BETA 1 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* BETA CANDIDATE 1 — navigation gating + release-mode discipline */
+/* PRIVATE BETA 1 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* BETA CANDIDATE 1 — single authoritative navigation router */
+/* PRIVATE BETA 1 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* BETA CANDIDATE 1 — Solo UI is now structurally inside the main app shell */
+/* PRIVATE BETA 1 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* BETA CANDIDATE 1 — release-safe PLAY/WILD handling */
+/* PRIVATE BETA 1 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* BETA CANDIDATE 1 — beta/release readiness */
+/* PRIVATE BETA 1 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* BETA CANDIDATE 1 — first-run onboarding */
+/* PRIVATE BETA 1 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* BETA CANDIDATE 1 — pre-hunt wildlife reminder */
+/* PRIVATE BETA 1 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* BETA CANDIDATE 1 — personality + feedback */
+/* PRIVATE BETA 1 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -715,13 +715,33 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 .cardfamilyflag{letter-spacing:.4px}
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
+
+/* PRIVATE BETA 1 — tester notice + end-of-hunt polish */
+.beta-notice-card{max-width:650px}
+.beta-notice-lead{color:var(--muted);line-height:1.45}
+.beta-notice-box{display:grid;gap:9px;margin:14px 0}
+.beta-notice-box>div{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid var(--line);line-height:1.45}
+.beta-agree-row{display:flex;gap:10px;align-items:flex-start;margin:14px 0;line-height:1.4}
+.beta-agree-row input{margin-top:3px;transform:scale(1.15)}
+.results-card{max-width:620px;text-align:center}
+.results-score{font-size:3rem;font-weight:1000;letter-spacing:-1px;margin:8px 0 14px;color:#dfff98;text-shadow:0 0 24px rgba(201,239,114,.15)}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.results-grid>div{padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035)}
+.results-grid span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.results-grid strong{display:block;font-size:1.35rem;margin-top:4px}
+.best-badge{display:inline-block;margin:8px auto 12px;padding:7px 10px;border-radius:999px;background:rgba(233,182,77,.16);border:1px solid #e9b64d;color:#ffd978;font-size:11px;font-weight:900;letter-spacing:.4px}
+.results-claims{text-align:left;margin-top:12px}
+.results-claim-row{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+.results-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+@media(max-width:560px){.results-grid,.results-actions{grid-template-columns:1fr}}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">BETA CANDIDATE 1</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">PRIVATE BETA 1</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1121,6 +1141,29 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 </div>
 
 
+
+<div id="privateBetaModal" class="modal" style="display:none">
+  <div class="modal-card beta-notice-card">
+    <div class="small">SHUTTERWING™ PRIVATE BETA</div>
+    <h2 style="margin:4px 0 10px">Welcome to the hunt.</h2>
+    <p class="beta-notice-lead">You are using pre-release software. Please help us test the game, not redistribute it.</p>
+
+    <div class="beta-notice-box">
+      <div><strong>Private beta:</strong> Please do not copy, redistribute, publish, record or share screenshots/game materials outside the beta without permission.</div>
+      <div><strong>Your photos:</strong> You keep ownership of photographs you take or upload.</div>
+      <div><strong>Wildlife first:</strong> Never disturb, chase, flush, bait, handle or endanger wildlife for a challenge.</div>
+      <div><strong>Feedback matters:</strong> If anything is confusing, broken or simply not fun, use SEND FEEDBACK on Home.</div>
+    </div>
+
+    <label class="beta-agree-row">
+      <input id="privateBetaAgree" type="checkbox">
+      <span>I understand this is a private beta and I will not redistribute SHUTTERWING materials.</span>
+    </label>
+
+    <button id="enterPrivateBeta" type="button" class="btn main" disabled>ENTER SHUTTERWING</button>
+  </div>
+</div>
+
 <div id="feedbackModal" class="modal" style="display:none">
   <div class="modal-card feedback-card">
     <div class="small">SHUTTERWING BETA</div>
@@ -1188,6 +1231,25 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
     </div>
 
     <button id="closeHowToPlay" type="button" class="btn main" style="margin-top:14px">GOT IT — LET'S HUNT</button>
+  </div>
+</div>
+
+
+<div id="huntResultsModal" class="modal" style="display:none">
+  <div class="modal-card results-card">
+    <div class="small">HUNT COMPLETE</div>
+    <h2 id="resultsHeadline" style="margin:4px 0 8px">Nice work.</h2>
+    <div class="results-score" id="resultsWP">0 WP</div>
+    <div class="results-grid">
+      <div><span>Challenges claimed</span><strong id="resultsClaims">0</strong></div>
+      <div><span>Personal best</span><strong id="resultsBest">0 WP</strong></div>
+    </div>
+    <div id="resultsBestBadge" class="best-badge" style="display:none">NEW PERSONAL BEST</div>
+    <div id="resultsRecentClaims" class="results-claims"></div>
+    <div class="results-actions">
+      <button id="huntAgainBtn" type="button" class="btn main">HUNT AGAIN</button>
+      <button id="resultsHomeBtn" type="button" class="btn alt">HOME</button>
+    </div>
   </div>
 </div>
 
@@ -1447,294 +1509,16 @@ renderSoloState();
 loadSoloResults();
 setTimeout(()=>refreshHomeLaunch(),0);
 if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
-if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
-if($('soloRefillHand'))$('soloRefillHand').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
-if($('soloEndFromPlay'))$('soloEndFromPlay').onclick=endSolo;
-if($('soloHomeBtn'))$('soloHomeBtn').onclick=()=>go('home');
-if($('soloPageEnd'))$('soloPageEnd').onclick=endSolo;
-if($('soloPageRefill'))$('soloPageRefill').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
-
-
-
-function refreshHuntStatus(){
- if($('huntScore')){
-   const s=$('score')?Number($('score').textContent||0):0;
-   $('huntScore').textContent=`${s} WP`;
- }
- if($('huntRound'))$('huntRound').textContent=game?.current_round||1;
- if($('huntPlayers')){
-   const p=$('pcount')?Number($('pcount').textContent||0):0;
-   $('huntPlayers').textContent=String(p||1);
- }
-}
-
-function refreshHomeDashboard(){
- const scoreEl=$('score');
- const featherEl=$('fp');
- const levelEl=$('level');
- const score=scoreEl ? Number(scoreEl.textContent||0) : 0;
- const fp=featherEl ? featherEl.textContent : '0';
- const level=levelEl ? levelEl.textContent : '1';
-
- if($('homeScore'))$('homeScore').textContent=score;
- if($('homeFeatherPoints'))$('homeFeatherPoints').textContent=fp;
- if($('homeLevel'))$('homeLevel').textContent=level;
- renderHomeModePills();
-
- if(soloActive){
-   if($('homeGameTitle'))$('homeGameTitle').textContent='Solo Hunt';
-   if($('homeGameStatus'))$('homeGameStatus').textContent=`${soloCompleted} cards completed`;
-   if($('homeModeCompact'))$('homeModeCompact').textContent='SOLO';
-   if($('homeRoundCompact'))$('homeRoundCompact').textContent='—';
-   if($('homePlayersCompact'))$('homePlayersCompact').textContent='1';
-   if($('homeScore'))$('homeScore').textContent=soloScore;
-   return;
- }
-
- if(!game){
-   if($('homeGameTitle'))$('homeGameTitle').textContent='No active game';
-   if($('homeGameStatus'))$('homeGameStatus').textContent='Host or join a game to begin.';
-   if($('homeRoundCompact'))$('homeRoundCompact').textContent='—';
-   if($('homePlayersCompact'))$('homePlayersCompact').textContent='0';
-   return;
- }
-
- if($('homeGameTitle'))$('homeGameTitle').textContent=game.status==='active'?'Hunt in progress':'Current game';
- if($('homeGameStatus'))$('homeGameStatus').textContent=`${(game.visibility||'private').toUpperCase()} • ${game.status.toUpperCase()}`;
- if($('homeRoundCompact'))$('homeRoundCompact').textContent=game.current_round||1;
-
- const rosterRows=document.querySelectorAll('#players .player, #players .row, #players [data-user-id]');
- if($('homePlayersCompact'))$('homePlayersCompact').textContent=String(rosterRows.length);
-}
-
-if($('homeDashboardManage')){
- $('homeDashboardManage').onclick=()=>{
-   setHuntView(false);
-   go('play');
- };
-}
-
-function refreshHomeLaunch(){
-  refreshHomeDashboard();
-  renderSoloState();
-  loadSoloResults();
-  setProfileSettingsOpen(false);
-  if(!homePlayLarge||!homePlayNote)return;
-  if(soloActive){homePlayLarge.textContent='RETURN TO SOLO HUNT';homePlayNote.textContent='Your solo hand is waiting.';return;}
-  if(game && game.status==='active'){
-    homePlayLarge.textContent='RETURN TO HUNT';
-    homePlayNote.textContent='Your current game is active.';
-  }else{
-    homePlayLarge.textContent='PLAY SHUTTERWING';
-    homePlayNote.textContent='Host or join a game, then head straight into the hunt.';
-  }
-}
-
-
-const SUPPORTED_PLAY_ACTIONS=new Set(['M01','M02','M03','M04','M05','M06','M07','M08']);
-const SUPPORTED_WILDS=new Set(['WW01','WW02','WW03','W03']);
-function cardMechanicSupported(c){
- if(!c)return false;
- if(c.card_type==='action')return SUPPORTED_PLAY_ACTIONS.has(c.id);
- if(c.card_type==='wild'||c.card_type==='special')return SUPPORTED_WILDS.has(c.id);
- return true;
-}
-
-function artMark(c){
-  const marks={
-    'M01':'MYNA','M02':'PERCH','M03':'NOT!','M04':'MOB','M05':'MOVE','M06':'SWOOP','M07':'JAM','M08':'FLOCK',
-    'WW01':'x2','WW02':'MOULT','WW03':'BEST','WW04':'2ND','WW05':'STEAL','WW06':'LUCK','WW07':'WILD',
-    'W03':'x2'
-  };
-  return marks[c.id] || (c.card_type==='wild'?'WILD':(c.card_type==='special'?'SPECIAL':'PLAY'));
-}
-
-function svgArt(label, bird, bg1, bg2, accent){
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/>
-    </linearGradient>
-    <radialGradient id="sun"><stop stop-color="${accent}" stop-opacity=".55"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>
-  </defs>
-  <rect width="800" height="450" fill="url(#g)"/>
-  <circle cx="620" cy="95" r="150" fill="url(#sun)"/>
-  <path d="M0 345 C120 285 210 370 330 320 S560 285 800 335 V450 H0Z" fill="#07100c" opacity=".55"/>
-  <path d="M0 382 C145 330 260 410 420 355 S655 330 800 372 V450 H0Z" fill="#050807" opacity=".75"/>
-  <path d="M470 315 C485 252 525 204 586 196 C633 190 674 215 687 249 C700 282 678 306 650 317
-           C675 326 699 344 716 369 L678 369 C654 344 632 333 603 331
-           C570 337 538 337 510 326 L487 370 L459 370 L482 322 Z" fill="#f3ead7" opacity=".94"/>
-  <circle cx="630" cy="231" r="7" fill="#080808"/>
-  <path d="M681 247 L746 260 L686 273 Z" fill="${accent}"/>
-  <path d="M541 323 L520 401 M585 331 L579 401" stroke="#f3ead7" stroke-width="10" stroke-linecap="round"/>
-  <path d="M420 404 H710" stroke="#d0b078" stroke-width="12" stroke-linecap="round" opacity=".8"/>
-  <text x="38" y="62" fill="white" opacity=".72" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="4">${label}</text>
-  <text x="38" y="110" fill="white" font-family="Arial,sans-serif" font-size="46" font-weight="900">${bird}</text>
-  </svg>`;
-  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
-}
-
-
-function svgChallengeArt(label, title, type, bg1, bg2, accent){
-  const T=(title||'').toUpperCase();
-
-  const bird=(x=430,y=270,s=1,flip=1)=>`
-    <g transform="translate(${x} ${y}) scale(${s*flip} ${s})">
-      <ellipse cx="0" cy="28" rx="82" ry="47" fill="#f5efe3"/>
-      <circle cx="63" cy="-8" r="35" fill="#f5efe3"/>
-      <path d="M93 -8 L150 8 L96 22 Z" fill="${accent}"/>
-      <circle cx="72" cy="-15" r="5.5" fill="#0b0b0b"/>
-      <path d="M-65 22 L-137 -4 L-84 54 Z" fill="#e5ded2"/>
-      <path d="M-12 66 L-18 118 M35 66 L42 118" stroke="#eee5d5" stroke-width="9" stroke-linecap="round"/>
-    </g>`;
-
-  const flying=(x=420,y=250,s=1)=>`
-    <g transform="translate(${x} ${y}) scale(${s})">
-      <path d="M0 28 C-105 -62 -196 -72 -276 -18 C-177 -6 -101 34 -20 82
-               C-2 92 18 92 36 82 C119 32 197 -6 292 -18 C211 -73 118 -61 17 28 Z"
-            fill="#f5efe3"/>
-      <circle cx="18" cy="27" r="27" fill="#f5efe3"/>
-      <path d="M42 28 L95 42 L44 52 Z" fill="${accent}"/>
-      <circle cx="25" cy="20" r="4.5" fill="#111"/>
-    </g>`;
-
-  const camera=()=>`
-    <g transform="translate(390 245)">
-      <rect x="-150" y="-72" width="300" height="190" rx="26" fill="#f3ede2"/>
-      <path d="M-86 -72 L-45 -125 H55 L96 -72" fill="#f3ede2"/>
-      <circle cx="0" cy="24" r="72" fill="${bg2}" stroke="${accent}" stroke-width="16"/>
-      <circle cx="0" cy="24" r="32" fill="#111822"/>
-      <circle cx="105" cy="-34" r="12" fill="${accent}"/>
-    </g>`;
-
-  const feather=()=>`
-    <g transform="translate(420 245) rotate(-18)">
-      <path d="M-35 155 C-15 20 72 -116 205 -144 C148 -34 79 72 -35 155 Z" fill="#f5efe3"/>
-      <path d="M-32 151 C39 79 99 11 168 -91" stroke="${accent}" stroke-width="10" fill="none"/>
-      <path d="M42 78 L-3 27 M83 28 L36 -22 M122 -25 L76 -69" stroke="${bg2}" stroke-width="8" opacity=".7"/>
-    </g>`;
-
-  const nest=()=>`
-    ${bird(435,238,.78)}
-    <path d="M300 360 Q420 290 545 360 Q420 420 300 360 Z" fill="#b89058"/>
-    <path d="M315 350 L525 378 M340 330 L500 390 M370 320 L480 398" stroke="#6c4d2a" stroke-width="9"/>`;
-
-  const water=()=>`
-    ${bird(430,240,.78)}
-    <path d="M90 350 Q180 320 270 350 T450 350 T630 350 T810 350" fill="none" stroke="${accent}" stroke-width="12" opacity=".8"/>
-    <path d="M130 388 Q220 358 310 388 T490 388 T670 388" fill="none" stroke="#f5efe3" stroke-width="6" opacity=".5"/>`;
-
-  const pair=()=>`${bird(335,260,.68)}${bird(555,260,.68,-1)}`;
-
-  const prey=()=>`
-    ${bird(420,240,.8)}
-    <path d="M410 354 q38 -34 78 0 q-40 35 -78 0Z" fill="${accent}"/>
-    <circle cx="478" cy="350" r="4" fill="#111"/>`;
-
-  const perch=()=>`
-    ${bird(440,235,.82)}
-    <path d="M145 370 Q390 315 690 355" fill="none" stroke="#c69b62" stroke-width="18" stroke-linecap="round"/>`;
-
-  const silhouettes=()=>`
-    <g fill="#080a09">${flying(405,245,.95)}</g>`;
-
-  let motif;
-  if(type==='shutter') motif=camera();
-  else if(type==='wild') motif=flying(420,250,.9);
-  else if(type==='play') motif=flying(420,250,.9);
-  else if(type==='wedge') motif=flying(420,245,1.05);
-  else if(type==='feather') motif=feather();
-  else motif=bird(430,255,.85);
-
-  // Challenge-specific visual storytelling.
-  if(/NEST BUILDER/.test(T)) motif=nest();
-  else if(/BATH TIME|WATER WINGS|MIRROR MIRROR/.test(T)) motif=water();
-  else if(/LOVE BIRDS|FAMILY TIME|FAMILY AFFAIR|TWO FOR ONE|THREE'S COMPANY|PARROT PARTY/.test(T)) motif=pair();
-  else if(/GOTCHA|THE HUNTER|HUNTING RAPTOR/.test(T)) motif=prey();
-  else if(/INCOMING|LIFT OFF|WINGS FROZEN|RAPTOR|SWOOP|FLOCK/.test(T)) motif=flying(420,250,.95);
-  else if(/PERFECT PERCH|SING FOR ME|AUSSIE CHARACTER|LOCAL HERO/.test(T)) motif=perch();
-  else if(/SILHOUETTE|BACKLIT/.test(T)) motif=silhouettes();
-  else if(/EYE SPY|CLEAN SHOT|CREAMY DREAMY|FILL THE FRAME|HABITAT HERO|MOTION|GOLDEN WINGS|LOW DOWN|COVER SHOT/.test(T)) motif=camera();
-  else if(/COLOUR COLLECTOR|BLACK & WHITE|BIG BEAK|LITTLE TREASURE|LONG LEGS|BUSH BIRD|GRASSLAND WANDERER|MYSTERY BIRD|NEVER BEFORE|RARE MOMENT|TINY & MIGHTY/.test(T)) motif=feather();
-
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
-    <defs>
-      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/></linearGradient>
-      <radialGradient id="glow"><stop stop-color="${accent}" stop-opacity=".32"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>
-    </defs>
-    <rect width="800" height="450" fill="url(#g2)"/>
-    <circle cx="650" cy="95" r="170" fill="url(#glow)"/>
-    <path d="M0 382 C145 325 270 403 420 357 S660 325 800 370 V450 H0Z" fill="#050807" opacity=".46"/>
-    ${motif}
-    <rect x="25" y="24" width="330" height="104" rx="18" fill="#050807" opacity=".34"/>
-    <text x="43" y="59" fill="white" opacity=".76" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="4">${label}</text>
-    <text x="43" y="105" fill="white" font-family="Arial,sans-serif" font-size="35" font-weight="900">${title}</text>
-  </svg>`;
-  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
-}
-
-const CARD_ART = {
-  'B01': {src:svgChallengeArt('BEHAVIOUR','LUNCH!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B02': {src:svgChallengeArt('BEHAVIOUR','GOTCHA!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B03': {src:svgChallengeArt('BEHAVIOUR','INCOMING!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B04': {src:svgChallengeArt('BEHAVIOUR','LIFT OFF!','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B05': {src:svgChallengeArt('BEHAVIOUR','SING FOR ME','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B06': {src:svgChallengeArt('BEHAVIOUR','BATH TIME','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B07': {src:svgChallengeArt('BEHAVIOUR','SHAKE IT OFF','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B08': {src:svgChallengeArt('BEHAVIOUR','FAMILY TIME','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B09': {src:svgChallengeArt('BEHAVIOUR','LOVE BIRDS','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B10': {src:svgChallengeArt('BEHAVIOUR','SHOWDOWN','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B11': {src:svgChallengeArt('BEHAVIOUR','THE HUNTER','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'B12': {src:svgChallengeArt('BEHAVIOUR','NEST BUILDER','behaviour','#315a2c','#172e18','#9bd08f'),label:'BEHAVIOUR'},
-  'F01': {src:svgChallengeArt('FEATHER','TWO FOR ONE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F02': {src:svgChallengeArt('FEATHER','RARE MOMENT','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F03': {src:svgChallengeArt('FEATHER','FAMILY AFFAIR','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F04': {src:svgChallengeArt('FEATHER','TINY & MIGHTY','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F05': {src:svgChallengeArt('FEATHER','COLOUR COLLECTOR','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F06': {src:svgChallengeArt('FEATHER','BLACK & WHITE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F07': {src:svgChallengeArt('FEATHER','WATER WINGS','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F08': {src:svgChallengeArt('FEATHER','PARROT PARTY','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F09': {src:svgChallengeArt('FEATHER','BUSH BIRD','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F10': {src:svgChallengeArt('FEATHER','GRASSLAND WANDERER','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F11': {src:svgChallengeArt('FEATHER','LONG LEGS','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F12': {src:svgChallengeArt('FEATHER','BIG BEAK','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F13': {src:svgChallengeArt('FEATHER','LITTLE TREASURE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F14': {src:svgChallengeArt('FEATHER','AUSSIE CHARACTER','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F15': {src:svgChallengeArt('FEATHER','NEVER BEFORE','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F16': {src:svgChallengeArt('FEATHER','MYSTERY BIRD','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F17': {src:svgChallengeArt('FEATHER',"THREE'S COMPANY",'feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'F18': {src:svgChallengeArt('FEATHER','LOCAL HERO','feather','#3a556f','#192838','#8fbde4'),label:'FEATHER'},
-  'S01': {src:svgChallengeArt('SHUTTER','EYE SPY','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S02': {src:svgChallengeArt('SHUTTER','CLEAN SHOT','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S03': {src:svgChallengeArt('SHUTTER','CREAMY DREAMY','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S04': {src:svgChallengeArt('SHUTTER','FILL THE FRAME','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S05': {src:svgChallengeArt('SHUTTER','HABITAT HERO','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S06': {src:svgChallengeArt('SHUTTER','MIRROR MIRROR','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S07': {src:svgChallengeArt('SHUTTER','WINGS FROZEN','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S08': {src:svgChallengeArt('SHUTTER','MOTION','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S09': {src:svgChallengeArt('SHUTTER','GOLDEN WINGS','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S10': {src:svgChallengeArt('SHUTTER','BACKLIT','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S11': {src:svgChallengeArt('SHUTTER','SILHOUETTE','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S12': {src:svgChallengeArt('SHUTTER','PERFECT PERCH','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S13': {src:svgChallengeArt('SHUTTER','LOW DOWN','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'S14': {src:svgChallengeArt('SHUTTER','COVER SHOT','shutter','#54436b','#21192d','#c2a5e5'),label:'SHUTTER'},
-  'W01': {src:svgChallengeArt('WEDGE-TAIL','RAPTOR!','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
-  'W02': {src:svgChallengeArt('WEDGE-TAIL','HUNTING RAPTOR','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
-  'W03': {src:svgChallengeArt('WEDGE-TAIL','DOUBLE WING','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
-  'W04': {src:svgChallengeArt('WEDGE-TAIL','LIFER!','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
-  'W05': {src:svgChallengeArt('WEDGE-TAIL','CHOOSE YOUR QUARRY','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
-  'W06': {src:svgChallengeArt('WEDGE-TAIL','HOLY SHOT!','wedge','#6a4b24','#2b1e0e','#e6b963'),label:'WEDGE-TAIL'},
-  'M01': {src:svgChallengeArt('PLAY','INDIAN MYNA','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M02': {src:svgChallengeArt('PLAY','CHANGE OF PERCH','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M03': {src:svgChallengeArt('PLAY','NOT SHARP!','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M04': {src:svgChallengeArt('PLAY','MOBBED','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M05': {src:svgChallengeArt('PLAY','FLUSHED','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M06': {src:svgChallengeArt('PLAY','SWOOP','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M07': {src:svgChallengeArt('PLAY','CAMERA JAM','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'M08': {src:svgChallengeArt('PLAY','FLOCK','play','#21495a','#10252d','#69d0ed'),label:'PLAY'},
-  'WW01': {src:svgChallengeArt('WILD WING','CALL YOUR SHOT','wild','#664716','#2d200d','#ffd46b'),label:'WILD WING'},
-  'WW02': {src:svgChallengeArt('WILD WING','FREE MOULT','wild','#664716','#2d200d','#ffd46b'),label:'WILD WING'},
-  'WW03': {src:svgChallengeArt('WILD WING','SHOW US YOUR BEST','wild','#664716','#2d200d','#ffd46b'),label:'WILD WING'},
+if($('endSoloHunt'))$('endSoloHunt').onclick=()=>{
+ const finalScore=Number(soloScore||0);
+ const finalCompleted=Number(soloCompleted||0);
+ const oldBest=Number(localStorage.getItem('sw_solo_best')||0);
+ showHuntResults(finalScore,finalCompleted,oldBest);
+ soloActive=false;
+ document.body.classList.remove('solo-hunt');
+ localStorage.setItem('sw_solo_active','0');
+ saveSolo();
+ refreshHomeLaunch();
 };
 
 function familySlug(c){
@@ -1809,7 +1593,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING BETA CANDIDATE 1',
+   'SHUTTERWING PRIVATE BETA 1',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -1860,6 +1644,58 @@ function clearLocalGameState(){
 }
 
 
+
+
+function maybeShowPrivateBetaNotice(){
+ if(localStorage.getItem('sw_private_beta_ack')==='1')return;
+ if($('privateBetaModal'))$('privateBetaModal').style.display='flex';
+}
+function acceptPrivateBeta(){
+ localStorage.setItem('sw_private_beta_ack','1');
+ if($('privateBetaModal'))$('privateBetaModal').style.display='none';
+}
+function getSoloHistory(){
+ try{
+   const h=JSON.parse(localStorage.getItem('sw_solo_history')||'[]');
+   return Array.isArray(h)?h:[];
+ }catch(e){return [];}
+}
+function showHuntResults(score,completed,oldBest){
+ const best=Math.max(Number(oldBest||0),Number(score||0));
+ const isNew=Number(score||0)>Number(oldBest||0);
+ localStorage.setItem('sw_solo_best',String(best));
+ if($('resultsWP'))$('resultsWP').textContent=`${Number(score||0)} WP`;
+ if($('resultsClaims'))$('resultsClaims').textContent=String(Number(completed||0));
+ if($('resultsBest'))$('resultsBest').textContent=`${best} WP`;
+ if($('resultsBestBadge'))$('resultsBestBadge').style.display=isNew?'inline-block':'none';
+ if($('resultsHeadline'))$('resultsHeadline').textContent=isNew?'That was your best hunt yet.':'Nice work out there.';
+ const hist=getSoloHistory().slice(0,5);
+ const box=$('resultsRecentClaims');
+ if(box){
+   box.innerHTML='';
+   if(hist.length){
+     const h=document.createElement('div');
+     h.className='small';
+     h.textContent='RECENT CLAIMS';
+     box.appendChild(h);
+     hist.forEach(x=>{
+       const row=document.createElement('div');
+       row.className='results-claim-row';
+       const a=document.createElement('strong');
+       a.textContent=String(x.title||'Challenge');
+       const b=document.createElement('span');
+       b.className='small';
+       b.textContent=`+${Number(x.wp||0)} WP`;
+       row.append(a,b);
+       box.appendChild(row);
+     });
+   }
+ }
+ if($('huntResultsModal'))$('huntResultsModal').style.display='flex';
+}
+function hideHuntResults(){
+ if($('huntResultsModal'))$('huntResultsModal').style.display='none';
+}
 
 let selectedFeedbackType='Bug';
 function showFeedback(){
@@ -1922,7 +1758,7 @@ async function connect(){
  try{
   const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
   let s=(await sb.auth.getSession()).data.session;if(!s){let r=await sb.auth.signInAnonymously({options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}});if(r.error)throw r.error}
-  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;updateConnectionBadge();await getProfile();$('nav').style.display='flex';maybeShowFirstRunGuide();$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
+  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;updateConnectionBadge();await getProfile();$('nav').style.display='flex';maybeShowPrivateBetaNotice();setTimeout(()=>{if(localStorage.getItem('sw_private_beta_ack')==='1')maybeShowFirstRunGuide();},250);$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
  }catch(e){$('setupmsg').innerHTML='<div class="msg">'+e.message+'</div>'}
 }
 $('connect').onclick=connect;
@@ -3364,6 +3200,32 @@ document.querySelectorAll('.feedback-type').forEach(btn=>btn.onclick=()=>{
  document.querySelectorAll('.feedback-type').forEach(x=>x.classList.toggle('on',x===btn));
 });
 if($('feedbackModal'))$('feedbackModal').addEventListener('click',e=>{if(e.target===$('feedbackModal'))hideFeedback();});
+
+
+if($('privateBetaAgree'))$('privateBetaAgree').onchange=e=>{
+ if($('enterPrivateBeta'))$('enterPrivateBeta').disabled=!e.target.checked;
+};
+if($('enterPrivateBeta'))$('enterPrivateBeta').onclick=()=>{
+ acceptPrivateBeta();
+ maybeShowFirstRunGuide();
+};
+if($('huntAgainBtn'))$('huntAgainBtn').onclick=async()=>{
+ hideHuntResults();
+ selectedHomeMode='solo';
+ renderHomeModePills();
+ soloActive=true;soloScore=0;soloCompleted=0;soloHand=[];
+ document.body.classList.add('solo-hunt');
+ await buildSoloHand(true);
+ saveSolo();
+ renderSoloState();
+ go('solo',$('navPlay'));
+ setTimeout(()=>renderSoloHand(),80);
+};
+if($('resultsHomeBtn'))$('resultsHomeBtn').onclick=()=>{
+ hideHuntResults();
+ go('home',$('navHome'));
+ refreshHomeLaunch();
+};
 
 </script>
 </body></html>
