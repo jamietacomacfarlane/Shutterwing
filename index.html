@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC11</title>
+<title>SHUTTERWING CORE RC13</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC11 — consolidated Social + Solo core */
+/* CORE RC13 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC11 — Solo completion + local results */
+/* CORE RC13 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC11 — cleaner live Hunt */
+/* CORE RC13 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC11 — Solo isolation + compact Home */
+/* CORE RC13 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC11 — navigation gating + release-mode discipline */
+/* CORE RC13 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CORE RC11 — single authoritative navigation router */
+/* CORE RC13 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* CORE RC11 — Solo UI is now structurally inside the main app shell */
+/* CORE RC13 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* CORE RC11 — release-safe PLAY/WILD handling */
+/* CORE RC13 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* CORE RC11 — beta/release readiness */
+/* CORE RC13 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -666,13 +666,36 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .settings-divider{height:1px;background:var(--line);margin:16px 0}
 .beta-copy{line-height:1.45}
 
+
+/* CORE RC13 — first-run onboarding */
+.home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.home-tools-panel .btn{width:100%}
+.howto-card{max-width:680px}
+.howto-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
+.howto-tab{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);padding:10px;border-radius:10px;font-weight:900}
+.howto-tab.on{border-color:#c9ef72;background:rgba(201,239,114,.12);color:#dfff98}
+.howto-panel{display:grid;gap:8px}
+.howto-step{display:grid;grid-template-columns:minmax(130px,.8fr) 1.8fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.howto-step span{color:var(--muted);line-height:1.4}
+.wildlife-reminder{margin-top:14px;padding:12px;border-radius:12px;background:rgba(201,239,114,.08);border:1px solid rgba(201,239,114,.25);line-height:1.45}
+@media(max-width:560px){
+  .home-tools-panel{grid-template-columns:1fr}
+  .howto-step{grid-template-columns:1fr;gap:4px}
+}
+
+
+/* CORE RC13 — pre-hunt wildlife reminder */
+.safety-card{max-width:620px}
+.safety-lead{color:var(--muted);line-height:1.45}
+.safety-rules{display:grid;gap:8px;margin:12px 0}
+.safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC11</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC13</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -768,8 +791,9 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
       <button id="homegotogame" class="btn">RETURN TO GAME</button>
       <button id="homeleavegame" class="btn alt">LEAVE GAME</button>
     </div>
-    <div class="panel" id="profileSettingsTogglePanel">
-  <button id="toggleProfileSettings" type="button" class="btn alt" style="width:100%">PROFILE / SETTINGS</button>
+    <div class="panel home-tools-panel" id="profileSettingsTogglePanel">
+  <button id="howToPlayBtn" type="button" class="btn main">HOW TO PLAY</button>
+  <button id="toggleProfileSettings" type="button" class="btn alt">PROFILE / SETTINGS</button>
 </div>
 <div class="panel" id="profileSettingsPanel" style="display:none">
   <h3>Player name</h3>
@@ -1069,6 +1093,56 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
   </div>
 </div>
 
+
+<div id="wildlifeSafetyModal" class="modal" style="display:none">
+<div class="modal-card safety-card">
+<div class="small">BEFORE YOU HUNT</div>
+<h2 style="margin:4px 0 10px">Wildlife comes first.</h2>
+<p class="safety-lead">No photograph is worth stressing or endangering an animal.</p>
+<div class="safety-rules">
+<div>Keep a respectful distance from birds and other wildlife.</div>
+<div>Never disturb nests, chicks or breeding animals.</div>
+<div>Never chase, flush, bait, handle or corner wildlife for a challenge.</div>
+<div>Stay out of restricted areas and respect private property.</div>
+<div>If an animal changes its behaviour because of you, move back or leave.</div>
+</div>
+<div class="wildlife-reminder"><strong>SHUTTERWING rule:</strong> Missing the shot is always better than disturbing the wildlife.</div>
+<button id="acceptWildlifeSafety" type="button" class="btn main" style="margin-top:14px">I AGREE — CONTINUE</button>
+<button id="cancelWildlifeSafety" type="button" class="btn alt" style="margin-top:8px">GO BACK</button>
+</div></div>
+<div id="howToPlayModal" class="modal" style="display:none">
+  <div class="modal-card howto-card">
+    <div class="small">SHUTTERWING CORE BETA</div>
+    <h2 style="margin:4px 0 10px">How to Play</h2>
+
+    <div class="howto-tabs">
+      <button id="howtoSoloTab" class="howto-tab on" type="button">SOLO</button>
+      <button id="howtoSocialTab" class="howto-tab" type="button">SOCIAL</button>
+    </div>
+
+    <div id="howtoSoloPanel" class="howto-panel">
+      <div class="howto-step"><strong>1. Pick a card</strong><span>Keep five challenges open and choose one when you see the shot.</span></div>
+      <div class="howto-step"><strong>2. Take or choose a photo</strong><span>Use a new photo or one already on your device.</span></div>
+      <div class="howto-step"><strong>3. Claim it</strong><span>Solo uses self-verification. Only claim photos that genuinely meet the challenge.</span></div>
+      <div class="howto-step"><strong>4. Score and keep hunting</strong><span>Wing Points are added and a replacement card returns your hand to five.</span></div>
+    </div>
+
+    <div id="howtoSocialPanel" class="howto-panel" style="display:none">
+      <div class="howto-step"><strong>1. Host or join</strong><span>Create a public/private game or join another photographer.</span></div>
+      <div class="howto-step"><strong>2. Hunt from your five-card hand</strong><span>Photograph a challenge, submit the photo and wait for the other player’s vote.</span></div>
+      <div class="howto-step"><strong>3. Use PLAY and supported WILD cards</strong><span>PLAY cards can affect opponents. Unsupported future mechanics remain locked in beta.</span></div>
+      <div class="howto-step"><strong>4. Build your score</strong><span>Accepted claims add Wing Points. The hand refills as you play.</span></div>
+    </div>
+
+    <div class="wildlife-reminder">
+      <strong>Wildlife first.</strong>
+      Never disturb nests, flush birds, bait wildlife or enter restricted areas for a card.
+    </div>
+
+    <button id="closeHowToPlay" type="button" class="btn main" style="margin-top:14px">GOT IT — LET'S HUNT</button>
+  </div>
+</div>
+
 <div id="nav" class="nav" style="display:none"><div class="navin"><button id="navHome" class="on" onclick="go('home',this)">HOME</button><button id="navPlay" onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button id="navPassport" onclick="go('passport',this)">PASSPORT</button></div></div>
 
 <script type="module">
@@ -1094,7 +1168,7 @@ function setHuntView(on){
 }
 
 if(homePlayLarge){
-  homePlayLarge.onclick=async()=>{
+  async function launchHomePlay(){
     if(soloActive){await buildSoloHand(false);go('solo',$('navPlay'));return;}
     if(!game){
       toast('Host or join a game first');
@@ -1317,6 +1391,7 @@ go=function(requested,b){
  if(id!=='claims')setHuntView(false);
  _baseGo(id,b);
 };
+homePlayLarge.onclick=()=>showWildlifeSafety(launchHomePlay);
 window.go=go;
 
 renderHomeModePills();
@@ -1686,7 +1761,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CORE RC11',
+   'SHUTTERWING CORE RC13',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -1736,11 +1811,39 @@ function clearLocalGameState(){
  toast('Local game session cleared');
 }
 
+
+let pendingSafetyAction=null;
+function showWildlifeSafety(action){pendingSafetyAction=typeof action==='function'?action:null;if($('wildlifeSafetyModal'))$('wildlifeSafetyModal').style.display='flex';}
+function hideWildlifeSafety(){if($('wildlifeSafetyModal'))$('wildlifeSafetyModal').style.display='none';pendingSafetyAction=null;}
+function acceptWildlifeSafety(){const action=pendingSafetyAction;if($('wildlifeSafetyModal'))$('wildlifeSafetyModal').style.display='none';pendingSafetyAction=null;if(action)action();}
+
+function showHowToPlay(tab='solo',firstRun=false){
+ const m=$('howToPlayModal');
+ if(!m)return;
+ m.style.display='flex';
+ showHowToTab(tab);
+ if(firstRun)localStorage.setItem('sw_seen_howto','1');
+}
+function hideHowToPlay(){
+ if($('howToPlayModal'))$('howToPlayModal').style.display='none';
+}
+function showHowToTab(tab){
+ const solo=tab!=='social';
+ if($('howtoSoloPanel'))$('howtoSoloPanel').style.display=solo?'grid':'none';
+ if($('howtoSocialPanel'))$('howtoSocialPanel').style.display=solo?'none':'grid';
+ if($('howtoSoloTab'))$('howtoSoloTab').classList.toggle('on',solo);
+ if($('howtoSocialTab'))$('howtoSocialTab').classList.toggle('on',!solo);
+}
+function maybeShowFirstRunGuide(){
+ if(localStorage.getItem('sw_seen_howto'))return;
+ setTimeout(()=>showHowToPlay(selectedHomeMode==='social'?'social':'solo',true),350);
+}
+
 async function connect(){
  try{
   const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
   let s=(await sb.auth.getSession()).data.session;if(!s){let r=await sb.auth.signInAnonymously({options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}});if(r.error)throw r.error}
-  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;updateConnectionBadge();await getProfile();$('nav').style.display='flex';$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
+  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;updateConnectionBadge();await getProfile();$('nav').style.display='flex';maybeShowFirstRunGuide();$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
  }catch(e){$('setupmsg').innerHTML='<div class="msg">'+e.message+'</div>'}
 }
 $('connect').onclick=connect;
@@ -3161,6 +3264,17 @@ if($('copyDiagnostics'))$('copyDiagnostics').onclick=copyDiagnostics;
 if($('clearLocalGameState'))$('clearLocalGameState').onclick=()=>{
  if(confirm('Clear this device’s current SHUTTERWING game/session state? Your profile and Feather Points will stay intact.'))clearLocalGameState();
 };
+
+
+if($('howToPlayBtn'))$('howToPlayBtn').onclick=()=>showHowToPlay(selectedHomeMode==='social'?'social':'solo');
+if($('closeHowToPlay'))$('closeHowToPlay').onclick=hideHowToPlay;
+if($('howtoSoloTab'))$('howtoSoloTab').onclick=()=>showHowToTab('solo');
+if($('howtoSocialTab'))$('howtoSocialTab').onclick=()=>showHowToTab('social');
+if($('howToPlayModal'))$('howToPlayModal').addEventListener('click',e=>{if(e.target===$('howToPlayModal'))hideHowToPlay();});
+
+
+if($('acceptWildlifeSafety'))$('acceptWildlifeSafety').onclick=acceptWildlifeSafety;
+if($('cancelWildlifeSafety'))$('cancelWildlifeSafety').onclick=hideWildlifeSafety;
 
 </script>
 </body></html>
