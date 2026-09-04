@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 SOLO CANDIDATE 1</title>
+<title>SHUTTERWING CORE RC1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -586,9 +586,23 @@ body.solo-hunt #home [id*="returngame" i]{
 body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
+
+/* CORE RC1 — consolidated Social + Solo core */
+body.solo-hunt #play #soloBanner,
+body.solo-hunt #play .solo-only-title{display:none!important}
+#solo .solo-status{
+  margin:8px 0 14px;padding:10px 12px;border-radius:12px;
+  background:rgba(199,239,114,.08);border:1px solid rgba(199,239,114,.25)
+}
+#solo .solo-card{position:relative}
+#solo .solo-card .small{opacity:.82}
+#solo .solo-card button{width:100%}
+#soloEmptyHelp{display:none}
+#soloEmptyHelp.on{display:block}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO CANDIDATE 1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC1</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -952,6 +966,7 @@ function renderSoloState(){
  if($('soloCompleted'))$('soloCompleted').textContent=soloCompleted;
  if($('soloPageScore'))$('soloPageScore').textContent=`${soloScore} WP`;
  if($('soloPageCompleted'))$('soloPageCompleted').textContent=soloCompleted;
+ if($('soloStatus'))$('soloStatus').textContent=soloHand.length?`${soloHand.length} cards ready. Choose a challenge when you see the shot.`:'Loading your Solo hand…';
 }
 async function loadSoloDeck(){
  const r=await sb.from('cards').select('*').eq('active',true).in('id',SOLO_CARD_IDS);
@@ -975,10 +990,9 @@ let soloPhotoData=null;
 function renderSoloHand(){
  if(!soloActive)return;
  const h=$('soloHand'); if(!h)return; h.innerHTML='';
- if(!soloHand.length){
-   h.innerHTML='<div class="panel" style="grid-column:1/-1"><strong>No Solo cards loaded.</strong><div class="small" style="margin-top:6px">Tap REFILL SOLO HAND. If this remains empty, the card deck did not load.</div></div>';
-   return;
- }
+ if($('soloEmptyHelp'))$('soloEmptyHelp').classList.toggle('on',!soloHand.length);
+ if($('soloStatus'))$('soloStatus').textContent=soloHand.length?`${soloHand.length} cards ready. Choose a challenge when you see the shot.`:'No Solo cards loaded.';
+ if(!soloHand.length)return;
  soloHand.forEach(c=>{
    const d=document.createElement('div'); d.className='solo-card';
    d.innerHTML=`<div class="small">${c.family||'CHALLENGE'} • ${Number(c.wing_points||0)} WP</div><h3>${c.title||'Challenge'}</h3><div>${c.challenge_text||''}</div><button type="button" class="solo-complete">CLAIM THIS CARD</button>`;
@@ -1003,8 +1017,10 @@ async function startSolo(){
  setTimeout(()=>renderSoloHand(),120);
 }
 function endSolo(){
+ const finalScore=soloScore, finalCompleted=soloCompleted;
  soloActive=false; soloHand=[]; saveSolo(); document.body.classList.remove('solo-hunt');
- renderSoloState(); go('home'); toast(`Solo Hunt finished — ${soloScore} WP`);
+ renderSoloState(); go('home'); refreshHomeLaunch();
+ toast(`Solo Hunt finished — ${finalScore} WP from ${finalCompleted} cards`);
 }
 
 
@@ -1019,6 +1035,7 @@ document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
  b.onclick=()=>{
    selectedHomeMode=b.dataset.mode;
    localStorage.setItem('sw_selected_mode',selectedHomeMode);
+   if(selectedHomeMode==='social' && soloActive){soloActive=false;saveSolo();document.body.classList.remove('solo-hunt');}
    renderHomeModePills();
    renderSoloState();
    if(!['social','solo'].includes(selectedHomeMode))toast(`${b.textContent} mode is coming next.`);
@@ -2669,13 +2686,14 @@ $('soloConfirmClaim').onclick=async()=>{
  history.unshift({card_id:c.id,title:c.title,wp:Number(c.wing_points||0),completed_at:new Date().toISOString()});
  localStorage.setItem('sw_solo_history',JSON.stringify(history.slice(0,50)));
  saveSolo();closeSoloClaim();toast(`Claim recorded — +${Number(c.wing_points||0)} WP`);
+ if($('soloStatus'))$('soloStatus').textContent=`Claim accepted: +${Number(c.wing_points||0)} WP. Drawing replacement card…`;
  await buildSoloHand(true);renderSoloState();
 };
 if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloState();}catch(e){console.error('Solo restore',e);}},900);}
 
-const _swGo=go;
+const _swGoCore=go;
 go=function(p,b){
-  _swGo(p,b);
+  _swGoCore(p,b);
   if(p==='solo'){
     renderSoloState();
     setTimeout(()=>renderSoloHand(),60);
@@ -2716,9 +2734,11 @@ window.go=go;
       </div>
     </div>
 
+    <div class="solo-status" id="soloStatus">Five cards ready. Choose a challenge when you see the shot.</div>
     <div class="panel">
       <div class="small">YOUR FIVE-CARD HAND</div>
       <div id="soloHand" class="solo-hand-grid"></div>
+      <div id="soloEmptyHelp" class="small" style="margin-top:10px">The deck did not load. Tap REFILL SOLO HAND once. If it remains empty, stop testing and report this screen.</div>
       <button id="soloPageRefill" type="button" class="btn alt" style="margin-top:12px">REFILL SOLO HAND</button>
     </div>
 
