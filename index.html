@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 SOLO 1.5</title>
+<title>SHUTTERWING v2.0 RC7 SOLO CANDIDATE 1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -545,8 +545,7 @@ body.solo-hunt #play #handpanel{
 
 
 /* RC7 SOLO 1.5 — true dedicated Solo page */
-#solo.page{display:none}
-#solo.page.active{display:block}
+
 .solo-page-shell{max-width:760px;margin:0 auto;padding:18px 18px 110px}
 .solo-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .solo-score-panel{display:flex;justify-content:space-between;align-items:end}
@@ -582,9 +581,14 @@ body.solo-hunt #home [id*="returngame" i]{
   display:none!important;
 }
 
+
+/* SOLO CANDIDATE 1 — structural separation */
+body.solo-hunt #home #homegamepanel{display:none!important}
+body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.5</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO CANDIDATE 1</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -901,8 +905,8 @@ function setHuntView(on){
 }
 
 if(homePlayLarge){
-  homePlayLarge.onclick=()=>{
-    if(soloActive){buildSoloHand(false);go('solo');setTimeout(()=>renderSoloHand(),120);return;}
+  homePlayLarge.onclick=async()=>{
+    if(soloActive){await buildSoloHand(false);go('solo');setTimeout(()=>renderSoloHand(),60);return;}
     if(!game){
       toast('Host or join a game first');
       return;
@@ -971,6 +975,10 @@ let soloPhotoData=null;
 function renderSoloHand(){
  if(!soloActive)return;
  const h=$('soloHand'); if(!h)return; h.innerHTML='';
+ if(!soloHand.length){
+   h.innerHTML='<div class="panel" style="grid-column:1/-1"><strong>No Solo cards loaded.</strong><div class="small" style="margin-top:6px">Tap REFILL SOLO HAND. If this remains empty, the card deck did not load.</div></div>';
+   return;
+ }
  soloHand.forEach(c=>{
    const d=document.createElement('div'); d.className='solo-card';
    d.innerHTML=`<div class="small">${c.family||'CHALLENGE'} • ${Number(c.wing_points||0)} WP</div><h3>${c.title||'Challenge'}</h3><div>${c.challenge_text||''}</div><button type="button" class="solo-complete">CLAIM THIS CARD</button>`;
@@ -2666,10 +2674,14 @@ $('soloConfirmClaim').onclick=async()=>{
 if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloState();}catch(e){console.error('Solo restore',e);}},900);}
 
 const _swGo=go;
-go=function(p){
-  _swGo(p);
-  if(p==='solo'){renderSoloState();setTimeout(()=>renderSoloHand(),60);}
+go=function(p,b){
+  _swGo(p,b);
+  if(p==='solo'){
+    renderSoloState();
+    setTimeout(()=>renderSoloHand(),60);
+  }
 };
+window.go=go;
 </script><div id="soloClaimModal" class="solo-claim-modal" style="display:none">
  <div class="solo-claim-card">
   <div class="small">SOLO PHOTO CLAIM</div><h2 id="soloClaimTitle">Challenge</h2>
@@ -2683,7 +2695,7 @@ go=function(p){
  </div>
 </div>
 
-<section id="solo" class="page">
+<section id="solo" class="screen">
   <div class="solo-page-shell">
     <div class="solo-topbar">
       <div>
