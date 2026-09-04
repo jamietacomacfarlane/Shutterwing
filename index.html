@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC1</title>
+<title>SHUTTERWING CORE RC2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC1 — consolidated Social + Solo core */
+/* CORE RC2 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -600,9 +600,14 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp{display:none}
 #soloEmptyHelp.on{display:block}
 
+
+/* CORE RC2 — Solo completion + local results */
+.solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC1</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC2</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -668,6 +673,17 @@ body.solo-hunt #play .solo-only-title{display:none!important}
   <div class="small">Five challenge cards. No voting and no sabotage. Complete a card, score its WP and draw another.</div>
   <button id="startSoloHunt" type="button" class="btn" style="margin-top:12px">START SOLO HUNT</button>
   <button id="endSoloHunt" type="button" class="btn alt" style="display:none;margin-top:8px">END SOLO HUNT</button>
+</div>
+
+<div id="soloResultsPanel" class="panel" style="display:none">
+  <div class="small">LAST SOLO HUNT</div>
+  <h3 style="margin:4px 0 10px">Hunt complete</h3>
+  <div class="solo-result-grid">
+    <div><div class="small">SCORE</div><strong id="soloLastScore">0 WP</strong></div>
+    <div><div class="small">CARDS</div><strong id="soloLastCompleted">0</strong></div>
+    <div><div class="small">BEST</div><strong id="soloBestScore">0 WP</strong></div>
+  </div>
+  <div id="soloRecentClaims" class="small" style="margin-top:10px"></div>
 </div>
 
 <div class="hero compact-profile"><h2 id="hello">Ready to go birding?</h2><p>Your profile settings are below.</p></div>
@@ -1016,10 +1032,36 @@ async function startSolo(){
  await buildSoloHand(true); go('solo');
  setTimeout(()=>renderSoloHand(),120);
 }
+
+function loadSoloResults(){
+ let last=null,best=0,hist=[];
+ try{last=JSON.parse(localStorage.getItem('sw_solo_last_result')||'null');}catch(e){}
+ best=Number(localStorage.getItem('sw_solo_best_score')||0);
+ try{hist=JSON.parse(localStorage.getItem('sw_solo_history')||'[]');}catch(e){hist=[];}
+ const panel=$('soloResultsPanel');
+ if(panel)panel.style.display=last?'block':'none';
+ if(!last)return;
+ if($('soloLastScore'))$('soloLastScore').textContent=`${Number(last.score||0)} WP`;
+ if($('soloLastCompleted'))$('soloLastCompleted').textContent=Number(last.completed||0);
+ if($('soloBestScore'))$('soloBestScore').textContent=`${Math.max(best,Number(last.score||0))} WP`;
+ const recent=Array.isArray(hist)?hist.slice(0,3):[];
+ if($('soloRecentClaims'))$('soloRecentClaims').textContent=recent.length
+   ? 'Recent claims: '+recent.map(x=>`${x.title} (+${Number(x.wp||0)})`).join(' • ')
+   : 'No recorded claims yet.';
+}
+function saveSoloResult(score,completed){
+ const result={score:Number(score||0),completed:Number(completed||0),ended_at:new Date().toISOString()};
+ localStorage.setItem('sw_solo_last_result',JSON.stringify(result));
+ const best=Math.max(Number(localStorage.getItem('sw_solo_best_score')||0),result.score);
+ localStorage.setItem('sw_solo_best_score',String(best));
+ loadSoloResults();
+}
+
 function endSolo(){
  const finalScore=soloScore, finalCompleted=soloCompleted;
+ saveSoloResult(finalScore,finalCompleted);
  soloActive=false; soloHand=[]; saveSolo(); document.body.classList.remove('solo-hunt');
- renderSoloState(); go('home'); refreshHomeLaunch();
+ renderSoloState(); go('home'); refreshHomeLaunch(); loadSoloResults();
  toast(`Solo Hunt finished — ${finalScore} WP from ${finalCompleted} cards`);
 }
 
@@ -1043,6 +1085,7 @@ document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
 });
 renderHomeModePills();
 renderSoloState();
+loadSoloResults();
 if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
 if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
 if($('soloRefillHand'))$('soloRefillHand').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
@@ -1101,6 +1144,7 @@ if($('homeDashboardManage')){
 function refreshHomeLaunch(){
   refreshHomeDashboard();
   renderSoloState();
+  loadSoloResults();
   if(!homePlayLarge||!homePlayNote)return;
   if(soloActive){homePlayLarge.textContent='RETURN TO SOLO HUNT';homePlayNote.textContent='Your solo hand is waiting.';return;}
   if(game && game.status==='active'){
