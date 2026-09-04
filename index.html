@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC10</title>
+<title>SHUTTERWING CORE RC11</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC10 — consolidated Social + Solo core */
+/* CORE RC11 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC10 — Solo completion + local results */
+/* CORE RC11 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC10 — cleaner live Hunt */
+/* CORE RC11 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC10 — Solo isolation + compact Home */
+/* CORE RC11 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,37 +631,61 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC10 — navigation gating + release-mode discipline */
+/* CORE RC11 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CORE RC10 — single authoritative navigation router */
+/* CORE RC11 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* CORE RC10 — Solo UI is now structurally inside the main app shell */
+/* CORE RC11 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* CORE RC10 — release-safe PLAY/WILD handling */
+/* CORE RC11 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
+
+/* CORE RC11 — beta/release readiness */
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
+.connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
+.connection-badge.offline{color:#f3b3aa;background:rgba(193,75,58,.12);border-color:rgba(193,75,58,.45)}
+.beta-banner{margin:12px 0;padding:10px 12px;border-radius:12px;background:rgba(73,168,220,.08);border:1px solid rgba(73,168,220,.28);display:flex;gap:10px;align-items:center}
+.beta-banner strong{font-size:11px;letter-spacing:.6px}
+.beta-banner span{font-size:11px;color:var(--muted)}
+.settings-divider{height:1px;background:var(--line);margin:16px 0}
+.beta-copy{line-height:1.45}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC10</span></div></header>
+<header>
+  <div class="header-row">
+    <div>
+      <div class="logo">SHUTTERWING™</div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC11</span></div>
+    </div>
+    <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
+  </div>
+</header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
 
 <section id="home" class="screen">
+<div class="beta-banner">
+  <strong>CORE BETA</strong>
+  <span>Social + Solo are active. Other modes stay locked until the core is stable.</span>
+</div>
 <div class="home-launch">
   <button id="homePlayLarge" class="home-launch-button" type="button">PLAY SHUTTERWING</button>
   <div id="homePlayNote" class="home-launch-note">Host or join a game, then head straight into the hunt.</div>
@@ -747,7 +771,26 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
     <div class="panel" id="profileSettingsTogglePanel">
   <button id="toggleProfileSettings" type="button" class="btn alt" style="width:100%">PROFILE / SETTINGS</button>
 </div>
-<div class="panel" id="profileSettingsPanel" style="display:none"><h3>Player name</h3><input id="name" placeholder="Jamie"><button id="saveName" class="btn alt">SAVE NAME</button></div></section>
+<div class="panel" id="profileSettingsPanel" style="display:none">
+  <h3>Player name</h3>
+  <input id="name" placeholder="Jamie">
+  <button id="saveName" class="btn alt">SAVE NAME</button>
+
+  <div class="settings-divider"></div>
+  <div class="small">BETA STATUS</div>
+  <h3 style="margin-top:4px">SHUTTERWING Core Beta</h3>
+  <div class="small">Social multiplayer and Solo Hunt are the supported core modes in this build.</div>
+
+  <div class="settings-divider"></div>
+  <div class="small">WILDLIFE FIRST</div>
+  <div class="small beta-copy">Do not disturb nests, flush birds, bait wildlife or enter restricted areas for a challenge. A missed card is always better than stressing a bird.</div>
+
+  <div class="settings-divider"></div>
+  <div class="small">SUPPORT / RECOVERY</div>
+  <button id="copyDiagnostics" class="btn alt" type="button">COPY DIAGNOSTICS</button>
+  <button id="clearLocalGameState" class="btn alt" type="button">CLEAR LOCAL GAME SESSION</button>
+  <div class="small">Recovery clears only this device's current local game/session state. It does not delete your profile or Feather Points.</div>
+</div></section>
 
 <section id="play" class="screen">
 <div class="play-clean-header">
@@ -1627,11 +1670,77 @@ function showWildFlash(c,thenDo){
     thenDo();
   };
 }
+
+function updateConnectionBadge(){
+ const badge=$('connectionBadge');
+ if(!badge)return;
+ const online=navigator.onLine;
+ badge.textContent=online?'ONLINE':'OFFLINE';
+ badge.classList.toggle('online',online);
+ badge.classList.toggle('offline',!online);
+}
+window.addEventListener('online',()=>{updateConnectionBadge();toast('Connection restored');});
+window.addEventListener('offline',()=>{updateConnectionBadge();toast('You are offline');});
+updateConnectionBadge();
+
+function getBuildDiagnostics(){
+ const lastError=localStorage.getItem('sw_last_error')||'none';
+ return [
+   'SHUTTERWING CORE RC11',
+   `online=${navigator.onLine}`,
+   `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
+   `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
+   `gameId=${localStorage.getItem('swgame')||'none'}`,
+   `user=${user?.id||'not-connected'}`,
+   `lastError=${lastError}`,
+   `ua=${navigator.userAgent}`
+ ].join('\n');
+}
+
+window.addEventListener('error',e=>{
+ try{localStorage.setItem('sw_last_error',String(e.message||'Unknown error').slice(0,300));}catch(_){}
+});
+window.addEventListener('unhandledrejection',e=>{
+ try{localStorage.setItem('sw_last_error',String(e.reason?.message||e.reason||'Unhandled rejection').slice(0,300));}catch(_){}
+});
+
+async function copyDiagnostics(){
+ const text=getBuildDiagnostics();
+ try{
+   await navigator.clipboard.writeText(text);
+   toast('Diagnostics copied');
+ }catch(e){
+   prompt('Copy diagnostics:',text);
+ }
+}
+
+function clearLocalGameState(){
+ const keys=[
+   'swgame','sw_solo_active','sw_solo_hand','sw_solo_score',
+   'sw_solo_completed','sw_selected_mode'
+ ];
+ keys.forEach(k=>localStorage.removeItem(k));
+ soloActive=false;
+ soloHand=[];
+ soloScore=0;
+ soloCompleted=0;
+ selectedHomeMode='social';
+ document.body.classList.remove('solo-hunt','hunt-active');
+ game=null;
+ active=null;
+ resetGameSpecificUI();
+ renderHomeModePills();
+ renderSoloState();
+ refreshHomeLaunch();
+ go('home',$('navHome'));
+ toast('Local game session cleared');
+}
+
 async function connect(){
  try{
   const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
   let s=(await sb.auth.getSession()).data.session;if(!s){let r=await sb.auth.signInAnonymously({options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}});if(r.error)throw r.error}
-  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;await getProfile();$('nav').style.display='flex';$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
+  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;updateConnectionBadge();await getProfile();$('nav').style.display='flex';$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
  }catch(e){$('setupmsg').innerHTML='<div class="msg">'+e.message+'</div>'}
 }
 $('connect').onclick=connect;
@@ -3046,6 +3155,12 @@ if($('homeDashboardManage')){
    go('play');
  };
 }
+
+
+if($('copyDiagnostics'))$('copyDiagnostics').onclick=copyDiagnostics;
+if($('clearLocalGameState'))$('clearLocalGameState').onclick=()=>{
+ if(confirm('Clear this device’s current SHUTTERWING game/session state? Your profile and Feather Points will stay intact.'))clearLocalGameState();
+};
 
 </script>
 </body></html>
