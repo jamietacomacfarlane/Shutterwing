@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING PRIVATE BETA 1</title>
+<title>SHUTTERWING PRIVATE BETA 2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* PRIVATE BETA 1 — consolidated Social + Solo core */
+/* PRIVATE BETA 2 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* PRIVATE BETA 1 — Solo completion + local results */
+/* PRIVATE BETA 2 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* PRIVATE BETA 1 — cleaner live Hunt */
+/* PRIVATE BETA 2 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* PRIVATE BETA 1 — Solo isolation + compact Home */
+/* PRIVATE BETA 2 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* PRIVATE BETA 1 — navigation gating + release-mode discipline */
+/* PRIVATE BETA 2 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* PRIVATE BETA 1 — single authoritative navigation router */
+/* PRIVATE BETA 2 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* PRIVATE BETA 1 — Solo UI is now structurally inside the main app shell */
+/* PRIVATE BETA 2 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* PRIVATE BETA 1 — release-safe PLAY/WILD handling */
+/* PRIVATE BETA 2 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* PRIVATE BETA 1 — beta/release readiness */
+/* PRIVATE BETA 2 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* PRIVATE BETA 1 — first-run onboarding */
+/* PRIVATE BETA 2 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* PRIVATE BETA 1 — pre-hunt wildlife reminder */
+/* PRIVATE BETA 2 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* PRIVATE BETA 1 — personality + feedback */
+/* PRIVATE BETA 2 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -716,7 +716,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
 
-/* PRIVATE BETA 1 — tester notice + end-of-hunt polish */
+/* PRIVATE BETA 2 — tester notice + end-of-hunt polish */
 .beta-notice-card{max-width:650px}
 .beta-notice-lead{color:var(--muted);line-height:1.45}
 .beta-notice-box{display:grid;gap:9px;margin:14px 0}
@@ -735,13 +735,24 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 .results-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 @media(max-width:560px){.results-grid,.results-actions{grid-template-columns:1fr}}
 
+
+/* PRIVATE BETA 2 tester fixes */
+.game-rules{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(73,168,220,.07);display:grid;gap:6px;line-height:1.4}
+.game-rules strong{color:#dfff98;letter-spacing:.4px}
+#joinGame,#joinPublicGame,#joinPrivateGame{min-height:54px;font-size:16px;font-weight:900}
+@media(max-width:700px){
+ #play input,#play select{font-size:16px;min-height:48px}
+ #joinGame,#joinPublicGame,#joinPrivateGame{position:relative;z-index:5;width:100%;margin-bottom:8px}
+ #play{padding-bottom:120px}
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">PRIVATE BETA 1</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">PRIVATE BETA 2</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1180,7 +1191,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
     <label class="small" for="feedbackEmail">EMAIL — OPTIONAL</label>
     <input id="feedbackEmail" type="email" placeholder="Only if you'd like a reply">
     <div id="feedbackPrepared" class="small feedback-prepared">Diagnostics will be attached when you copy the report.</div>
-    <button id="copyFeedbackReport" type="button" class="btn main">COPY FEEDBACK REPORT</button>
+    <button id="copyFeedbackReport" type="button" class="btn main">SEND / SHARE FEEDBACK</button>
     <button id="closeFeedback" type="button" class="btn alt">CLOSE</button>
   </div>
 </div>
@@ -1197,6 +1208,11 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 <div>Stay out of restricted areas and respect private property.</div>
 <div>If an animal changes its behaviour because of you, move back or leave.</div>
 </div>
+<div class="game-rules"><strong>THE SIMPLE RULES</strong>
+<div>• Keep five cards in your hand.</div><div>• One photograph claims one challenge card.</div>
+<div>• The photo must genuinely match the challenge.</div><div>• In Social, the other player votes on your claim.</div>
+<div>• Accepted claims earn the Wing Points printed on the card.</div>
+<div>• Never put wildlife, yourself or other people at risk for a card.</div></div>
 <div class="wildlife-reminder"><strong>SHUTTERWING rule:</strong> Missing the shot is always better than disturbing the wildlife.</div>
 <button id="acceptWildlifeSafety" type="button" class="btn main" style="margin-top:14px">I AGREE — CONTINUE</button>
 <button id="cancelWildlifeSafety" type="button" class="btn alt" style="margin-top:8px">GO BACK</button>
@@ -1212,17 +1228,17 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
     </div>
 
     <div id="howtoSoloPanel" class="howto-panel">
-      <div class="howto-step"><strong>1. Pick a card</strong><span>Keep five challenges open and choose one when you see the shot.</span></div>
-      <div class="howto-step"><strong>2. Take or choose a photo</strong><span>Use a new photo or one already on your device.</span></div>
-      <div class="howto-step"><strong>3. Claim it</strong><span>Solo uses self-verification. Only claim photos that genuinely meet the challenge.</span></div>
-      <div class="howto-step"><strong>4. Score and keep hunting</strong><span>Wing Points are added and a replacement card returns your hand to five.</span></div>
+      <div class="howto-step"><strong>1. Pick a card</strong><span>You hunt from five visible cards. Choose a challenge that matches a bird or scene you can photograph safely.</span></div>
+      <div class="howto-step"><strong>2. Take or choose a photo</strong><span>Take a new photo or choose one already on your device. It should genuinely meet the challenge.</span></div>
+      <div class="howto-step"><strong>3. Claim it</strong><span>Check the photo yourself. If it genuinely meets the challenge, press CLAIM IT. Otherwise choose RETRY PHOTO.</span></div>
+      <div class="howto-step"><strong>4. Score and keep hunting</strong><span>A successful claim earns the printed Wing Points and a replacement card returns your hand to five.</span></div>
     </div>
 
     <div id="howtoSocialPanel" class="howto-panel" style="display:none">
-      <div class="howto-step"><strong>1. Host or join</strong><span>Create a public/private game or join another photographer.</span></div>
-      <div class="howto-step"><strong>2. Hunt from your five-card hand</strong><span>Photograph a challenge, submit the photo and wait for the other player’s vote.</span></div>
-      <div class="howto-step"><strong>3. Use PLAY and supported WILD cards</strong><span>PLAY cards can affect opponents. Unsupported future mechanics remain locked in beta.</span></div>
-      <div class="howto-step"><strong>4. Build your score</strong><span>Accepted claims add Wing Points. The hand refills as you play.</span></div>
+      <div class="howto-step"><strong>1. Host or join</strong><span>One player HOSTS. The other JOINS with the game code. Both press READY; then the host starts the hunt.</span></div>
+      <div class="howto-step"><strong>2. Hunt from your five-card hand</strong><span>Choose one of your five cards, photograph the challenge and submit it. The other player accepts or rejects the claim.</span></div>
+      <div class="howto-step"><strong>3. Use PLAY and supported WILD cards</strong><span>PLAY cards add friendly interference. Follow the instruction on the card. Future WILD mechanics stay locked during beta.</span></div>
+      <div class="howto-step"><strong>4. Build your score</strong><span>Accepted claims earn Wing Points and the used challenge is replaced so you keep five cards.</span></div>
     </div>
 
     <div class="wildlife-reminder">
@@ -1279,17 +1295,27 @@ function setHuntView(on){
 
 if(homePlayLarge){
   async function launchHomePlay(){
-    if(soloActive){await buildSoloHand(false);go('solo',$('navPlay'));return;}
-    if(!game){
-      toast('Host or join a game first');
+    if(selectedHomeMode==='social'){
+      if(soloActive){
+        soloActive=false; soloHand=[]; soloScore=0; soloCompleted=0;
+        localStorage.setItem('sw_solo_active','0');
+        localStorage.removeItem('sw_solo_hand');
+        localStorage.removeItem('sw_solo_score');
+        localStorage.removeItem('sw_solo_completed');
+        document.body.classList.remove('solo-hunt');
+        saveSolo();
+      }
+      go('play',$('navPlay'));
       return;
     }
-    if(game.status==='lobby'){
-      toast('The game is still in the lobby');
-      return;
+    if(selectedHomeMode==='solo'){
+      if(soloActive){await buildSoloHand(false);go('solo',$('navPlay'));return;}
+      soloActive=true;soloScore=0;soloCompleted=0;soloHand=[];
+      document.body.classList.add('solo-hunt');
+      await buildSoloHand(true);saveSolo();renderSoloState();go('solo',$('navPlay'));
+      setTimeout(()=>renderSoloHand(),80);toast('Solo Hunt started — five cards ready');return;
     }
-    setHuntView(true);
-    go('play');
+    toast(`${selectedHomeMode.toUpperCase()} mode is coming next.`);
   };
 }
 
@@ -1509,17 +1535,18 @@ renderSoloState();
 loadSoloResults();
 setTimeout(()=>refreshHomeLaunch(),0);
 if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
-if($('endSoloHunt'))$('endSoloHunt').onclick=()=>{
+function finishSoloHunt(){
  const finalScore=Number(soloScore||0);
  const finalCompleted=Number(soloCompleted||0);
  const oldBest=Number(localStorage.getItem('sw_solo_best')||0);
- showHuntResults(finalScore,finalCompleted,oldBest);
  soloActive=false;
  document.body.classList.remove('solo-hunt');
  localStorage.setItem('sw_solo_active','0');
  saveSolo();
  refreshHomeLaunch();
-};
+ showHuntResults(finalScore,finalCompleted,oldBest);
+}
+if($('endSoloHunt'))$('endSoloHunt').onclick=finishSoloHunt;
 
 function familySlug(c){
   const f=(c.family||'').toLowerCase().replace(/\s+/g,'-');
@@ -1593,7 +1620,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING PRIVATE BETA 1',
+   'SHUTTERWING PRIVATE BETA 2',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -1718,13 +1745,18 @@ function buildFeedbackReport(){
 }
 async function copyFeedbackReport(){
  const text=buildFeedbackReport();
- try{
-  await navigator.clipboard.writeText(text);
-  if($('feedbackPrepared'))$('feedbackPrepared').textContent='Feedback report copied — ready to paste into a message.';
-  toast('Feedback report copied');
- }catch(e){
-  prompt('Copy this feedback report:',text);
+ if(navigator.share){
+   try{
+     await navigator.share({title:'SHUTTERWING Beta Feedback',text});
+     if($('feedbackPrepared'))$('feedbackPrepared').textContent='Thanks — feedback was shared from your device.';
+     return;
+   }catch(e){if(e?.name==='AbortError')return;}
  }
+ try{
+   await navigator.clipboard.writeText(text);
+   if($('feedbackPrepared'))$('feedbackPrepared').textContent='Feedback copied. Paste it into Messages or email to Jamie.';
+   toast('Feedback copied');
+ }catch(e){prompt('Copy this feedback report:',text);}
 }
 
 let pendingSafetyAction=null;
