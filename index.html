@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC9</title>
+<title>SHUTTERWING CORE RC10</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC9 — consolidated Social + Solo core */
+/* CORE RC10 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC9 — Solo completion + local results */
+/* CORE RC10 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC9 — cleaner live Hunt */
+/* CORE RC10 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC9 — Solo isolation + compact Home */
+/* CORE RC10 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,26 +631,32 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC9 — navigation gating + release-mode discipline */
+/* CORE RC10 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CORE RC9 — single authoritative navigation router */
+/* CORE RC10 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* CORE RC9 — Solo UI is now structurally inside the main app shell */
+/* CORE RC10 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
+
+/* CORE RC10 — release-safe PLAY/WILD handling */
+.carddisabled{opacity:.58;filter:saturate(.6)}
+.carddisabled .maincardbtn{cursor:not-allowed}
+.release-note{margin-top:8px;opacity:.72}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC9</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC10</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -766,7 +772,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 <label class="small"><input id="newlatejoin" type="checkbox" checked style="width:auto;margin-right:8px"> Allow players to join after the hunt starts</label>
 <button id="createpublic" class="btn">HOST PUBLIC GAME</button>
 <button id="create" class="btn alt">HOST PRIVATE GAME</button>
-<div class="small">Public games appear in the lobby. Private games can only be joined with the 6-character code.</div>
+<div class="small">Public games appear in the lobby. Private games can only be joined with the 6-character code.</div><div class="small release-note">Core release currently supports Social multiplayer plus Solo Hunt. Family, Wild, Serious and Quick variants remain locked until the core game is stable.</div>
 </div>
 <div class="panel"><h3>Public games</h3>
 <div class="small">Open games you can join right now.</div>
@@ -1358,6 +1364,16 @@ function refreshHomeLaunch(){
   }
 }
 
+
+const SUPPORTED_PLAY_ACTIONS=new Set(['M01','M02','M03','M04','M05','M06','M07','M08']);
+const SUPPORTED_WILDS=new Set(['WW01','WW02','WW03','W03']);
+function cardMechanicSupported(c){
+ if(!c)return false;
+ if(c.card_type==='action')return SUPPORTED_PLAY_ACTIONS.has(c.id);
+ if(c.card_type==='wild'||c.card_type==='special')return SUPPORTED_WILDS.has(c.id);
+ return true;
+}
+
 function artMark(c){
   const marks={
     'M01':'MYNA','M02':'PERCH','M03':'NOT!','M04':'MOB','M05':'MOVE','M06':'SWOOP','M07':'JAM','M08':'FLOCK',
@@ -1893,11 +1909,13 @@ async function loadHand(){
    const isWild=c.card_type==='wild';
    const isSpecial=c.card_type==='special';
    const wildPhotoClaim=c.id==='WW03';
-   d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')));
-   const buttonLabel=wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM'));
-   d.innerHTML=`<div class="cardfamilyflag"><span class="cardfamilydot"></span>${familyLabel(c)} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn">${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   const mechanicSupported=cardMechanicSupported(c);
+   d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')))+(!mechanicSupported?' carddisabled':'');
+   const buttonLabel=!mechanicSupported?'COMING SOON':(wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM')));
+   d.innerHTML=`<div class="cardfamilyflag"><span class="cardfamilydot"></span>${familyLabel(c)} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn" ${!mechanicSupported?'disabled':''}>${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
    d.querySelector('.maincardbtn').onclick=()=>{
      const act=()=>{
+       if(!mechanicSupported){toast('This card is reserved for a later release.');return;}
        if(wildPhotoClaim){
          active={pc,c};
          sessionStorage.setItem('sw_active_player_card',pc.id);
@@ -1953,10 +1971,16 @@ async function chooseOpponent(){
 }
 async function playActionCard(pc,c){
  if(!game)return toast('Open a game first');
+ if(!cardMechanicSupported(c))return toast('That card is not enabled in this release.');
+ const cardButton=[...document.querySelectorAll('.maincardbtn')].find(b=>b.closest('.card')?.textContent?.includes(c.title));
+ if(cardButton){cardButton.disabled=true;cardButton.textContent='PLAYING…';}
  let target=null;
  if(['M01','M02','M04','M05','M06','M07'].includes(c.id)){
    target=await chooseOpponent();
-   if(!target)return;
+   if(!target){
+     if(cardButton){cardButton.disabled=false;cardButton.textContent='PLAY CARD';}
+     return;
+   }
  }
  const r=await sb.rpc('play_shutterwing_action',{
    p_game_id:game.id,
@@ -1964,7 +1988,10 @@ async function playActionCard(pc,c){
    p_target_user_id:target,
    p_extra:{}
  });
- if(r.error)return toast(r.error.message);
+ if(r.error){
+   if(cardButton){cardButton.disabled=false;cardButton.textContent=c.card_type==='wild'?'PLAY WILD':'PLAY CARD';}
+   return toast(r.error.message);
+ }
 
  // Preserve the PLAY-card slot: replace a used action/special/wild card
  // with another PLAY card instead of a random photo challenge.
