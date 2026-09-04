@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC4</title>
+<title>SHUTTERWING CORE RC5</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC4 — consolidated Social + Solo core */
+/* CORE RC5 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC4 — Solo completion + local results */
+/* CORE RC5 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC4 — cleaner live Hunt */
+/* CORE RC5 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC4 — Solo isolation + compact Home */
+/* CORE RC5 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -630,9 +630,16 @@ body.solo-hunt #claims{display:none!important}
 #profileSettingsPanel{margin-top:0}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
+
+/* CORE RC5 — navigation gating + release-mode discipline */
+#homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
+#homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
+body.solo-hunt #claimsnav{display:inline-block!important}
+body.solo-hunt #navPlay{color:#dfff98}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC4</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC5</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -685,10 +692,10 @@ body.solo-hunt #claims{display:none!important}
   <div class="home-game-mode" id="homeModePills">
     <button class="home-mode-pill active" data-mode="social" type="button">SOCIAL</button>
     <button class="home-mode-pill" data-mode="solo" type="button">SOLO</button>
-    <button class="home-mode-pill" data-mode="family" type="button">FAMILY</button>
-    <button class="home-mode-pill" data-mode="wild" type="button">WILD</button>
-    <button class="home-mode-pill" data-mode="serious" type="button">SERIOUS</button>
-    <button class="home-mode-pill" data-mode="quick" type="button">QUICK</button>
+    <button class="home-mode-pill" data-mode="family" data-unreleased="1" type="button">FAMILY</button>
+    <button class="home-mode-pill" data-mode="wild" data-unreleased="1" type="button">WILD</button>
+    <button class="home-mode-pill" data-mode="serious" data-unreleased="1" type="button">SERIOUS</button>
+    <button class="home-mode-pill" data-mode="quick" data-unreleased="1" type="button">QUICK</button>
   </div>
   <div class="small" id="modeHelp" style="margin-top:8px">SOCIAL is multiplayer. SOLO starts a one-photographer hunt.</div>
 </div>
@@ -950,23 +957,37 @@ body.solo-hunt #claims{display:none!important}
   </div>
 </div>
 
-<div id="nav" class="nav" style="display:none"><div class="navin"><button class="on" onclick="go('home',this)">HOME</button><button onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button onclick="go('passport',this)">PASSPORT</button></div></div>
+<div id="nav" class="nav" style="display:none"><div class="navin"><button id="navHome" class="on" onclick="go('home',this)">HOME</button><button id="navPlay" onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button id="navPassport" onclick="go('passport',this)">PASSPORT</button></div></div>
 
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const $=x=>document.getElementById(x);let sb,user,profile,game,hand=[],active,channel;
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
 function go(id,b){
- if(typeof soloActive!=='undefined' && soloActive && id==='claims') id='solo';
+ if(typeof soloActive!=='undefined' && soloActive){
+   if(id==='play' || id==='claims') id='solo';
+ }
  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
- $(id).classList.add('on');
+ const target=$(id);
+ if(!target){toast('That screen is unavailable.');return;}
+ target.classList.add('on');
  if(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+ if(id==='solo'){
+   if($('navPlay')){
+     document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));
+     $('navPlay').classList.add('on');
+   }
+   renderSoloState();
+   renderSoloClaimHistory();
+   setTimeout(()=>renderSoloHand(),40);
+ }
  if(id==='passport')passport();
  if(id==='claims'){renderActiveClaim();pending()}
 }
 
 const _coreNavGo=go;
 go=function(id,b){
+ if(soloActive && (id==='play'||id==='claims')) id='solo';
  if(id==='play' && !soloActive)setHuntView(!!game && game.status==='active');
  if(id!=='play' && id!=='claims')setHuntView(false);
  _coreNavGo(id,b);
@@ -1008,6 +1029,7 @@ if(playBackHome){
 
 
 let selectedHomeMode=localStorage.getItem('sw_selected_mode')||'social';
+if(!['social','solo'].includes(selectedHomeMode)){selectedHomeMode='social';localStorage.setItem('sw_selected_mode','social');}
 
 let soloActive=localStorage.getItem('sw_solo_active')==='1';
 let soloScore=Number(localStorage.getItem('sw_solo_score')||0);
@@ -1129,8 +1151,10 @@ function saveSoloResult(score,completed){
 function endSolo(){
  const finalScore=soloScore, finalCompleted=soloCompleted;
  saveSoloResult(finalScore,finalCompleted);
- soloActive=false; soloHand=[]; saveSolo(); document.body.classList.remove('solo-hunt');
- renderSoloState(); renderSoloClaimHistory(); go('home'); refreshHomeLaunch(); loadSoloResults();
+ soloActive=false; soloHand=[]; selectedHomeMode='social';
+ localStorage.setItem('sw_selected_mode','social');
+ saveSolo(); document.body.classList.remove('solo-hunt');
+ renderHomeModePills(); renderSoloState(); renderSoloClaimHistory(); go('home'); refreshHomeLaunch(); loadSoloResults();
  toast(`Solo Hunt finished — ${finalScore} WP from ${finalCompleted} cards`);
 }
 
@@ -1144,12 +1168,19 @@ function renderHomeModePills(){
 
 document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
  b.onclick=()=>{
-   selectedHomeMode=b.dataset.mode;
+   const requested=b.dataset.mode;
+   if(b.dataset.unreleased==='1'){
+     toast(`${b.textContent.replace(' • SOON','')} mode is coming after the core release.`);
+     return;
+   }
+   if(soloActive && requested==='social'){
+     toast('End the current Solo Hunt before switching to Social.');
+     return;
+   }
+   selectedHomeMode=requested;
    localStorage.setItem('sw_selected_mode',selectedHomeMode);
-   if(selectedHomeMode==='social' && soloActive){soloActive=false;saveSolo();document.body.classList.remove('solo-hunt');}
    renderHomeModePills();
    renderSoloState();
-   if(!['social','solo'].includes(selectedHomeMode))toast(`${b.textContent} mode is coming next.`);
  };
 });
 renderHomeModePills();
@@ -2843,6 +2874,14 @@ if($('toggleProfileSettings')){
  $('toggleProfileSettings').onclick=()=>{
    const p=$('profileSettingsPanel');
    setProfileSettingsOpen(!(p&&p.style.display==='block'));
+ };
+}
+
+
+if($('homeDashboardManage')){
+ $('homeDashboardManage').onclick=()=>{
+   if(soloActive || selectedHomeMode==='solo'){go('solo');return;}
+   go('play');
  };
 }
 
