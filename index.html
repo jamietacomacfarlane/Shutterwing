@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING PRIVATE BETA 4</title>
+<title>SHUTTERWING PRIVATE BETA 5</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* PRIVATE BETA 4 — consolidated Social + Solo core */
+/* PRIVATE BETA 5 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* PRIVATE BETA 4 — Solo completion + local results */
+/* PRIVATE BETA 5 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* PRIVATE BETA 4 — cleaner live Hunt */
+/* PRIVATE BETA 5 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* PRIVATE BETA 4 — Solo isolation + compact Home */
+/* PRIVATE BETA 5 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* PRIVATE BETA 4 — navigation gating + release-mode discipline */
+/* PRIVATE BETA 5 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* PRIVATE BETA 4 — single authoritative navigation router */
+/* PRIVATE BETA 5 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* PRIVATE BETA 4 — Solo UI is now structurally inside the main app shell */
+/* PRIVATE BETA 5 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* PRIVATE BETA 4 — release-safe PLAY/WILD handling */
+/* PRIVATE BETA 5 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* PRIVATE BETA 4 — beta/release readiness */
+/* PRIVATE BETA 5 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* PRIVATE BETA 4 — first-run onboarding */
+/* PRIVATE BETA 5 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* PRIVATE BETA 4 — pre-hunt wildlife reminder */
+/* PRIVATE BETA 5 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* PRIVATE BETA 4 — personality + feedback */
+/* PRIVATE BETA 5 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -716,7 +716,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
 
-/* PRIVATE BETA 4 — tester notice + end-of-hunt polish */
+/* PRIVATE BETA 5 — tester notice + end-of-hunt polish */
 .beta-notice-card{max-width:650px}
 .beta-notice-lead{color:var(--muted);line-height:1.45}
 .beta-notice-box{display:grid;gap:9px;margin:14px 0}
@@ -736,7 +736,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.results-grid,.results-actions{grid-template-columns:1fr}}
 
 
-/* PRIVATE BETA 4 tester fixes */
+/* PRIVATE BETA 5 tester fixes */
 .game-rules{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(73,168,220,.07);display:grid;gap:6px;line-height:1.4}
 .game-rules strong{color:#dfff98;letter-spacing:.4px}
 #joinGame,#joinPublicGame,#joinPrivateGame{min-height:54px;font-size:16px;font-weight:900}
@@ -754,7 +754,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">PRIVATE BETA 4</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">PRIVATE BETA 5</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1654,7 +1654,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING PRIVATE BETA 4',
+   'SHUTTERWING PRIVATE BETA 5',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -1834,13 +1834,74 @@ function safeRefreshHomeUI(){
 }
 
 async function connect(){
+ const msg=$('setupmsg');
  try{
-  const url=$('url').value.trim(),key=$('key').value.trim();localStorage.setItem('swurl',url);localStorage.setItem('swkey',key);sb=createClient(url,key,{auth:{persistSession:true}});
-  let s=(await sb.auth.getSession()).data.session;if(!s){let r=await sb.auth.signInAnonymously({options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}});if(r.error)throw r.error}
-  let u=await sb.auth.getUser();if(u.error)throw u.error;user=u.data.user;updateConnectionBadge();await getProfile();$('nav').style.display='flex';maybeShowPrivateBetaNotice();setTimeout(()=>{if(localStorage.getItem('sw_private_beta_ack')==='1')maybeShowFirstRunGuide();},250);$('setupmsg').innerHTML='<div class="msg">Connected.</div>';let gid=localStorage.getItem('swgame');if(gid)await loadGame(gid);setTimeout(()=>{go('home');loadPublicGames();},400)
- }catch(e){$('setupmsg').innerHTML='<div class="msg">'+e.message+'</div>'}
+   if(msg)msg.innerHTML='<div class="msg">Connecting…</div>';
+
+   const url=$('url').value.trim();
+   const key=$('key').value.trim();
+   if(!url||!key)throw new Error('Enter the Project URL and publishable key.');
+
+   localStorage.setItem('swurl',url);
+   localStorage.setItem('swkey',key);
+
+   sb=createClient(url,key,{auth:{persistSession:true}});
+
+   let session=(await sb.auth.getSession()).data.session;
+   if(!session){
+     const signIn=await sb.auth.signInAnonymously({
+       options:{data:{display_name:localStorage.getItem('swname')||'New Birder'}}
+     });
+     if(signIn.error)throw signIn.error;
+   }
+
+   const u=await sb.auth.getUser();
+   if(u.error)throw u.error;
+   user=u.data.user;
+
+   updateConnectionBadge();
+   if($('nav'))$('nav').style.display='flex';
+
+   // Enter the app as soon as authentication succeeds.
+   // A stale game/profile record must never strand a tester on the Connect screen.
+   if(msg)msg.innerHTML='<div class="msg">Connected.</div>';
+   go('home',$('navHome'));
+   safeRefreshHomeUI();
+
+   try{
+     await getProfile();
+   }catch(profileError){
+     console.warn('Profile load skipped',profileError);
+   }
+
+   maybeShowPrivateBetaNotice();
+   setTimeout(()=>{
+     if(localStorage.getItem('sw_private_beta_ack')==='1')maybeShowFirstRunGuide();
+   },250);
+
+   const gid=localStorage.getItem('swgame');
+   if(gid){
+     try{
+       await loadGame(gid);
+     }catch(gameError){
+       console.warn('Old game restore skipped',gameError);
+       localStorage.removeItem('swgame');
+       game=null;
+       active=null;
+     }
+   }
+
+   try{loadPublicGames();}catch(e){console.warn('Public lobby load skipped',e);}
+ }catch(e){
+   console.error('Connect failed',e);
+   if(msg)msg.innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
+ }
 }
 $('connect').onclick=connect;
+try{
+ if($('url')&&!$('url').value)$('url').value=localStorage.getItem('swurl')||'';
+ if($('key')&&!$('key').value)$('key').value=localStorage.getItem('swkey')||'';
+}catch(e){}
 async function getProfile(){let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();if(r.error)throw r.error;if(!r.data){r=await sb.from('profiles').insert({id:user.id,display_name:'New Birder'}).select().single();if(r.error)throw r.error}profile=r.data;$('name').value=profile.display_name;$('hello').textContent='Good to see you, '+profile.display_name+'.';$('fp').textContent=profile.feather_points||0;$('pfp').textContent=profile.feather_points||0;$('level').textContent=Math.floor((profile.feather_points||0)/100)+1}
 $('saveName').onclick=async()=>{let n=$('name').value.trim();if(!n)return;let r=await sb.from('profiles').update({display_name:n}).eq('id',user.id).select().single();if(r.error)return toast(r.error.message);profile=r.data;localStorage.setItem('swname',n);await getProfile();toast('Name saved')};
 $('create').onclick=async()=>{let r=await sb.rpc('create_shutterwing_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null});if(r.error)return toast(r.error.message);await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:r.data[0].game_id,p_visibility:'private',p_allow_late_joining:$('newlatejoin').checked});await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game created')};
