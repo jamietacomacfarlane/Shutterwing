@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC7</title>
+<title>SHUTTERWING CORE RC8</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC7 — consolidated Social + Solo core */
+/* CORE RC8 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC7 — Solo completion + local results */
+/* CORE RC8 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC7 — cleaner live Hunt */
+/* CORE RC8 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC7 — Solo isolation + compact Home */
+/* CORE RC8 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,26 +631,26 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC7 — navigation gating + release-mode discipline */
+/* CORE RC8 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CORE RC7 — single authoritative navigation router */
+/* CORE RC8 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* CORE RC7 — Solo UI is now structurally inside the main app shell */
+/* CORE RC8 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC7</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC8</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -939,7 +939,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
  <div class="solo-claim-card">
   <div class="small">SOLO PHOTO CLAIM</div><h2 id="soloClaimTitle">Challenge</h2>
   <div id="soloClaimChallenge"></div><div id="soloClaimWP" class="solo-claim-wp">0 WP</div>
-  <input id="soloPhotoInput" type="file" accept="image/*" capture="environment">
+  <input id="soloPhotoInput" type="file" accept="image/*">
   <img id="soloPhotoPreview" alt="Solo claim preview" style="display:none">
   <div class="small" style="margin-top:10px">Check that your photo genuinely meets the challenge. Solo mode uses self-verification.</div>
   <button id="soloConfirmClaim" type="button" class="btn" disabled>CLAIM IT</button>
@@ -1135,7 +1135,11 @@ function openSoloClaim(id){
  $('soloPhotoInput').value='';$('soloPhotoPreview').src='';$('soloPhotoPreview').style.display='none';
  $('soloConfirmClaim').disabled=true;$('soloClaimModal').style.display='flex';
 }
-function closeSoloClaim(){$('soloClaimModal').style.display='none';soloClaimCard=null;soloPhotoData=null;}
+function closeSoloClaim(){
+ $('soloClaimModal').style.display='none';
+ if($('soloConfirmClaim')){$('soloConfirmClaim').textContent='CLAIM IT';$('soloConfirmClaim').disabled=true;}
+ soloClaimCard=null;soloPhotoData=null;
+}
 
 async function startSolo(){
  selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
@@ -2916,15 +2920,38 @@ $('soloRetryPhoto').onclick=()=>{$('soloPhotoInput').value='';soloPhotoData=null
 $('soloCancelClaim').onclick=closeSoloClaim;
 $('soloConfirmClaim').onclick=async()=>{
  if(!soloClaimCard||!soloPhotoData){toast('Add a photo before claiming this card');return;}
+ const btn=$('soloConfirmClaim');
  const c=soloClaimCard;
- soloScore+=Number(c.wing_points||0);soloCompleted++;soloHand=soloHand.filter(x=>x.id!==c.id);
- const history=JSON.parse(localStorage.getItem('sw_solo_history')||'[]');
- history.unshift({card_id:c.id,title:c.title,wp:Number(c.wing_points||0),completed_at:new Date().toISOString()});
- localStorage.setItem('sw_solo_history',JSON.stringify(history.slice(0,50)));
- renderSoloClaimHistory();
- saveSolo();closeSoloClaim();toast(`Claim recorded — +${Number(c.wing_points||0)} WP`);
- if($('soloStatus'))$('soloStatus').textContent=`Claim accepted: +${Number(c.wing_points||0)} WP. Drawing replacement card…`;
- await buildSoloHand(true);renderSoloState();
+ if(btn){btn.disabled=true;btn.textContent='CLAIMING…';}
+ try{
+   const wp=Number(c.wing_points||0);
+   soloScore+=wp;
+   soloCompleted++;
+   soloHand=soloHand.filter(x=>x.id!==c.id);
+
+   let history=[];
+   try{
+     const stored=JSON.parse(localStorage.getItem('sw_solo_history')||'[]');
+     history=Array.isArray(stored)?stored:[];
+   }catch(e){history=[];}
+   history.unshift({card_id:c.id,title:c.title,wp,completed_at:new Date().toISOString()});
+   localStorage.setItem('sw_solo_history',JSON.stringify(history.slice(0,50)));
+
+   saveSolo();
+   closeSoloClaim();
+   renderSoloState();
+   renderSoloClaimHistory();
+   toast(`Claim recorded — +${wp} WP`);
+   if($('soloStatus'))$('soloStatus').textContent=`Claim accepted: +${wp} WP. Drawing replacement card…`;
+
+   await buildSoloHand(true);
+   renderSoloState();
+   renderSoloHand();
+ }catch(e){
+   console.error('Solo claim failed',e);
+   toast('Claim could not be completed. Please try again.');
+   if(btn){btn.disabled=false;btn.textContent='CLAIM IT';}
+ }
 };
 if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloState();}catch(e){console.error('Solo restore',e);}},900);}
 
