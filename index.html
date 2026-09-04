@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC5</title>
+<title>SHUTTERWING CORE RC6</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC5 — consolidated Social + Solo core */
+/* CORE RC6 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC5 — Solo completion + local results */
+/* CORE RC6 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC5 — cleaner live Hunt */
+/* CORE RC6 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC5 — Solo isolation + compact Home */
+/* CORE RC6 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,15 +631,20 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC5 — navigation gating + release-mode discipline */
+/* CORE RC6 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
+
+/* CORE RC6 — single authoritative navigation router */
+#solo.on{display:block!important}
+body.solo-hunt #navPlay{color:#c9ef72!important}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC5</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC6</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -964,36 +969,14 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const $=x=>document.getElementById(x);let sb,user,profile,game,hand=[],active,channel;
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
 function go(id,b){
- if(typeof soloActive!=='undefined' && soloActive){
-   if(id==='play' || id==='claims') id='solo';
- }
  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
  const target=$(id);
  if(!target){toast('That screen is unavailable.');return;}
  target.classList.add('on');
  if(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
- if(id==='solo'){
-   if($('navPlay')){
-     document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));
-     $('navPlay').classList.add('on');
-   }
-   renderSoloState();
-   renderSoloClaimHistory();
-   setTimeout(()=>renderSoloHand(),40);
- }
  if(id==='passport')passport();
  if(id==='claims'){renderActiveClaim();pending()}
 }
-
-const _coreNavGo=go;
-go=function(id,b){
- if(soloActive && (id==='play'||id==='claims')) id='solo';
- if(id==='play' && !soloActive)setHuntView(!!game && game.status==='active');
- if(id!=='play' && id!=='claims')setHuntView(false);
- _coreNavGo(id,b);
- if(id==='play')refreshHuntStatus();
-};
-window.go=go;
 
 const homePlayLarge=$('homePlayLarge');
 const homePlayNote=$('homePlayNote');
@@ -1005,7 +988,7 @@ function setHuntView(on){
 
 if(homePlayLarge){
   homePlayLarge.onclick=async()=>{
-    if(soloActive){await buildSoloHand(false);go('solo');setTimeout(()=>renderSoloHand(),60);return;}
+    if(soloActive){await buildSoloHand(false);go('solo',$('navPlay'));return;}
     if(!game){
       toast('Host or join a game first');
       return;
@@ -1183,6 +1166,33 @@ document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
    renderSoloState();
  };
 });
+
+const _baseGo=go;
+go=function(requested,b){
+ let id=requested;
+ if(soloActive && (id==='play'||id==='claims')) id='solo';
+
+ if(id==='solo'){
+   setHuntView(false);
+   _baseGo('solo',b);
+   document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));
+   if($('navPlay'))$('navPlay').classList.add('on');
+   renderSoloState();
+   renderSoloClaimHistory();
+   setTimeout(()=>renderSoloHand(),40);
+   return;
+ }
+ if(id==='play'){
+   setHuntView(!!game && game.status==='active');
+   _baseGo('play',b);
+   refreshHuntStatus();
+   return;
+ }
+ if(id!=='claims')setHuntView(false);
+ _baseGo(id,b);
+};
+window.go=go;
+
 renderHomeModePills();
 renderSoloState();
 loadSoloResults();
@@ -2858,17 +2868,7 @@ $('soloConfirmClaim').onclick=async()=>{
 };
 if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloState();}catch(e){console.error('Solo restore',e);}},900);}
 
-const _swGoCore=go;
-go=function(p,b){
-  _swGoCore(p,b);
-  if(p==='solo'){
-    setHuntView(false);
-    renderSoloState();
-    renderSoloClaimHistory();
-    setTimeout(()=>renderSoloHand(),60);
-  }
-};
-window.go=go;
+
 
 if($('toggleProfileSettings')){
  $('toggleProfileSettings').onclick=()=>{
