@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC13</title>
+<title>SHUTTERWING BETA CANDIDATE 1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC13 — consolidated Social + Solo core */
+/* BETA CANDIDATE 1 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC13 — Solo completion + local results */
+/* BETA CANDIDATE 1 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CORE RC13 — cleaner live Hunt */
+/* BETA CANDIDATE 1 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CORE RC13 — Solo isolation + compact Home */
+/* BETA CANDIDATE 1 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CORE RC13 — navigation gating + release-mode discipline */
+/* BETA CANDIDATE 1 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CORE RC13 — single authoritative navigation router */
+/* BETA CANDIDATE 1 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* CORE RC13 — Solo UI is now structurally inside the main app shell */
+/* BETA CANDIDATE 1 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* CORE RC13 — release-safe PLAY/WILD handling */
+/* BETA CANDIDATE 1 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* CORE RC13 — beta/release readiness */
+/* BETA CANDIDATE 1 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* CORE RC13 — first-run onboarding */
+/* BETA CANDIDATE 1 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,18 +684,44 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* CORE RC13 — pre-hunt wildlife reminder */
+/* BETA CANDIDATE 1 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
+
+/* BETA CANDIDATE 1 — personality + feedback */
+:root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
+body{background:
+ radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
+ radial-gradient(circle at 88% 12%,var(--sun-glow),transparent 24%),
+ linear-gradient(180deg,#101714 0%,#0b100e 100%)}
+header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.07));border-radius:0 0 18px 18px}
+.logo{letter-spacing:1.2px;text-shadow:0 0 20px rgba(201,239,114,.13)}
+.beta-banner{background:linear-gradient(100deg,rgba(73,168,220,.12),rgba(201,239,114,.08))}
+#homePlayLarge{box-shadow:0 10px 28px rgba(201,239,114,.13);font-size:1.08rem}
+.mode-pill.on{box-shadow:0 0 0 2px rgba(201,239,114,.12),0 8px 20px rgba(0,0,0,.16)}
+.home-tools-panel{grid-template-columns:1fr 1fr}
+.home-tools-wide{grid-column:1/-1}
+.feedback-btn{background:linear-gradient(135deg,#e9b64d,#d9893e);color:#15120b;font-weight:900}
+.feedback-card{max-width:640px}
+.feedback-types{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}
+.feedback-type{border:1px solid var(--line);border-radius:10px;padding:9px 5px;background:rgba(255,255,255,.04);color:var(--text);font-size:11px;font-weight:900}
+.feedback-type.on{background:rgba(233,182,77,.16);border-color:#e9b64d;color:#ffd978}
+#feedbackText{width:100%;resize:vertical;margin:6px 0 12px;box-sizing:border-box}
+.feedback-prepared{margin:10px 0;padding:9px;border-radius:9px;background:rgba(73,168,220,.07)}
+.card{transition:transform .12s ease,box-shadow .12s ease}
+.card:active{transform:scale(.985)}
+.cardfamilyflag{letter-spacing:.4px}
+@media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC13</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">BETA CANDIDATE 1</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -793,7 +819,8 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
     </div>
     <div class="panel home-tools-panel" id="profileSettingsTogglePanel">
   <button id="howToPlayBtn" type="button" class="btn main">HOW TO PLAY</button>
-  <button id="toggleProfileSettings" type="button" class="btn alt">PROFILE / SETTINGS</button>
+  <button id="feedbackBtn" type="button" class="btn feedback-btn">SEND FEEDBACK</button>
+  <button id="toggleProfileSettings" type="button" class="btn alt home-tools-wide">PROFILE / SETTINGS</button>
 </div>
 <div class="panel" id="profileSettingsPanel" style="display:none">
   <h3>Player name</h3>
@@ -1093,6 +1120,27 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
   </div>
 </div>
 
+
+<div id="feedbackModal" class="modal" style="display:none">
+  <div class="modal-card feedback-card">
+    <div class="small">SHUTTERWING BETA</div>
+    <h2 style="margin:4px 0 8px">Tell us how the hunt went.</h2>
+    <p class="small">A quick note is enough. Device/build details are prepared automatically so testers do not have to explain the technical stuff.</p>
+    <div class="feedback-types">
+      <button class="feedback-type on" data-feedback="Bug" type="button">BUG</button>
+      <button class="feedback-type" data-feedback="Confusing" type="button">CONFUSING</button>
+      <button class="feedback-type" data-feedback="Suggestion" type="button">SUGGESTION</button>
+      <button class="feedback-type" data-feedback="Loved it" type="button">LOVED IT</button>
+    </div>
+    <label class="small" for="feedbackText">WHAT HAPPENED?</label>
+    <textarea id="feedbackText" rows="5" placeholder="Tell us what worked, what didn't, or what would make SHUTTERWING more fun."></textarea>
+    <label class="small" for="feedbackEmail">EMAIL — OPTIONAL</label>
+    <input id="feedbackEmail" type="email" placeholder="Only if you'd like a reply">
+    <div id="feedbackPrepared" class="small feedback-prepared">Diagnostics will be attached when you copy the report.</div>
+    <button id="copyFeedbackReport" type="button" class="btn main">COPY FEEDBACK REPORT</button>
+    <button id="closeFeedback" type="button" class="btn alt">CLOSE</button>
+  </div>
+</div>
 
 <div id="wildlifeSafetyModal" class="modal" style="display:none">
 <div class="modal-card safety-card">
@@ -1761,7 +1809,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CORE RC13',
+   'SHUTTERWING BETA CANDIDATE 1',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -1811,6 +1859,37 @@ function clearLocalGameState(){
  toast('Local game session cleared');
 }
 
+
+
+let selectedFeedbackType='Bug';
+function showFeedback(){
+ if($('feedbackModal'))$('feedbackModal').style.display='flex';
+ if($('feedbackPrepared'))$('feedbackPrepared').textContent='Build and device diagnostics are ready to attach.';
+}
+function hideFeedback(){if($('feedbackModal'))$('feedbackModal').style.display='none';}
+function buildFeedbackReport(){
+ const note=($('feedbackText')?.value||'').trim()||'(No comment entered)';
+ const email=($('feedbackEmail')?.value||'').trim()||'(not supplied)';
+ return [
+  'SHUTTERWING BETA FEEDBACK',
+  `Type: ${selectedFeedbackType}`,
+  `Comment: ${note}`,
+  `Contact: ${email}`,
+  '',
+  '--- Diagnostics ---',
+  getBuildDiagnostics()
+ ].join('\\n');
+}
+async function copyFeedbackReport(){
+ const text=buildFeedbackReport();
+ try{
+  await navigator.clipboard.writeText(text);
+  if($('feedbackPrepared'))$('feedbackPrepared').textContent='Feedback report copied — ready to paste into a message.';
+  toast('Feedback report copied');
+ }catch(e){
+  prompt('Copy this feedback report:',text);
+ }
+}
 
 let pendingSafetyAction=null;
 function showWildlifeSafety(action){pendingSafetyAction=typeof action==='function'?action:null;if($('wildlifeSafetyModal'))$('wildlifeSafetyModal').style.display='flex';}
@@ -3275,6 +3354,16 @@ if($('howToPlayModal'))$('howToPlayModal').addEventListener('click',e=>{if(e.tar
 
 if($('acceptWildlifeSafety'))$('acceptWildlifeSafety').onclick=acceptWildlifeSafety;
 if($('cancelWildlifeSafety'))$('cancelWildlifeSafety').onclick=hideWildlifeSafety;
+
+
+if($('feedbackBtn'))$('feedbackBtn').onclick=showFeedback;
+if($('closeFeedback'))$('closeFeedback').onclick=hideFeedback;
+if($('copyFeedbackReport'))$('copyFeedbackReport').onclick=copyFeedbackReport;
+document.querySelectorAll('.feedback-type').forEach(btn=>btn.onclick=()=>{
+ selectedFeedbackType=btn.dataset.feedback||'Bug';
+ document.querySelectorAll('.feedback-type').forEach(x=>x.classList.toggle('on',x===btn));
+});
+if($('feedbackModal'))$('feedbackModal').addEventListener('click',e=>{if(e.target===$('feedbackModal'))hideFeedback();});
 
 </script>
 </body></html>
