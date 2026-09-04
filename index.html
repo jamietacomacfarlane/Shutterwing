@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING v2.0 RC7 SOLO 1.4</title>
+<title>SHUTTERWING v2.0 RC7 SOLO 1.5</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -543,9 +543,48 @@ body.solo-hunt #play #handpanel{
   margin-top:10px!important;
 }
 
+
+/* RC7 SOLO 1.5 — true dedicated Solo page */
+#solo.page{display:none}
+#solo.page.active{display:block}
+.solo-page-shell{max-width:760px;margin:0 auto;padding:18px 18px 110px}
+.solo-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.solo-score-panel{display:flex;justify-content:space-between;align-items:end}
+.solo-score-panel strong{font-size:32px}
+.solo-hand-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:10px;
+}
+.solo-card{
+  border:2px solid #94c93d;
+  border-radius:16px;
+  padding:14px;
+  background:#203217;
+  display:flex;
+  flex-direction:column;
+  min-height:230px;
+}
+.solo-card h3{margin:8px 0 10px}
+.solo-card .solo-complete{margin-top:auto}
+.solo-end{width:100%;margin-top:14px}
+@media(max-width:720px){
+  .solo-hand-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .solo-hand-grid .solo-card:last-child:nth-child(odd){grid-column:1/-1}
+}
+
+
+body.solo-hunt #home .current-game,
+body.solo-hunt #home #currentGamePanel,
+body.solo-hunt #home [id*="currentgame" i],
+body.solo-hunt #home [id*="returngame" i]{
+  display:none!important;
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.4</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">v2.0 RC7 SOLO 1.5</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -863,7 +902,7 @@ function setHuntView(on){
 
 if(homePlayLarge){
   homePlayLarge.onclick=()=>{
-    if(soloActive){buildSoloHand(false);setHuntView(true);go('play');setTimeout(()=>renderSoloHand(),120);return;}
+    if(soloActive){buildSoloHand(false);go('solo');setTimeout(()=>renderSoloHand(),120);return;}
     if(!game){
       toast('Host or join a game first');
       return;
@@ -907,6 +946,8 @@ function renderSoloState(){
  if($('endSoloHunt'))$('endSoloHunt').style.display=soloActive?'block':'none';
  if($('soloScore'))$('soloScore').textContent=`${soloScore} WP`;
  if($('soloCompleted'))$('soloCompleted').textContent=soloCompleted;
+ if($('soloPageScore'))$('soloPageScore').textContent=`${soloScore} WP`;
+ if($('soloPageCompleted'))$('soloPageCompleted').textContent=soloCompleted;
 }
 async function loadSoloDeck(){
  const r=await sb.from('cards').select('*').eq('active',true).in('id',SOLO_CARD_IDS);
@@ -929,9 +970,9 @@ let soloClaimCard=null;
 let soloPhotoData=null;
 function renderSoloHand(){
  if(!soloActive)return;
- const h=$('hand'); if(!h)return; h.innerHTML='';
+ const h=$('soloHand'); if(!h)return; h.innerHTML='';
  soloHand.forEach(c=>{
-   const d=document.createElement('div'); d.className='card';
+   const d=document.createElement('div'); d.className='solo-card';
    d.innerHTML=`<div class="small">${c.family||'CHALLENGE'} • ${Number(c.wing_points||0)} WP</div><h3>${c.title||'Challenge'}</h3><div>${c.challenge_text||''}</div><button type="button" class="solo-complete">CLAIM THIS CARD</button>`;
    d.querySelector('.solo-complete').onclick=()=>openSoloClaim(c.id); h.appendChild(d);
  });
@@ -950,7 +991,7 @@ function closeSoloClaim(){$('soloClaimModal').style.display='none';soloClaimCard
 async function startSolo(){
  selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
  localStorage.setItem('sw_selected_mode','solo'); saveSolo(); renderHomeModePills(); renderSoloState();
- await buildSoloHand(true); setHuntView(true); go('play');
+ await buildSoloHand(true); go('solo');
  setTimeout(()=>renderSoloHand(),120);
 }
 function endSolo(){
@@ -981,6 +1022,10 @@ if($('startSoloHunt'))$('startSoloHunt').onclick=startSolo;
 if($('endSoloHunt'))$('endSoloHunt').onclick=endSolo;
 if($('soloRefillHand'))$('soloRefillHand').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
 if($('soloEndFromPlay'))$('soloEndFromPlay').onclick=endSolo;
+if($('soloHomeBtn'))$('soloHomeBtn').onclick=()=>go('home');
+if($('soloPageEnd'))$('soloPageEnd').onclick=endSolo;
+if($('soloPageRefill'))$('soloPageRefill').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
+
 
 function refreshHomeDashboard(){
  const scoreEl=$('score');
@@ -2619,6 +2664,12 @@ $('soloConfirmClaim').onclick=async()=>{
  await buildSoloHand(true);renderSoloState();
 };
 if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloState();}catch(e){console.error('Solo restore',e);}},900);}
+
+const _swGo=go;
+go=function(p){
+  _swGo(p);
+  if(p==='solo'){renderSoloState();setTimeout(()=>renderSoloHand(),60);}
+};
 </script><div id="soloClaimModal" class="solo-claim-modal" style="display:none">
  <div class="solo-claim-card">
   <div class="small">SOLO PHOTO CLAIM</div><h2 id="soloClaimTitle">Challenge</h2>
@@ -2631,4 +2682,36 @@ if(soloActive){setTimeout(async()=>{try{await buildSoloHand(false);renderSoloSta
   <button id="soloCancelClaim" type="button" class="btn alt">CANCEL</button>
  </div>
 </div>
+
+<section id="solo" class="page">
+  <div class="solo-page-shell">
+    <div class="solo-topbar">
+      <div>
+        <div class="small">SHUTTERWING • SOLO</div>
+        <h2 style="margin:2px 0 0">Solo Hunt</h2>
+      </div>
+      <button id="soloHomeBtn" type="button" class="btn alt">HOME</button>
+    </div>
+
+    <div class="panel solo-score-panel">
+      <div>
+        <strong id="soloPageCompleted">0</strong>
+        <div class="small">CARDS COMPLETED</div>
+      </div>
+      <div style="text-align:right">
+        <strong id="soloPageScore">0 WP</strong>
+        <div class="small">SOLO SCORE</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="small">YOUR FIVE-CARD HAND</div>
+      <div id="soloHand" class="solo-hand-grid"></div>
+      <button id="soloPageRefill" type="button" class="btn alt" style="margin-top:12px">REFILL SOLO HAND</button>
+    </div>
+
+    <button id="soloPageEnd" type="button" class="btn alt solo-end">END SOLO HUNT</button>
+  </div>
+</section>
+
 </body></html>
