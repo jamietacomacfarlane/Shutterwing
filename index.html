@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CORE RC2</title>
+<title>SHUTTERWING CORE RC3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CORE RC2 — consolidated Social + Solo core */
+/* CORE RC3 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,13 +601,29 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CORE RC2 — Solo completion + local results */
+/* CORE RC3 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
+
+/* CORE RC3 — cleaner live Hunt */
+.hunt-status-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
+}
+.hunt-status-bar>div{
+  padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.055);
+  border:1px solid var(--line);text-align:center
+}
+.hunt-status-bar span{display:block;margin-bottom:2px}
+.hunt-status-bar strong{font-size:18px}
+body.hunt-active #play #huntStatusBar{display:grid!important}
+body.hunt-active #play #actionpanel,
+body.hunt-active #play #effectpanel{display:none!important}
+body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
-<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC2</span></div></header>
+<header><div class="logo">SHUTTERWING™</div><div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CORE RC3</span></div></header>
 
 <section id="setup" class="screen on"><div class="hero"><h1>Connect SHUTTERWING</h1><p>Use only your Supabase <b>publishable key</b>. Never use a secret or service-role key.</p></div>
 <div class="panel"><label class="small">Project URL</label><input id="url" value="https://pmxxsmfhyfdcrvydtoih.supabase.co"><label class="small">Publishable key</label><input id="key" type="password" placeholder="sb_publishable_..."><button id="connect" class="btn">CONNECT & TEST</button><div id="setupmsg"></div></div></section>
@@ -797,6 +813,11 @@ body.solo-hunt #play .solo-only-title{display:none!important}
   <div><span id="moultcount" class="moultcount">0</span> <b>available</b></div>
   <div id="moulttext" class="small">Earn 1 Moult for each 10 WP this round, up to 3. Spend 1 to discard any card you choose and draw a replacement.</div>
 </div>
+<div id="huntStatusBar" class="hunt-status-bar" style="display:none">
+  <div><span class="small">MY SCORE</span><strong id="huntScore">0 WP</strong></div>
+  <div><span class="small">ROUND</span><strong id="huntRound">1</strong></div>
+  <div><span class="small">PLAYERS</span><strong id="huntPlayers">1</strong></div>
+</div>
 <div class="panel"><h3>My private hand</h3><div class="small" style="margin:12px 0 4px;font-weight:900;letter-spacing:.12em">YOUR FULL HAND</div>
 <div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
@@ -924,6 +945,14 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const $=x=>document.getElementById(x);let sb,user,profile,game,hand=[],active,channel;
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
 function go(id,b){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');if(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}if(id==='passport')passport();if(id==='claims'){renderActiveClaim();pending()}}
+
+const _coreNavGo=go;
+go=function(id,b){
+ if(id==='play' && !soloActive)setHuntView(!!game && game.status==='active');
+ if(id!=='play' && id!=='claims')setHuntView(false);
+ _coreNavGo(id,b);
+ if(id==='play')refreshHuntStatus();
+};
 window.go=go;
 
 const homePlayLarge=$('homePlayLarge');
@@ -1094,6 +1123,19 @@ if($('soloHomeBtn'))$('soloHomeBtn').onclick=()=>go('home');
 if($('soloPageEnd'))$('soloPageEnd').onclick=endSolo;
 if($('soloPageRefill'))$('soloPageRefill').onclick=async()=>{soloHand=[];localStorage.removeItem('sw_solo_hand');await buildSoloHand(true);};
 
+
+
+function refreshHuntStatus(){
+ if($('huntScore')){
+   const s=$('score')?Number($('score').textContent||0):0;
+   $('huntScore').textContent=`${s} WP`;
+ }
+ if($('huntRound'))$('huntRound').textContent=game?.current_round||1;
+ if($('huntPlayers')){
+   const p=$('pcount')?Number($('pcount').textContent||0):0;
+   $('huntPlayers').textContent=String(p||1);
+ }
+}
 
 function refreshHomeDashboard(){
  const scoreEl=$('score');
@@ -1424,6 +1466,7 @@ $('createpublic').onclick=async()=>{let r=await sb.rpc('create_shutterwing_publi
 $('refreshpublic').onclick=()=>loadPublicGames();
 $('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});resetGameSpecificUI();await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game joined')};
 function resetGameSpecificUI(){
+ setHuntView(false);
  active=null;
  hand=[];
  sessionStorage.removeItem('sw_active_player_card');
@@ -1468,7 +1511,7 @@ async function loadGame(id){
  const switching=!game || game.id!==id;
  if(switching) resetGameSpecificUI();
  let r=await sb.from('games').select('*').eq('id',id).single();
- if(r.error){localStorage.removeItem('swgame');return}
+ if(r.error){localStorage.removeItem('swgame');setHuntView(false);return}
  game=r.data;
  localStorage.setItem('swgame',id);
  $('nogame').style.display='none';$('game').style.display='block';
@@ -1486,6 +1529,7 @@ async function loadGame(id){
 }
 function renderGameState(){
  refreshHomeLaunch();
+ refreshHuntStatus();
  if(!game)return;
  const host=game.host_id===user.id;
  $('hostpanel').style.display=host?'block':'none';
@@ -1582,12 +1626,14 @@ async function players(){
    if(f.error)return;
    $('pcount').textContent=f.data.length;
    let me=f.data.find(x=>x.user_id===user.id);$('score').textContent=me?.score||0;
+   refreshHuntStatus();
    $('players').innerHTML=f.data.map((x,i)=>`<div class="player"><span>${x.user_id===user.id?'You':'Player '+(i+1)}</span><b>${x.score} WP</b></div>`).join('');
    return;
  }
  const rows=r.data||[];
  $('pcount').textContent=rows.length;
  let me=rows.find(x=>x.user_id===user.id);$('score').textContent=me?.score||0;
+ refreshHuntStatus();
  $('players').innerHTML='';
  rows.forEach(x=>{
    const target=(game?.game_mode==='first_to_fifty'?(game.target_score||50):null);
@@ -1935,7 +1981,11 @@ async function leaveGameServer(){
 
 $('leaveactivegame').onclick=leaveGameServer;
 $('homeleavegame').onclick=leaveGameServer;
-$('homegotogame').onclick=()=>go('play');
+$('homegotogame').onclick=()=>{
+ setHuntView(!!game && game.status==='active');
+ go('play');
+ refreshHuntStatus();
+};
 $('allowlatejoin').onchange=async()=>{
  if(!game)return;
  const r=await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:game.id,p_visibility:game.visibility||'private',p_allow_late_joining:$('allowlatejoin').checked});
@@ -2739,6 +2789,7 @@ const _swGoCore=go;
 go=function(p,b){
   _swGoCore(p,b);
   if(p==='solo'){
+    setHuntView(false);
     renderSoloState();
     setTimeout(()=>renderSoloHand(),60);
   }
