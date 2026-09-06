@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 2</title>
+<title>SHUTTERWING CARD RACE 3</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* CARD RACE 2 — consolidated Social + Solo core */
+/* CARD RACE 3 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* CARD RACE 2 — Solo completion + local results */
+/* CARD RACE 3 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* CARD RACE 2 — cleaner live Hunt */
+/* CARD RACE 3 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* CARD RACE 2 — Solo isolation + compact Home */
+/* CARD RACE 3 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* CARD RACE 2 — navigation gating + release-mode discipline */
+/* CARD RACE 3 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* CARD RACE 2 — single authoritative navigation router */
+/* CARD RACE 3 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* CARD RACE 2 — Solo UI is now structurally inside the main app shell */
+/* CARD RACE 3 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* CARD RACE 2 — release-safe PLAY/WILD handling */
+/* CARD RACE 3 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* CARD RACE 2 — beta/release readiness */
+/* CARD RACE 3 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* CARD RACE 2 — first-run onboarding */
+/* CARD RACE 3 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* CARD RACE 2 — pre-hunt wildlife reminder */
+/* CARD RACE 3 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* CARD RACE 2 — personality + feedback */
+/* CARD RACE 3 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -716,7 +716,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
 
-/* CARD RACE 2 — tester-facing polish on proven working core */
+/* CARD RACE 3 — tester-facing polish on proven working core */
 .game-rules{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(73,168,220,.07);display:grid;gap:6px;line-height:1.4}
 .game-rules strong{color:#dfff98}
 #joinGame,#joinPublicGame,#joinPrivateGame{min-height:56px;font-size:16px;font-weight:900;width:100%}
@@ -729,7 +729,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 
 .build-stamp{display:inline-block;margin:-2px 0 12px;padding:5px 8px;border-radius:999px;border:1px solid rgba(201,239,114,.35);color:#dfff98;font-size:10px;font-weight:900}
 
-/* CARD RACE 2 — conservative Social-mode fixes on known-good core */
+/* CARD RACE 3 — conservative Social-mode fixes on known-good core */
 .social-setup-hint{margin:10px 0 14px;padding:11px 12px;border-radius:12px;border:1px solid rgba(73,168,220,.32);background:rgba(73,168,220,.08);line-height:1.4}
 .social-setup-hint strong{display:block;color:#dfff98;margin-bottom:3px;font-size:11px;letter-spacing:.5px}
 @media(max-width:700px){
@@ -738,7 +738,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 }
 
 
-/* CARD RACE 2 — compact Home/Play spacing, structure-safe */
+/* CARD RACE 3 — compact Home/Play spacing, structure-safe */
 #home{min-height:auto!important}
 #home .panel,#home .hero{margin:10px 0}
 #home .home-launch{margin:10px 0 12px;padding:12px}
@@ -758,10 +758,25 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 }
 
 
-/* CARD RACE 2 */
+/* CARD RACE 3 */
 .race-rule-note{margin:4px 0 10px;padding:9px 10px;border-left:3px solid #c7ef72;background:rgba(201,239,114,.055);border-radius:7px;line-height:1.35}
 .race-cleared{width:100%;padding:22px;text-align:center;border:2px solid #c7ef72;border-radius:14px;color:#dfff98;font-weight:1000;letter-spacing:.06em;background:rgba(201,239,114,.07)}
 #huntStatusBar{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+
+/* CARD RACE 3 — wildlife pledge is a mandatory pre-play gate */
+.home-wildlife-pledge{
+  margin:12px 0 10px;padding:14px;border:1px solid rgba(201,239,114,.42);
+  border-radius:16px;background:linear-gradient(135deg,rgba(201,239,114,.09),rgba(73,168,220,.045));
+}
+.home-wildlife-pledge h3{margin:3px 0 10px;font-size:20px}
+.pledge-kicker{color:#dfff98!important;font-weight:900;letter-spacing:.08em}
+.pledge-rule{padding:8px 9px;margin:6px 0;border-left:3px solid #c7ef72;background:rgba(255,255,255,.025);border-radius:6px;line-height:1.35}
+.pledge-bottom{margin:10px 0;color:#dfff98;line-height:1.35}
+.pledge-ack{margin-top:8px!important}
+#homePlayLarge:disabled{opacity:.38;filter:saturate(.35);cursor:not-allowed;box-shadow:none!important}
+#homeWildlifePledge.acknowledged{border-color:rgba(201,239,114,.7)}
+#homeWildlifePledge.acknowledged .pledge-ack{background:#263128;color:#dfff98;border:1px solid #c7ef72}
 
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
@@ -769,7 +784,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 2</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 3</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -831,8 +846,18 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div class="small" id="modeHelp" style="margin-top:8px">SOCIAL is multiplayer. SOLO starts a one-photographer hunt.</div>
 </div>
 
+<div id="homeWildlifePledge" class="home-wildlife-pledge">
+  <div class="small pledge-kicker">BEFORE YOU PLAY</div>
+  <h3>Wildlife comes first.</h3>
+  <div class="pledge-rule">Keep a respectful distance. Never disturb nests, chicks or breeding animals.</div>
+  <div class="pledge-rule">Never chase, flush, bait, handle or corner wildlife for a challenge.</div>
+  <div class="pledge-rule">If an animal changes its behaviour because of you, move back or leave.</div>
+  <div class="pledge-bottom"><strong>Missing the shot is always better than disturbing the wildlife.</strong></div>
+  <button id="ackWildlifeHome" type="button" class="btn pledge-ack">I AGREE — ENABLE PLAY</button>
+</div>
+
 <div class="home-launch">
-  <button id="homePlayLarge" class="home-launch-button" type="button">
+  <button id="homePlayLarge" class="home-launch-button" type="button" disabled>
     <span class="play-main-label">PLAY SHUTTERWING</span>
     <span id="homePlayNote" class="play-main-note">Start here to host or join a Social game.</span>
   </button>
@@ -1202,7 +1227,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   </div>
 </div>
 
-<div id="wildlifeSafetyModal" class="modal" style="display:none">
+<div id="wildlifeSafetyModal" class="modal" style="display:none!important">
 <div class="modal-card safety-card">
 <div class="small">BEFORE YOU HUNT</div>
 <h2 style="margin:4px 0 10px">Wildlife comes first.</h2>
@@ -1215,11 +1240,11 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 <div>If an animal changes its behaviour because of you, move back or leave.</div>
 </div>
 <div class="game-rules"><strong>THE SIMPLE RULES</strong>
-<div>• Keep five cards in your hand.</div>
+<div>• Start with the card pile chosen by the host.</div>
 <div>• One photograph claims one challenge card.</div>
 <div>• The photo must genuinely match the challenge.</div>
 <div>• In Social, the other player votes on your claim.</div>
-<div>• Accepted claims earn the Wing Points printed on the card.</div>
+<div>• Accepted claims remove that card from your pile and still earn its Wing Points.</div>
 <div>• Never put wildlife, yourself or other people at risk for a card.</div>
 </div>
 <div class="wildlife-reminder"><strong>SHUTTERWING rule:</strong> Missing the shot is always better than disturbing the wildlife.</div>
@@ -1245,9 +1270,9 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 
     <div id="howtoSocialPanel" class="howto-panel" style="display:none">
       <div class="howto-step"><strong>1. Host or join</strong><span>One player HOSTS. The other player JOINS with the game code. Both press READY; then the host starts.</span></div>
-      <div class="howto-step"><strong>2. Hunt from your five-card hand</strong><span>Choose one of your five cards, photograph the challenge and submit it. The other player accepts or rejects the claim.</span></div>
+      <div class="howto-step"><strong>2. Hunt from your card pile</strong><span>Choose one of your cards, photograph the challenge and submit it. The other player accepts or rejects the claim.</span></div>
       <div class="howto-step"><strong>3. Use PLAY and supported WILD cards</strong><span>PLAY cards add friendly interference. Follow the instruction on the card. Future WILD mechanics stay locked during beta.</span></div>
-      <div class="howto-step"><strong>4. Build your score</strong><span>Accepted claims earn Wing Points and the used challenge is replaced so you keep five cards.</span></div>
+      <div class="howto-step"><strong>4. Build your score</strong><span>Accepted claims remove that card from your pile. First player to clear every card wins.</span></div>
     </div>
 
     <div class="wildlife-reminder">
@@ -1399,7 +1424,9 @@ function closeSoloClaim(){
 
 async function startSolo(){
  selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
- localStorage.setItem('sw_selected_mode','solo'); saveSolo(); renderHomeModePills(); renderSoloState();
+ localStorage.setItem('sw_selected_mode','solo'); saveSolo(); if($('ackWildlifeHome'))$('ackWildlifeHome').onclick=acknowledgeWildlife;
+renderWildlifeGate();
+renderHomeModePills(); renderSoloState();
  await buildSoloHand(true); go('solo');
  setTimeout(()=>renderSoloHand(),120);
 }
@@ -1520,7 +1547,7 @@ go=function(requested,b){
  if(id!=='claims')setHuntView(false);
  _baseGo(id,b);
 };
-/* Home PLAY uses robustHomePlayLaunch */
+/* Home PLAY uses wildlife-gated robustHomePlayLaunch */
 window.go=go;
 
 if($('navPlay')){
@@ -1541,6 +1568,40 @@ if($('navPlay')){
  };
 }
 
+
+
+let wildlifeAck=localStorage.getItem('sw_wildlife_game_ack')==='1';
+
+function renderWildlifeGate(){
+ const play=$('homePlayLarge');
+ const pledge=$('homeWildlifePledge');
+ const ack=$('ackWildlifeHome');
+
+ // An already-active game was necessarily entered through the gate, so allow Continue.
+ const activeGame=!!game && game.status==='active';
+ const allowed=wildlifeAck || activeGame;
+
+ if(play)play.disabled=!allowed;
+ if(pledge)pledge.classList.toggle('acknowledged',allowed);
+ if(ack){
+   ack.textContent=allowed?'WILDLIFE FIRST — AGREED':'I AGREE — ENABLE PLAY';
+   ack.disabled=allowed;
+ }
+}
+
+function acknowledgeWildlife(){
+ wildlifeAck=true;
+ localStorage.setItem('sw_wildlife_game_ack','1');
+ renderWildlifeGate();
+ toast('Wildlife first — Play enabled');
+ setTimeout(()=>$('homePlayLarge')?.scrollIntoView({behavior:'smooth',block:'center'}),100);
+}
+
+function resetWildlifeForNextGame(){
+ wildlifeAck=false;
+ localStorage.removeItem('sw_wildlife_game_ack');
+ renderWildlifeGate();
+}
 
 function robustHomePlayLaunch(){
  try{
@@ -1580,7 +1641,7 @@ function robustHomePlayLaunch(){
 }
 
 if($('homePlayLarge')){
- $('homePlayLarge').onclick=()=>showWildlifeSafety(robustHomePlayLaunch);
+ $('homePlayLarge').onclick=()=>{if(!wildlifeAck){toast('Please agree to the wildlife-first rule before playing.');return;}robustHomePlayLaunch();};
 }
 
 
@@ -1975,7 +2036,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 2',
+   'SHUTTERWING CARD RACE 3',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2242,6 +2303,7 @@ function renderGameState(){
 
  // A finished game must not look playable or carry a stale hand forward.
  if(game.status==='finished'){
+   resetWildlifeForNextGame();
    hand=[];
    active=null;
    sessionStorage.removeItem('sw_active_player_card');
@@ -2555,6 +2617,7 @@ $('endgame').onclick=async()=>{
  if(r.error)return toast(r.error.message);
  toast('Round ended — results ready');
  await reloadCurrentGame();
+ resetWildlifeForNextGame();
 };
 async function startNextRound(){
  if(!game)return;
@@ -2610,6 +2673,7 @@ function leaveCurrentGameLocal(){
  $('deal').style.display='block';
  $('actionpanel').style.display='block';
  $('effectpanel').style.display='block';
+ resetWildlifeForNextGame();
 }
 
 $('leavegame').onclick=()=>{
