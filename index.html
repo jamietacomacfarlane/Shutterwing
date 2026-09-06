@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING RECOVERY BETA</title>
+<title>SHUTTERWING SOCIAL TEST 1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* RECOVERY BETA — consolidated Social + Solo core */
+/* SOCIAL TEST 1 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* RECOVERY BETA — Solo completion + local results */
+/* SOCIAL TEST 1 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* RECOVERY BETA — cleaner live Hunt */
+/* SOCIAL TEST 1 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* RECOVERY BETA — Solo isolation + compact Home */
+/* SOCIAL TEST 1 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* RECOVERY BETA — navigation gating + release-mode discipline */
+/* SOCIAL TEST 1 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* RECOVERY BETA — single authoritative navigation router */
+/* SOCIAL TEST 1 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* RECOVERY BETA — Solo UI is now structurally inside the main app shell */
+/* SOCIAL TEST 1 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* RECOVERY BETA — release-safe PLAY/WILD handling */
+/* SOCIAL TEST 1 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* RECOVERY BETA — beta/release readiness */
+/* SOCIAL TEST 1 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* RECOVERY BETA — first-run onboarding */
+/* SOCIAL TEST 1 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* RECOVERY BETA — pre-hunt wildlife reminder */
+/* SOCIAL TEST 1 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* RECOVERY BETA — personality + feedback */
+/* SOCIAL TEST 1 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -716,7 +716,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
 
-/* RECOVERY BETA — tester-facing polish on proven working core */
+/* SOCIAL TEST 1 — tester-facing polish on proven working core */
 .game-rules{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(73,168,220,.07);display:grid;gap:6px;line-height:1.4}
 .game-rules strong{color:#dfff98}
 #joinGame,#joinPublicGame,#joinPrivateGame{min-height:56px;font-size:16px;font-weight:900;width:100%}
@@ -728,13 +728,22 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 
 
 .build-stamp{display:inline-block;margin:-2px 0 12px;padding:5px 8px;border-radius:999px;border:1px solid rgba(201,239,114,.35);color:#dfff98;font-size:10px;font-weight:900}
+
+/* SOCIAL TEST 1 — conservative Social-mode fixes on known-good core */
+.social-setup-hint{margin:10px 0 14px;padding:11px 12px;border-radius:12px;border:1px solid rgba(73,168,220,.32);background:rgba(73,168,220,.08);line-height:1.4}
+.social-setup-hint strong{display:block;color:#dfff98;margin-bottom:3px;font-size:11px;letter-spacing:.5px}
+@media(max-width:700px){
+ #play{padding-bottom:165px}
+ #joinGame,#joinPublicGame,#joinPrivateGame{min-height:58px;margin-bottom:26px}
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">RECOVERY BETA</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">SOCIAL TEST 1</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -857,6 +866,10 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 </div></section>
 
 <section id="play" class="screen">
+<div id="socialSetupHint" class="social-setup-hint">
+  <strong>SOCIAL GAME</strong>
+  One player hosts. The other player joins using the game code. Both press READY, then the host starts the hunt.
+</div>
 <div class="play-clean-header">
   <div class="play-clean-title">SHUTTERWING • HUNT</div>
   <button id="playBackHome" class="btn play-home-button" type="button">HOME</button>
@@ -1238,17 +1251,27 @@ function setHuntView(on){
 
 if(homePlayLarge){
   async function launchHomePlay(){
-    if(soloActive){await buildSoloHand(false);go('solo',$('navPlay'));return;}
+    if(selectedHomeMode==='solo' || soloActive){
+      await buildSoloHand(false);
+      go('solo',$('navPlay'));
+      return;
+    }
     if(!game){
-      toast('Host or join a game first');
+      // Social players need the Host / Join setup screen, not a dead-end toast.
+      setHuntView(false);
+      go('play',$('navPlay'));
+      window.scrollTo({top:0,left:0,behavior:'auto'});
       return;
     }
     if(game.status==='lobby'){
-      toast('The game is still in the lobby');
+      // Lobby is part of Social setup, so open it rather than blocking the player.
+      setHuntView(false);
+      go('play',$('navPlay'));
+      window.scrollTo({top:0,left:0,behavior:'auto'});
       return;
     }
     setHuntView(true);
-    go('play');
+    go('play',$('navPlay'));
   };
 }
 
@@ -1425,7 +1448,9 @@ document.querySelectorAll('#homeModePills .home-mode-pill').forEach(b=>{
      return;
    }
    if(soloActive && requested==='social'){
-     toast('End the current Solo Hunt before switching to Social.');
+     const switchNow=confirm('End your current Solo Hunt and switch to Social? Your Solo score will be saved.');
+     if(!switchNow)return;
+     endSolo();
      return;
    }
    selectedHomeMode=requested;
@@ -1439,6 +1464,7 @@ const _baseGo=go;
 go=function(requested,b){
  let id=requested;
  if(soloActive && (id==='play'||id==='claims')) id='solo';
+ if(!soloActive && selectedHomeMode==='social' && id==='play') setHuntView(!!game && game.status==='active');
 
  if(id==='solo'){
    setHuntView(false);
@@ -1830,7 +1856,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING RECOVERY BETA',
+   'SHUTTERWING SOCIAL TEST 1',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
