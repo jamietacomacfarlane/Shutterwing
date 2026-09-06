@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING SOCIAL TEST 5</title>
+<title>SHUTTERWING CARD RACE 1</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* SOCIAL TEST 5 — consolidated Social + Solo core */
+/* CARD RACE 1 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* SOCIAL TEST 5 — Solo completion + local results */
+/* CARD RACE 1 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* SOCIAL TEST 5 — cleaner live Hunt */
+/* CARD RACE 1 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* SOCIAL TEST 5 — Solo isolation + compact Home */
+/* CARD RACE 1 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* SOCIAL TEST 5 — navigation gating + release-mode discipline */
+/* CARD RACE 1 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* SOCIAL TEST 5 — single authoritative navigation router */
+/* CARD RACE 1 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* SOCIAL TEST 5 — Solo UI is now structurally inside the main app shell */
+/* CARD RACE 1 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* SOCIAL TEST 5 — release-safe PLAY/WILD handling */
+/* CARD RACE 1 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* SOCIAL TEST 5 — beta/release readiness */
+/* CARD RACE 1 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* SOCIAL TEST 5 — first-run onboarding */
+/* CARD RACE 1 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* SOCIAL TEST 5 — pre-hunt wildlife reminder */
+/* CARD RACE 1 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* SOCIAL TEST 5 — personality + feedback */
+/* CARD RACE 1 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -716,7 +716,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
 
-/* SOCIAL TEST 5 — tester-facing polish on proven working core */
+/* CARD RACE 1 — tester-facing polish on proven working core */
 .game-rules{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(73,168,220,.07);display:grid;gap:6px;line-height:1.4}
 .game-rules strong{color:#dfff98}
 #joinGame,#joinPublicGame,#joinPrivateGame{min-height:56px;font-size:16px;font-weight:900;width:100%}
@@ -729,7 +729,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 
 .build-stamp{display:inline-block;margin:-2px 0 12px;padding:5px 8px;border-radius:999px;border:1px solid rgba(201,239,114,.35);color:#dfff98;font-size:10px;font-weight:900}
 
-/* SOCIAL TEST 5 — conservative Social-mode fixes on known-good core */
+/* CARD RACE 1 — conservative Social-mode fixes on known-good core */
 .social-setup-hint{margin:10px 0 14px;padding:11px 12px;border-radius:12px;border:1px solid rgba(73,168,220,.32);background:rgba(73,168,220,.08);line-height:1.4}
 .social-setup-hint strong{display:block;color:#dfff98;margin-bottom:3px;font-size:11px;letter-spacing:.5px}
 @media(max-width:700px){
@@ -738,7 +738,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 }
 
 
-/* SOCIAL TEST 5 — compact Home/Play spacing, structure-safe */
+/* CARD RACE 1 — compact Home/Play spacing, structure-safe */
 #home{min-height:auto!important}
 #home .panel,#home .hero{margin:10px 0}
 #home .home-launch{margin:10px 0 12px;padding:12px}
@@ -757,13 +757,19 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   #play{padding-bottom:92px!important}
 }
 
+
+/* CARD RACE 1 */
+.race-rule-note{margin:4px 0 10px;padding:9px 10px;border-left:3px solid #c7ef72;background:rgba(201,239,114,.055);border-radius:7px;line-height:1.35}
+.race-cleared{width:100%;padding:22px;text-align:center;border:2px solid #c7ef72;border-radius:14px;color:#dfff98;font-weight:1000;letter-spacing:.06em;background:rgba(201,239,114,.07)}
+#huntStatusBar{grid-template-columns:repeat(3,minmax(0,1fr))}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">SOCIAL TEST 5</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 1</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -907,7 +913,15 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 <h2>Play</h2><div id="nogame">
 <div class="panel"><h3>Host a game</h3>
 <input id="gname" value="Tablelands Birders">
-<select id="gmode"><option value="quick_flight">Quick Flight</option><option value="first_to_fifty">First to Fifty</option></select>
+<input id="gmode" type="hidden" value="quick_flight">
+<label class="small" for="cardcount">Starting card pile</label>
+<select id="cardcount">
+  <option value="5" selected>5 cards — quick hunt</option>
+  <option value="7">7 cards</option>
+  <option value="10">10 cards</option>
+  <option value="15">15 cards — long hunt</option>
+</select>
+<div class="small race-rule-note">First player to clear their entire card pile wins. Accepted claims remove cards permanently.</div>
 <input id="loc" placeholder="Location label (optional)">
 <label class="small"><input id="newlatejoin" type="checkbox" checked style="width:auto;margin-right:8px"> Allow players to join after the hunt starts</label>
 <button id="createpublic" class="btn">HOST PUBLIC GAME</button>
@@ -990,12 +1004,12 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div id="moulttext" class="small">Earn 1 Moult for each 10 WP this round, up to 3. Spend 1 to discard any card you choose and draw a replacement.</div>
 </div>
 <div id="huntStatusBar" class="hunt-status-bar" style="display:none">
+  <div><span class="small">CARDS LEFT</span><strong id="huntCardsLeft">0</strong></div>
   <div><span class="small">MY SCORE</span><strong id="huntScore">0 WP</strong></div>
-  <div><span class="small">ROUND</span><strong id="huntRound">1</strong></div>
   <div><span class="small">PLAYERS</span><strong id="huntPlayers">1</strong></div>
 </div>
-<div class="panel"><h3>My private hand</h3><div class="small" style="margin:12px 0 4px;font-weight:900;letter-spacing:.12em">YOUR FULL HAND</div>
-<div id="hand" class="hand"></div><button id="deal" class="btn alt">REFILL HAND (IF NEEDED)</button></div>
+<div class="panel"><h3>My card pile</h3><div class="small" style="margin:12px 0 4px;font-weight:900;letter-spacing:.12em">YOUR FULL HAND</div>
+<div id="hand" class="hand"></div><button id="deal" class="btn alt" style="display:none">REFILL HAND</button></div>
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
 <div class="panel" id="effectpanel"><h3>Active effects</h3><div id="effects" class="small">No active effects.</div></div>
 <div class="panel" id="winnerpanel" style="display:none">
@@ -1226,7 +1240,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
       <div class="howto-step"><strong>1. Pick a card</strong><span>You hunt from five visible cards. Choose a challenge that matches a bird or scene you can photograph safely.</span></div>
       <div class="howto-step"><strong>2. Take or choose a photo</strong><span>Take a new photo or choose one already on your device. It should genuinely meet the challenge.</span></div>
       <div class="howto-step"><strong>3. Claim it</strong><span>Check your own photo. If it genuinely meets the challenge, press CLAIM IT. Otherwise choose RETRY PHOTO.</span></div>
-      <div class="howto-step"><strong>4. Score and keep hunting</strong><span>A successful claim earns the printed Wing Points and a replacement card returns your hand to five.</span></div>
+      <div class="howto-step"><strong>4. Score and keep hunting</strong><span>In Social, an accepted claim removes that card from your pile. First player to clear every card wins.</span></div>
     </div>
 
     <div id="howtoSocialPanel" class="howto-panel" style="display:none">
@@ -1900,7 +1914,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING SOCIAL TEST 5',
+   'SHUTTERWING CARD RACE 1',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2018,10 +2032,41 @@ async function connect(){
 $('connect').onclick=connect;
 async function getProfile(){let r=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();if(r.error)throw r.error;if(!r.data){r=await sb.from('profiles').insert({id:user.id,display_name:'New Birder'}).select().single();if(r.error)throw r.error}profile=r.data;$('name').value=profile.display_name;$('hello').textContent='Good to see you, '+profile.display_name+'.';$('fp').textContent=profile.feather_points||0;$('pfp').textContent=profile.feather_points||0;$('level').textContent=Math.floor((profile.feather_points||0)/100)+1}
 $('saveName').onclick=async()=>{let n=$('name').value.trim();if(!n)return;let r=await sb.from('profiles').update({display_name:n}).eq('id',user.id).select().single();if(r.error)return toast(r.error.message);profile=r.data;localStorage.setItem('swname',n);await getProfile();toast('Name saved')};
-$('create').onclick=async()=>{let r=await sb.rpc('create_shutterwing_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null});if(r.error)return toast(r.error.message);await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:r.data[0].game_id,p_visibility:'private',p_allow_late_joining:$('newlatejoin').checked});await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game created')};
-$('createpublic').onclick=async()=>{let r=await sb.rpc('create_shutterwing_public_game',{p_game_name:$('gname').value||'Shutterwing Game',p_game_mode:$('gmode').value,p_location_label:$('loc').value||null,p_target_score:$('gmode').value==='first_to_fifty'?50:null,p_allow_late_joining:$('newlatejoin').checked});if(r.error)return toast(r.error.message);await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Public game created')};
+$('create').onclick=async()=>{
+ try{
+  let r=await sb.rpc('create_shutterwing_game',{
+   p_game_name:$('gname').value||'Shutterwing Game',
+   p_game_mode:'quick_flight',
+   p_location_label:$('loc').value||null,
+   p_target_score:null
+  });
+  if(r.error)throw r.error;
+  const gid=r.data[0].game_id;
+  let s=await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:gid,p_visibility:'private',p_allow_late_joining:$('newlatejoin').checked});
+  if(s.error)throw s.error;
+  const count=await setCardRaceCount(gid);
+  await loadGame(gid);
+  toast(`Private card race created • ${count} cards each`);
+ }catch(e){toast(e.message||String(e));}
+};
+$('createpublic').onclick=async()=>{
+ try{
+  let r=await sb.rpc('create_shutterwing_public_game',{
+   p_game_name:$('gname').value||'Shutterwing Game',
+   p_game_mode:'quick_flight',
+   p_location_label:$('loc').value||null,
+   p_target_score:null,
+   p_allow_late_joining:$('newlatejoin').checked
+  });
+  if(r.error)throw r.error;
+  const gid=r.data[0].game_id;
+  const count=await setCardRaceCount(gid);
+  await loadGame(gid);
+  toast(`Public card race created • ${count} cards each`);
+ }catch(e){toast(e.message||String(e));}
+};
 $('refreshpublic').onclick=()=>loadPublicGames();
-$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});resetGameSpecificUI();await loadGame(r.data[0].game_id);await ensureFiveCardHand();toast('Private game joined')};
+$('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});resetGameSpecificUI();await loadGame(r.data[0].game_id);await fillMyRaceHandIfActive();toast('Private game joined')};
 function resetGameSpecificUI(){
  setHuntView(false);
  active=null;
@@ -2062,6 +2107,32 @@ async function ensureFiveCardHand(){
  const r=await sb.rpc('refill_shutterwing_hand',{p_game_id:game.id});
  if(r.error){console.warn('Hand refill failed:',r.error.message);return;}
  await loadHand();
+}
+
+
+async function setCardRaceCount(gameId){
+ const count=Number($('cardcount')?.value||5);
+ const r=await sb.rpc('set_shutterwing_card_count',{p_game_id:gameId,p_hand_size:count});
+ if(r.error)throw r.error;
+ return count;
+}
+async function fillMyRaceHandIfActive(){
+ if(!game || game.status!=='active')return;
+ const r=await sb.rpc('fill_shutterwing_my_card_race',{p_game_id:game.id});
+ if(r.error)console.warn('Late-join card pile:',r.error.message);
+ await loadHand();
+}
+async function finalizeCardRaceClaim(claimId){
+ if(!sb||!game||!claimId)return null;
+ const r=await sb.rpc('resolve_shutterwing_card_race_claim',{p_claim_id:claimId});
+ if(r.error){console.warn('Card-race resolve:',r.error.message);return null;}
+ const row=Array.isArray(r.data)?r.data[0]:r.data;
+ if(row?.game_finished){
+   await reloadCurrentGame();
+   return row;
+ }
+ await loadHand();
+ return row;
 }
 
 async function loadGame(id){
@@ -2118,15 +2189,11 @@ function renderGameState(){
    $('actionpanel').style.display='none';
    $('effectpanel').style.display='none';
  }else{
-   $('deal').style.display='block';
+   $('deal').style.display='none';
    $('actionpanel').style.display='block';
    $('effectpanel').style.display='block';
  }
- if(game.game_mode==='first_to_fifty'){
-   $('gamerules').textContent=`FIRST TO ${game.target_score||50} WP`;
- }else{
-   $('gamerules').textContent='QUICK FLIGHT • Host ends the round';
- }
+ $('gamerules').textContent=`CARD RACE • ${game.hand_size||5} CARDS • FIRST TO CLEAR THE PILE WINS`;
  if(game.status==='finished') showWinner(); else $('winnerpanel').style.display='none';
 }
 async function showWinner(){
@@ -2134,11 +2201,14 @@ async function showWinner(){
  if(r.error||!r.data?.length)return;
 
  const sorted=[...r.data].sort((a,b)=>b.score-a.score);
- const top=sorted[0].score;
- const winners=sorted.filter(x=>x.score===top).map(x=>x.display_name||'Birder');
+ const raceWinner=game?.winner_id ? sorted.find(x=>x.user_id===game.winner_id) : null;
+ const top=sorted[0]?.score||0;
+ const winners=raceWinner?[raceWinner.display_name||'Birder']:sorted.filter(x=>x.score===top).map(x=>x.display_name||'Birder');
 
  $('winnerpanel').style.display='block';
- $('winnertext').innerHTML=`<div class="big">${winners.join(' & ')}</div><p>${top} WP</p>`;
+ $('winnertext').innerHTML=raceWinner
+   ? `<div class="big">${winners[0]} WINS!</div><p>Card pile cleared • ${raceWinner.score||0} WP</p>`
+   : `<div class="big">${winners.join(' & ')}</div><p>${top} WP</p>`;
  $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+
    sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
 
@@ -2260,6 +2330,11 @@ async function loadHand(){
    .eq('game_id',game.id).eq('user_id',user.id).in('card_state',['hand','active']);
  if(r.error)return;
  hand=r.data||[];
+ if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
+ if(game?.status==='active' && hand.length===0){
+   $('hand').innerHTML='<div class="race-cleared">CARD PILE CLEARED</div>';
+ }
+
  const moult=await loadMoultStatus();
  const moultAvailable=moult?.available_moults||0;
 
@@ -2270,7 +2345,7 @@ async function loadHand(){
    return ap-bp;
  });
 
- $('hand').innerHTML='';
+ $('hand').innerHTML=hand.length?'':'<div class="race-cleared">CARD PILE CLEARED</div>';
 
  // Restore the chosen claim card after refresh/navigation if it is still in hand.
  const savedClaimId=sessionStorage.getItem('sw_active_player_card');
@@ -2401,11 +2476,17 @@ $('readybtn').onclick=async()=>{
 
 $('startgame').onclick=async()=>{
  if(!game)return;
- let r=await sb.rpc('start_shutterwing_game',{p_game_id:game.id});
- if(r.error)return toast(r.error.message);
- toast('Game started — 5 cards dealt to every player');
- await reloadCurrentGame();
- await ensureFiveCardHand();
+ $('startgame').disabled=true;
+ try{
+   let r=await sb.rpc('start_shutterwing_game',{p_game_id:game.id});
+   if(r.error)throw r.error;
+   let prep=await sb.rpc('prepare_shutterwing_card_race',{p_game_id:game.id});
+   if(prep.error)throw prep.error;
+   await reloadCurrentGame();
+   const count=Number(game?.hand_size||5);
+   toast(`Hunt started — ${count} cards each. First to clear the pile wins.`);
+ }catch(e){toast(e.message||String(e));}
+ finally{$('startgame').disabled=false;}
 };
 $('endgame').onclick=async()=>{
  if(!game)return;
@@ -2488,8 +2569,11 @@ $('playagain').onclick=async()=>{
    });
    if(r.error)return toast(r.error.message);
    leaveCurrentGameLocal();
-   await loadGame(r.data[0].game_id);
-   toast('New game created — share the new join code');
+   const newGameId=r.data[0].game_id;
+   const keepCount=Number(oldGame.hand_size||5);
+   await sb.rpc('set_shutterwing_card_count',{p_game_id:newGameId,p_hand_size:keepCount});
+   await loadGame(newGameId);
+   toast(`New ${keepCount}-card race created — share the new join code`);
  }finally{
    $('playagain').disabled=false;
  }
@@ -2522,7 +2606,7 @@ async function loadPublicGames(){
    if(r.error){b.disabled=false;return toast(r.error.message);}
    resetGameSpecificUI();
    await loadGame(b.dataset.publicJoin);
-   await ensureFiveCardHand();
+   await fillMyRaceHandIfActive();
    toast('Joined public game');
  });
 }
@@ -2626,7 +2710,7 @@ async function submitWingClaim(event){
    });
    if(r.error)throw r.error;
 
-   let bank=await sb.from('player_cards').update({card_state:'banked'}).eq('id',playerCardId);
+   let bank=await sb.from('player_cards').update({card_state:'banked',race_banked_at:new Date().toISOString()}).eq('id',playerCardId);
    if(bank.error)throw bank.error;
 
    if($('uploadstatus')) $('uploadstatus').textContent='Wing Claim submitted successfully.';
@@ -2638,14 +2722,9 @@ async function submitWingClaim(event){
    if($('previewwrap')) $('previewwrap').style.display='none';
    $('species').value='';
 
-   // Return immediately; refill and score refresh continue independently.
-   returnToSocialHunt('Wing Claim sent — keep hunting');
-
-   try{
-     const refill=await sb.rpc('refill_shutterwing_hand',{p_game_id:gameId});
-     if(refill.error)console.warn('Automatic hand refill:',refill.error.message);
-   }catch(e){console.warn('Automatic hand refill:',e);}
-
+   // Card is now out of the visible pile while the claim is judged.
+   // Accepted = gone permanently. Rejected = server restores that exact card.
+   returnToSocialHunt('Wing Claim sent — card pending judgement');
    Promise.allSettled([loadHand(),pending(),players(),loadScoreBreakdown()]).catch(()=>{});
  }catch(e){
    $('claimmsg').innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
@@ -2749,8 +2828,9 @@ async function vote(id,v){
      return;
    }
 
-   // Move the voter first. Safari/network refresh work happens afterwards.
-   returnToSocialHunt(v?'Claim accepted — back to the hunt':'Claim rejected — back to the hunt');
+   // Resolve the race card: accepted stays gone; rejected returns to claimant.
+   await finalizeCardRaceClaim(id);
+   returnToSocialHunt(v?'Claim accepted — card removed':'Claim rejected — card returned');
 
    Promise.allSettled([
      pending(),players(),getProfile(),passport(),loadGameFeed(),
@@ -3255,11 +3335,17 @@ async function checkOwnClaimResults(){
    toast('Wing Claim rejected');
  }
 
- // A resolved claim must return the claimant to Social Hunt immediately.
+ // Resolve card-race state on claimant too (safe/idempotent).
  if($('claimmsg'))$('claimmsg').innerHTML='';
+ const raceResult=await finalizeCardRaceClaim(x.claim_id||x.id);
+ if(raceResult?.game_finished){
+   toast('CARD PILE CLEARED — HUNT WON!');
+   go('play',$('navPlay'));
+   return;
+ }
  returnToSocialHunt(x.claim_status==='accepted'
-   ? `Claim accepted +${x.awarded_points||0} WP`
-   : 'Wing Claim rejected');
+   ? `Accepted • ${raceResult?.cards_remaining ?? ''} cards left`
+   : 'Rejected • card returned to your pile');
 
  // Refresh score/hand independently. A slow request must never trap navigation.
  Promise.allSettled([
