@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING SOCIAL TEST 1</title>
+<title>SHUTTERWING SOCIAL TEST 2</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -587,7 +587,7 @@ body.solo-hunt #home #homegamepanel{display:none!important}
 body.solo-hunt #home #homeCurrentGame #homeGameStatus{opacity:.9}
 
 
-/* SOCIAL TEST 1 — consolidated Social + Solo core */
+/* SOCIAL TEST 2 — consolidated Social + Solo core */
 body.solo-hunt #play #soloBanner,
 body.solo-hunt #play .solo-only-title{display:none!important}
 #solo .solo-status{
@@ -601,12 +601,12 @@ body.solo-hunt #play .solo-only-title{display:none!important}
 #soloEmptyHelp.on{display:block}
 
 
-/* SOCIAL TEST 1 — Solo completion + local results */
+/* SOCIAL TEST 2 — Solo completion + local results */
 .solo-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .solo-result-grid>div{padding:10px;border-radius:12px;background:rgba(255,255,255,.05);text-align:center}
 
 
-/* SOCIAL TEST 1 — cleaner live Hunt */
+/* SOCIAL TEST 2 — cleaner live Hunt */
 .hunt-status-bar{
   display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px
 }
@@ -622,7 +622,7 @@ body.hunt-active #play #effectpanel{display:none!important}
 body.hunt-active #play #game > .panel:has(#hand){margin-top:0}
 
 
-/* SOCIAL TEST 1 — Solo isolation + compact Home */
+/* SOCIAL TEST 2 — Solo isolation + compact Home */
 #home .legacy-profile-hero,
 #home .legacy-profile-stats{display:none!important}
 body.solo-hunt #home #homegamepanel{display:none!important}
@@ -631,31 +631,31 @@ body.solo-hunt #claims{display:none!important}
 #soloClaimHistoryPanel{border-top:1px solid var(--line)}
 
 
-/* SOCIAL TEST 1 — navigation gating + release-mode discipline */
+/* SOCIAL TEST 2 — navigation gating + release-mode discipline */
 #homeModePills .home-mode-pill[data-unreleased="1"]{opacity:.55}
 #homeModePills .home-mode-pill[data-unreleased="1"]::after{content:" • SOON";font-size:9px;opacity:.75}
 body.solo-hunt #claimsnav{display:inline-block!important}
 body.solo-hunt #navPlay{color:#dfff98}
 
 
-/* SOCIAL TEST 1 — single authoritative navigation router */
+/* SOCIAL TEST 2 — single authoritative navigation router */
 #solo.on{display:block!important}
 body.solo-hunt #navPlay{color:#c9ef72!important}
 
 
-/* SOCIAL TEST 1 — Solo UI is now structurally inside the main app shell */
+/* SOCIAL TEST 2 — Solo UI is now structurally inside the main app shell */
 #solo{width:100%}
 #solo.on{display:block!important}
 #solo .solo-page-shell{width:100%}
 
 
-/* SOCIAL TEST 1 — release-safe PLAY/WILD handling */
+/* SOCIAL TEST 2 — release-safe PLAY/WILD handling */
 .carddisabled{opacity:.58;filter:saturate(.6)}
 .carddisabled .maincardbtn{cursor:not-allowed}
 .release-note{margin-top:8px;opacity:.72}
 
 
-/* SOCIAL TEST 1 — beta/release readiness */
+/* SOCIAL TEST 2 — beta/release readiness */
 .header-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .connection-badge{font-size:10px;font-weight:900;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid var(--line)}
 .connection-badge.online{color:#dfff98;background:rgba(147,198,61,.12);border-color:rgba(147,198,61,.45)}
@@ -667,7 +667,7 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 .beta-copy{line-height:1.45}
 
 
-/* SOCIAL TEST 1 — first-run onboarding */
+/* SOCIAL TEST 2 — first-run onboarding */
 .home-tools-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-tools-panel .btn{width:100%}
 .howto-card{max-width:680px}
@@ -684,13 +684,13 @@ body.solo-hunt #navPlay{color:#c9ef72!important}
 }
 
 
-/* SOCIAL TEST 1 — pre-hunt wildlife reminder */
+/* SOCIAL TEST 2 — pre-hunt wildlife reminder */
 .safety-card{max-width:620px}
 .safety-lead{color:var(--muted);line-height:1.45}
 .safety-rules{display:grid;gap:8px;margin:12px 0}
 .safety-rules>div{padding:9px 10px;border-left:3px solid #c9ef72;background:rgba(201,239,114,.055);border-radius:6px;line-height:1.4}
 
-/* SOCIAL TEST 1 — personality + feedback */
+/* SOCIAL TEST 2 — personality + feedback */
 :root{--wing-glow:rgba(201,239,114,.16);--sky-glow:rgba(73,168,220,.16);--sun-glow:rgba(245,187,72,.15)}
 body{background:
  radial-gradient(circle at 12% 2%,var(--sky-glow),transparent 28%),
@@ -716,7 +716,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 @media(max-width:560px){.feedback-types{grid-template-columns:1fr 1fr}}
 
 
-/* SOCIAL TEST 1 — tester-facing polish on proven working core */
+/* SOCIAL TEST 2 — tester-facing polish on proven working core */
 .game-rules{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(73,168,220,.07);display:grid;gap:6px;line-height:1.4}
 .game-rules strong{color:#dfff98}
 #joinGame,#joinPublicGame,#joinPrivateGame{min-height:56px;font-size:16px;font-weight:900;width:100%}
@@ -729,7 +729,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 
 .build-stamp{display:inline-block;margin:-2px 0 12px;padding:5px 8px;border-radius:999px;border:1px solid rgba(201,239,114,.35);color:#dfff98;font-size:10px;font-weight:900}
 
-/* SOCIAL TEST 1 — conservative Social-mode fixes on known-good core */
+/* SOCIAL TEST 2 — conservative Social-mode fixes on known-good core */
 .social-setup-hint{margin:10px 0 14px;padding:11px 12px;border-radius:12px;border:1px solid rgba(73,168,220,.32);background:rgba(73,168,220,.08);line-height:1.4}
 .social-setup-hint strong{display:block;color:#dfff98;margin-bottom:3px;font-size:11px;letter-spacing:.5px}
 @media(max-width:700px){
@@ -743,7 +743,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">SOCIAL TEST 1</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">SOCIAL TEST 2</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1489,6 +1489,25 @@ go=function(requested,b){
 homePlayLarge.onclick=()=>showWildlifeSafety(launchHomePlay);
 window.go=go;
 
+function returnToSocialHunt(message=''){
+ // Claim/vote completion must never be redirected through Solo/Home routing.
+ soloActive=false;
+ selectedHomeMode='social';
+ localStorage.setItem('sw_solo_active','0');
+ localStorage.setItem('sw_selected_mode','social');
+ document.body.classList.remove('solo-hunt');
+ setHuntView(true);
+
+ // Bypass the mode router and show the known Social play screen directly.
+ _baseGo('play',$('navPlay'));
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));
+ if($('navPlay'))$('navPlay').classList.add('on');
+ refreshHuntStatus();
+ window.scrollTo({top:0,left:0,behavior:'auto'});
+ if(message)toast(message);
+}
+
+
 renderHomeModePills();
 renderSoloState();
 loadSoloResults();
@@ -1856,7 +1875,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING SOCIAL TEST 1',
+   'SHUTTERWING SOCIAL TEST 2',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2594,13 +2613,15 @@ async function submitWingClaim(event){
    if($('previewwrap')) $('previewwrap').style.display='none';
    $('species').value='';
 
-   // Keep gameplay moving: replace the completed challenge automatically.
-   const refill=await sb.rpc('refill_shutterwing_hand',{p_game_id:gameId});
-   if(refill.error) console.warn('Automatic hand refill:',refill.error.message);
+   // Return immediately; refill and score refresh continue independently.
+   returnToSocialHunt('Wing Claim sent — keep hunting');
 
-   await Promise.all([loadHand(),pending(),players(),loadScoreBreakdown()]);
-   toast('Wing Claim sent — keep hunting');
-   setTimeout(()=>go('play'),250);
+   try{
+     const refill=await sb.rpc('refill_shutterwing_hand',{p_game_id:gameId});
+     if(refill.error)console.warn('Automatic hand refill:',refill.error.message);
+   }catch(e){console.warn('Automatic hand refill:',e);}
+
+   Promise.allSettled([loadHand(),pending(),players(),loadScoreBreakdown()]).catch(()=>{});
  }catch(e){
    $('claimmsg').innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
  }finally{
@@ -2697,11 +2718,22 @@ async function vote(id,v){
  const buttons=[...document.querySelectorAll('#pending button')];
  buttons.forEach(b=>b.disabled=true);
  try{
-   let r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});
-   if(r.error)return toast(r.error.message);
-   toast(v?'Claim accepted — back to the hunt':'Claim rejected — back to the hunt');
-   await Promise.all([pending(),players(),getProfile(),passport(),loadGameFeed(),loadScoreBreakdown(),loadHand(),loadMyServedEffects(),loadMoultStatus()]);
-   setTimeout(()=>go('play'),300);
+   const r=await sb.rpc('cast_wing_claim_vote',{p_claim_id:id,p_accept:v});
+   if(r.error){
+     toast(r.error.message);
+     return;
+   }
+
+   // Move the voter first. Safari/network refresh work happens afterwards.
+   returnToSocialHunt(v?'Claim accepted — back to the hunt':'Claim rejected — back to the hunt');
+
+   Promise.allSettled([
+     pending(),players(),getProfile(),passport(),loadGameFeed(),
+     loadScoreBreakdown(),loadHand(),loadMyServedEffects(),loadMoultStatus()
+   ]).catch(()=>{});
+ }catch(e){
+   console.error('Vote failed',e);
+   toast('Vote could not be completed');
  }finally{
    buttons.forEach(b=>b.disabled=false);
  }
@@ -3198,14 +3230,16 @@ async function checkOwnClaimResults(){
    toast('Wing Claim rejected');
  }
 
- // Refresh score and personal ledger after the result, without redrawing photo feeds.
- await Promise.all([players(),loadScoreBreakdown(),getProfile(),loadHand(),loadMoultStatus()]);
+ // A resolved claim must return the claimant to Social Hunt immediately.
+ if($('claimmsg'))$('claimmsg').innerHTML='';
+ returnToSocialHunt(x.claim_status==='accepted'
+   ? `Claim accepted +${x.awarded_points||0} WP`
+   : 'Wing Claim rejected');
 
- // Claimant should never be stranded on the completed Wing Claims screen.
- if($('claimmsg')) $('claimmsg').innerHTML='';
- if($('claims').classList.contains('on')){
-   setTimeout(()=>go('play'),300);
- }
+ // Refresh score/hand independently. A slow request must never trap navigation.
+ Promise.allSettled([
+   players(),loadScoreBreakdown(),getProfile(),loadHand(),loadMoultStatus()
+ ]).catch(()=>{});
 }
 
 
