@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 17</title>
+<title>SHUTTERWING CARD RACE 18</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -794,6 +794,43 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
 .race-cleared-badge{display:inline-block;padding:3px 7px;border-radius:99px;background:#c7ef72;color:#0b1209;font-size:11px;font-weight:950}
 #raceStatusSummary{margin-top:8px}
 
+
+/* CARD RACE 18 — cards first */
+#play #handpanel{
+  border:2px solid rgba(199,239,114,.48);
+  background:linear-gradient(145deg,rgba(199,239,114,.07),rgba(255,255,255,.025));
+  margin-top:10px;
+}
+.hand-header-row{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px
+}
+.hand-count-chip{
+  flex:0 0 auto;padding:7px 9px;border-radius:999px;background:#c7ef72;color:#0b1209;
+  font-size:11px;font-weight:950;letter-spacing:.04em
+}
+#play #hand.hand{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  overflow:visible!important;
+  padding:6px 0!important;
+}
+#play #hand .card{
+  min-width:0!important;width:100%!important;min-height:255px!important
+}
+#play #hand .card h3{font-size:17px!important;margin:12px 0 7px!important}
+#play #hand .card p{font-size:13px!important}
+#play #hand .card .wp{font-size:23px!important}
+.race-status-summary{
+  margin:8px 0 4px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.035)
+}
+body.hunt-active #play #gameactivitypanel,
+body.hunt-active #play #scorebreakdownpanel,
+body.hunt-active #play #gamefeedpanel{display:none!important}
+@media(min-width:520px){
+  #play #hand.hand{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
@@ -987,17 +1024,34 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div class="small" style="text-align:center;margin-top:5px" id="visibilitystatus"></div>
 </div>
 <div class="grid"><div class="stat"><div class="small">MY SCORE</div><div id="score" class="big">0</div></div><div class="stat"><div class="small">PLAYERS</div><div id="pcount" class="big">1</div></div></div>
+<div id="huntStatusBar" class="hunt-status-bar" style="display:none">
+  <div><span class="small">CARDS LEFT</span><strong id="huntCardsLeft">0</strong></div>
+  <div><span class="small">MY SCORE</span><strong id="huntScore">0 WP</strong></div>
+  <div><span class="small">PLAYERS</span><strong id="huntPlayers">1</strong></div>
+</div>
+<div id="raceStatusSummary" class="small race-status-summary">Card race progress will appear when the hunt starts.</div>
+<div class="panel" id="handpanel">
+  <div class="hand-header-row">
+    <div>
+      <div class="small">YOUR CARD PILE</div>
+      <h3 style="margin:2px 0 0">Choose a card and hunt</h3>
+    </div>
+    <div class="hand-count-chip"><span id="handCountMirror">—</span> LEFT</div>
+  </div>
+  <div id="hand" class="hand"></div>
+  <button id="deal" class="btn alt" style="display:none">REFILL HAND</button>
+</div>
 <div class="panel"><h3>Players / scoreboard</h3><div id="players"></div></div>
-<div class="panel">
+<div class="panel" id="gameactivitypanel">
   <h3>Game activity</h3>
   <div id="gameactivity" class="small">No activity yet.</div>
 </div>
-<div class="panel">
+<div class="panel" id="scorebreakdownpanel">
   <h3>My score breakdown</h3>
   <div class="small">See exactly which accepted cards make up your score.</div>
   <div id="scorebreakdown" style="margin-top:8px">No scored claims yet.</div>
 </div>
-<div class="panel">
+<div class="panel" id="gamefeedpanel">
   <h3>Game feed</h3>
   <div class="small">Accepted, pending and rejected Wing Claims from this game.</div>
   <div id="gamefeed" style="margin-top:8px">No claims yet.</div>
@@ -1044,13 +1098,7 @@ header{background:linear-gradient(135deg,rgba(73,168,220,.11),rgba(201,239,114,.
   <div><span id="moultcount" class="moultcount">0</span> <b>available</b></div>
   <div id="moulttext" class="small">Earn 1 Moult for each 10 WP this round, up to 3. Spend 1 to discard any card you choose and draw a replacement.</div>
 </div>
-<div id="huntStatusBar" class="hunt-status-bar" style="display:none">
-  <div><span class="small">CARDS LEFT</span><strong id="huntCardsLeft">0</strong></div>
-  <div><span class="small">MY SCORE</span><strong id="huntScore">0 WP</strong></div>
-  <div><span class="small">PLAYERS</span><strong id="huntPlayers">1</strong></div>
-</div><div id="raceStatusSummary" class="small">Card race progress will appear when the hunt starts.</div>
-<div class="panel"><h3>My card pile</h3><div class="small" style="margin:12px 0 4px;font-weight:900;letter-spacing:.12em">YOUR FULL HAND</div>
-<div id="hand" class="hand"></div><button id="deal" class="btn alt" style="display:none">REFILL HAND</button></div>
+
 <div class="panel" id="actionpanel"><h3>Action cards</h3><div class="small">Magpie, Wedge-tail and Wild Wing effects now play live.</div><div id="actionlog" class="small" style="margin-top:8px">No action played yet.</div></div>
 <div class="panel" id="effectpanel"><h3>Active effects</h3><div id="effects" class="small">No active effects.</div></div>
 <div class="panel" id="winnerpanel" style="display:none">
@@ -3753,4 +3801,20 @@ document.querySelectorAll('.feedback-type').forEach(btn=>btn.onclick=()=>{
 if($('feedbackModal'))$('feedbackModal').addEventListener('click',e=>{if(e.target===$('feedbackModal'))hideFeedback();});
 
 </script>
+
+<script>
+(function(){
+  function syncHandMirror(){
+    var source=document.getElementById('huntCardsLeft');
+    var mirror=document.getElementById('handCountMirror');
+    if(source&&mirror) mirror.textContent=source.textContent||'0';
+  }
+  window.addEventListener('DOMContentLoaded',function(){
+    syncHandMirror();
+    var source=document.getElementById('huntCardsLeft');
+    if(source) new MutationObserver(syncHandMirror).observe(source,{childList:true,subtree:true,characterData:true});
+  });
+})();
+</script>
+
 </body></html>
