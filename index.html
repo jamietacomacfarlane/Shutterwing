@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 18</title>
+<title>SHUTTERWING CARD RACE 19</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -831,13 +831,27 @@ body.hunt-active #play #gamefeedpanel{display:none!important}
   #play #hand.hand{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
 
+
+/* CARD RACE 19 — explicit Hunt hand visibility
+   Do not rely on :has(#hand) to rescue the card panel. */
+body.hunt-active #play #handpanel{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+body.hunt-active #play #hand{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 18</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 19</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -2064,7 +2078,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 18',
+   'SHUTTERWING CARD RACE 19',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
