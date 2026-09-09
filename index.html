@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 19</title>
+<title>SHUTTERWING CARD RACE 20</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -399,7 +399,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 
 /* RC7 REBUILD 2 — cleaner HUNT screen */
 body.hunt-active #play #nogame,
-body.hunt-active #play #game > .panel:not(#servedeffectpanel):not(#moultpanel):not(#actionpanel):not(#effectpanel),
+body.hunt-active #play #game > .panel:not(#handpanel):not(#servedeffectpanel):not(#moultpanel):not(#actionpanel):not(#effectpanel),
 body.hunt-active #play #game > .grid,
 body.hunt-active #play #game > #winnerpanel{
   display:none!important;
@@ -851,7 +851,7 @@ body.hunt-active #play #hand{
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 19</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 20</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -2078,7 +2078,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 19',
+   'SHUTTERWING CARD RACE 20',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
