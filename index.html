@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 23</title>
+<title>SHUTTERWING CARD RACE 24</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -859,7 +859,7 @@ body.hunt-active #play #hand{
 }
 
 
-/* CARD RACE 23 — streamlined Social lobby */
+/* CARD RACE 24 — streamlined Social lobby */
 body.lobby-active #gameactivitypanel,
 body.lobby-active #scorebreakdownpanel,
 body.lobby-active #gamefeedpanel,
@@ -880,7 +880,7 @@ body.lobby-active #leaveactivepanel{margin-top:8px!important}
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 23</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 24</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1531,6 +1531,10 @@ function closeSoloClaim(){
 
 async function startSolo(){
  selectedHomeMode='solo'; soloActive=true; soloScore=0; soloCompleted=0; soloHand=[];
+ if($('soloPageRefill')){
+   $('soloPageRefill').disabled=false;
+   $('soloPageRefill').textContent='REFILL SOLO HAND';
+ }
  localStorage.setItem('sw_selected_mode','solo'); saveSolo(); renderHomeModePills(); renderSoloState();
  await buildSoloHand(true); go('solo');
  setTimeout(()=>renderSoloHand(),120);
@@ -2107,7 +2111,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 23',
+   'SHUTTERWING CARD RACE 24',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2356,6 +2360,7 @@ function renderGameState(){
  refreshHomeLaunch();
  refreshHuntStatus();
  document.body.classList.toggle('lobby-active',!!(game&&game.status==='lobby'));
+ document.body.classList.toggle('hunt-active',!!(game&&game.status==='active'));
  if(!game)return;
  const host=game.host_id===user.id;
  $('hostpanel').style.display=host?'block':'none';
@@ -2608,7 +2613,7 @@ async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 23: every active Social pile must remain finishable.
+ // CARD RACE 24: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -2649,6 +2654,12 @@ async function loadHand(){
  hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
 
+ // CARD RACE 24: zero cards must always resolve the race and reveal results.
+ if(game?.status==='active' && hand.length===0){
+   const finished=await checkRaceWinAfterCardPlay();
+   if(finished)return;
+ }
+
  const missing=hand.filter(pc=>!pc.cards);
  if(missing.length){
    console.warn('Missing card definitions:',missing.map(x=>x.card_id));
@@ -2676,7 +2687,7 @@ async function loadHand(){
    return ap-bp;
  });
 
- $('hand').innerHTML=hand.length?'':(game?.status==='finished'?'<div class="race-cleared">CARD PILE CLEARED</div>':'<div class="small">Preparing your card pile…</div>');
+ $('hand').innerHTML=hand.length?'':(game?.status==='finished'?'<div class="race-cleared">CARD PILE CLEARED</div>':'<div class="race-cleared">PILE CLEARED — VERIFYING RESULT…</div>');
 
  // Restore the chosen claim card after refresh/navigation if it is still in hand.
  const savedClaimId=sessionStorage.getItem('sw_active_player_card');
@@ -2780,7 +2791,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 23: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 24: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
@@ -3850,14 +3861,19 @@ $('soloConfirmClaim').onclick=async()=>{
    renderSoloClaimHistory();
    toast(`Claim recorded — +${wp} WP`);
 
-   // Replacement-card load is separate from the successful claim.
-   try{
-     await buildSoloHand(false);
-     renderSoloState();
-     renderSoloHand();
-   }catch(refillError){
-     console.error('Solo refill failed',refillError);
-     if($('soloStatus'))$('soloStatus').textContent='Claim saved. Tap REFILL SOLO HAND to restore five cards.';
+   // CARD RACE 24: Solo is a finite five-card hunt.
+   // Completed cards stay gone; there is no automatic replacement.
+   if(soloHand.length===0){
+     saveSoloResult(soloScore,soloCompleted);
+     if($('soloStatus'))$('soloStatus').textContent=`SOLO HUNT COMPLETE — ${soloCompleted} cards cleared • ${soloScore} WP`;
+     if($('soloPageRefill')){
+       $('soloPageRefill').disabled=true;
+       $('soloPageRefill').textContent='SOLO HUNT COMPLETE';
+     }
+     if($('soloEmptyHelp'))$('soloEmptyHelp').classList.remove('on');
+     toast(`Solo Hunt complete — ${soloScore} WP`);
+   }else{
+     if($('soloStatus'))$('soloStatus').textContent=`${soloHand.length} card${soloHand.length===1?'':'s'} left`;
    }
  }catch(e){
    console.error('Solo claim failed',e);
