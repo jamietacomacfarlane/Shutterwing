@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 22</title>
+<title>SHUTTERWING CARD RACE 23</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -858,13 +858,29 @@ body.hunt-active #play #hand{
   opacity:1!important;
 }
 
+
+/* CARD RACE 23 — streamlined Social lobby */
+body.lobby-active #gameactivitypanel,
+body.lobby-active #scorebreakdownpanel,
+body.lobby-active #gamefeedpanel,
+body.lobby-active #claimresultpanel{display:none!important}
+body.lobby-active #hostpanel h3,
+body.lobby-active #hostpanel label,
+body.lobby-active #latejoinnote,
+body.lobby-active #hostpanel > .small{display:none!important}
+body.lobby-active #hostpanel{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;margin-top:8px!important}
+body.lobby-active #readypanel{margin-bottom:8px!important}
+body.lobby-active #readybtn,
+body.lobby-active #startgame{width:100%!important;min-height:56px!important;font-size:18px!important;font-weight:900!important}
+body.lobby-active #leaveactivepanel{margin-top:8px!important}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 22</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 23</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1095,7 +1111,7 @@ body.hunt-active #play #hand{
   <button id="readybtn" type="button" class="btn alt">I'M READY</button>
 </div>
 
-<div class="panel">
+<div class="panel" id="leaveactivepanel">
   <button id="leaveactivegame" type="button" class="btn alt">LEAVE THIS GAME</button>
 </div>
 <div class="panel" id="hostpanel" style="display:none">
@@ -2091,7 +2107,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 22',
+   'SHUTTERWING CARD RACE 23',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2339,10 +2355,12 @@ async function loadGame(id){
 function renderGameState(){
  refreshHomeLaunch();
  refreshHuntStatus();
+ document.body.classList.toggle('lobby-active',!!(game&&game.status==='lobby'));
  if(!game)return;
  const host=game.host_id===user.id;
  $('hostpanel').style.display=host?'block':'none';
  $('startgame').style.display=(host && game.status==='lobby')?'block':'none';
+ if(host && game.status==='lobby') $('startgame').textContent='START GAME';
  $('endgame').style.display=(host && game.status==='active')?'block':'none';
  $('readypanel').style.display=(game.status==='lobby')?'block':'none';
  $('nextround').style.display='none';
@@ -2522,9 +2540,12 @@ async function players(){
      $('readybtn').className=me.ready?'btn':'btn alt';
    }
    const readyCount=rows.filter(x=>x.ready).length;
-   $('readystatus').textContent=`${readyCount}/${rows.length} players ready`;
    const host=game.host_id===user.id;
-   $('startgame').disabled=!(host && rows.length>=2 && readyCount===rows.length);
+   const allReady=(rows.length>=2 && readyCount===rows.length);
+   $('readystatus').textContent=allReady
+     ? (host?'Everyone is ready — start the game.':'Everyone is ready — waiting for the host.')
+     : `${readyCount}/${rows.length} players ready`;
+   $('startgame').disabled=!(host && allReady);
  }
 
 }
@@ -2587,7 +2608,7 @@ async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 22: every active Social pile must remain finishable.
+ // CARD RACE 23: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -2759,7 +2780,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 22: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 23: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
