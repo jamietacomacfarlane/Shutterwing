@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 25</title>
+<title>SHUTTERWING CARD RACE 26</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -859,7 +859,7 @@ body.hunt-active #play #hand{
 }
 
 
-/* CARD RACE 25 — streamlined Social lobby */
+/* CARD RACE 26 — streamlined Social lobby */
 body.lobby-active #gameactivitypanel,
 body.lobby-active #scorebreakdownpanel,
 body.lobby-active #gamefeedpanel,
@@ -875,7 +875,7 @@ body.lobby-active #startgame{width:100%!important;min-height:56px!important;font
 body.lobby-active #leaveactivepanel{margin-top:8px!important}
 
 
-/* CARD RACE 25 — PLAY FIRST: required action first, information second */
+/* CARD RACE 26 — PLAY FIRST: required action first, information second */
 
 /* Lobby: no scrolling hunt. Game identity -> READY -> START -> players -> leave. */
 body.lobby-active #play #socialSetupHint{display:none!important}
@@ -972,13 +972,36 @@ body.hunt-active #handpanel .hand-header-row{
   margin-bottom:6px!important;
 }
 
+
+/* CARD RACE 26 — unmistakable finish + clean reset */
+.race-finish-overlay{
+  position:fixed;inset:0;z-index:140;
+  background:rgba(3,7,5,.94);
+  align-items:center;justify-content:center;
+  padding:18px;
+}
+.race-finish-card{
+  width:min(94%,560px);
+  border:2px solid var(--lime);
+  border-radius:20px;
+  padding:22px;
+  background:linear-gradient(145deg,#182318,#0d130f);
+  box-shadow:0 24px 90px rgba(0,0,0,.65);
+}
+.race-finish-title{
+  font-size:34px;font-weight:1000;letter-spacing:.02em;
+  color:#dfff98;margin:4px 0 12px;
+}
+.race-finish-winner{font-size:24px;font-weight:950;margin-bottom:14px}
+.race-finish-standings .player{padding:9px 0}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 25</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 26</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1486,6 +1509,17 @@ body.hunt-active #handpanel .hand-header-row{
     </div>
 
     <button id="closeHowToPlay" type="button" class="btn main" style="margin-top:14px">GOT IT — LET'S HUNT</button>
+  </div>
+</div>
+
+
+<div id="raceFinishOverlay" class="race-finish-overlay" style="display:none">
+  <div class="race-finish-card">
+    <div class="small">SHUTTERWING CARD RACE</div>
+    <div class="race-finish-title">HUNT COMPLETE</div>
+    <div id="raceFinishWinner" class="race-finish-winner">Winner confirmed</div>
+    <div id="raceFinishStandings" class="race-finish-standings"></div>
+    <button id="raceFinishHome" type="button" class="btn">HOME</button>
   </div>
 </div>
 
@@ -2209,7 +2243,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 25',
+   'SHUTTERWING CARD RACE 26',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2396,6 +2430,7 @@ function resetGameSpecificUI(){
  if($('gamefeed')) $('gamefeed').innerHTML='<div class="small">No claims yet.</div>';
  if($('gameactivity')) $('gameactivity').innerHTML='<div class="small">No activity yet.</div>';
  if($('scoremodal')) $('scoremodal').style.display='none';
+ if($('raceFinishOverlay')) $('raceFinishOverlay').style.display='none';
 }
 async function ensureFiveCardHand(){
  if(!sb||!game||game.status==='finished')return;
@@ -2469,8 +2504,8 @@ function renderGameState(){
  $('nextround').style.display='none';
  $('finishedcontrols').style.display=(game.status==='finished')?'block':'none';
  $('playagain').style.display=(host && game.status==='finished')?'block':'none';
- if($('nextround2'))$('nextround2').style.display=(host && game.status==='finished')?'block':'none';
- if($('nextround2'))$('nextround2').textContent=`START NEW ${Number(game.hand_size||5)}-CARD RACE`;
+ if($('nextround2'))$('nextround2').style.display='none';
+ if($('nextround2'))$('nextround2').textContent='PLAY ANOTHER ROUND — SAME PLAYERS';
  $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'HUNT IN PROGRESS':'ROUND COMPLETE';
  $('roundstatus').innerHTML=game.status==='active'?`<span class="huntpill">ROUND ${game.current_round||1} • HUNT</span>`:`ROUND ${game.current_round||1}`;
  $('visibilitystatus').textContent=(game.visibility==='public'?'PUBLIC GAME':'PRIVATE GAME')+(game.allow_late_joining?' • LATE JOINING ON':' • LATE JOINING OFF');
@@ -2484,9 +2519,15 @@ function renderGameState(){
 
  // A finished game must not look playable or carry a stale hand forward.
  if(game.status==='finished'){
+   document.body.classList.remove('hunt-active','lobby-active');
    hand=[];
    active=null;
    sessionStorage.removeItem('sw_active_player_card');
+   pendingPrimed=false;
+   lastPendingClaimIds=new Set();
+   lastPendingSignature='';
+   if($('claimbadge'))$('claimbadge').style.display='none';
+   if($('pending'))$('pending').textContent='No claims waiting for your vote.';
    $('hand').innerHTML='<div class="small">This game has finished.</div>';
    $('deal').style.display='none';
    $('actionpanel').style.display='none';
@@ -2522,6 +2563,16 @@ async function showWinner(){
    : `<div class="big">${winners.join(' & ')}</div><p>${top} WP</p>`;
  $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+
    sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
+
+ // CARD RACE 26: unmistakable end-of-game confirmation.
+ if($('raceFinishOverlay')){
+   const winnerName=raceWinner?(raceWinner.display_name||'Birder'):(winners.join(' & ')||'Winner');
+   $('raceFinishWinner').textContent=`${winnerName} WINS!`;
+   $('raceFinishStandings').innerHTML=sorted.map((x,i)=>
+     `<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score||0} WP</b></div>`
+   ).join('');
+   $('raceFinishOverlay').style.display='flex';
+ }
 
  const s=await sb.rpc('get_shutterwing_round_summary',{
    p_game_id:game.id,
@@ -2712,7 +2763,7 @@ async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 25: every active Social pile must remain finishable.
+ // CARD RACE 26: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -2753,7 +2804,7 @@ async function loadHand(){
  hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
 
- // CARD RACE 25: zero cards must always resolve the race and reveal results.
+ // CARD RACE 26: zero cards must always resolve the race and reveal results.
  if(game?.status==='active' && hand.length===0){
    const finished=await checkRaceWinAfterCardPlay();
    if(finished)return;
@@ -2890,7 +2941,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 25: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 26: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
@@ -3855,6 +3906,13 @@ document.addEventListener('visibilitychange',()=>{
 });
 
 
+if($('raceFinishHome')){
+ $('raceFinishHome').onclick=()=>{
+   $('raceFinishOverlay').style.display='none';
+   go('home',$('navHome'));
+ };
+}
+
 if($('closescore')){
  $('closescore').onclick=()=>{$('scoremodal').style.display='none'};
 }
@@ -3960,7 +4018,7 @@ $('soloConfirmClaim').onclick=async()=>{
    renderSoloClaimHistory();
    toast(`Claim recorded — +${wp} WP`);
 
-   // CARD RACE 25: Solo is a finite five-card hunt.
+   // CARD RACE 26: Solo is a finite five-card hunt.
    // Completed cards stay gone; there is no automatic replacement.
    if(soloHand.length===0){
      saveSoloResult(soloScore,soloCompleted);
