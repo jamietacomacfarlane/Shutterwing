@@ -399,7 +399,7 @@ input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:
 
 /* RC7 REBUILD 2 — cleaner HUNT screen */
 body.hunt-active #play #nogame,
-body.hunt-active #play #game > .panel:not(#handpanel):not(#servedeffectpanel):not(#moultpanel):not(#actionpanel):not(#effectpanel),
+body.hunt-active #play #game > .panel:not(#servedeffectpanel):not(#moultpanel):not(#actionpanel):not(#effectpanel),
 body.hunt-active #play #game > .grid,
 body.hunt-active #play #game > #winnerpanel{
   display:none!important;
@@ -2548,13 +2548,50 @@ async function moultCard(pc,c){
 
 async function loadHand(){
  if(soloActive){renderSoloHand();return;}
- if(!game)return;
+ if(!game||!user)return;
+
+ // CARD RACE 20:
+ // Load player card rows first, then fetch card definitions separately.
+ // This avoids an intermittent Safari/iPad failure where the embedded
+ // cards(...) relationship can return the pile rows but null card details.
  let r=await sb.from('player_cards')
-   .select('id,card_id,card_state,cards(id,family,title,challenge_text,wing_points,card_type)')
-   .eq('game_id',game.id).eq('user_id',user.id).in('card_state',['hand','active']);
- if(r.error)return;
- hand=r.data||[];
+   .select('id,card_id,card_state')
+   .eq('game_id',game.id)
+   .eq('user_id',user.id)
+   .in('card_state',['hand','active']);
+
+ if(r.error){
+   console.warn('Hand rows failed:',r.error.message);
+   $('hand').innerHTML='<div class="msg">Could not load your card pile. '+r.error.message+'</div>';
+   return;
+ }
+
+ const playerRows=r.data||[];
+ const cardIds=[...new Set(playerRows.map(x=>x.card_id).filter(Boolean))];
+
+ let cardMap=new Map();
+ if(cardIds.length){
+   const cr=await sb.from('cards')
+     .select('id,family,title,challenge_text,wing_points,card_type')
+     .in('id',cardIds);
+
+   if(cr.error){
+     console.warn('Card definitions failed:',cr.error.message);
+     $('hand').innerHTML='<div class="msg">Your pile exists, but the card details could not be loaded. '+cr.error.message+'</div>';
+     if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(playerRows.length);
+     return;
+   }
+
+   cardMap=new Map((cr.data||[]).map(c=>[c.id,c]));
+ }
+
+ hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
+
+ const missing=hand.filter(pc=>!pc.cards);
+ if(missing.length){
+   console.warn('Missing card definitions:',missing.map(x=>x.card_id));
+ }
 
  if(lastRaceGameId!==game.id){
    lastRaceGameId=game.id;
