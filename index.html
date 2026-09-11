@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 24</title>
+<title>SHUTTERWING CARD RACE 25</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -859,7 +859,7 @@ body.hunt-active #play #hand{
 }
 
 
-/* CARD RACE 24 — streamlined Social lobby */
+/* CARD RACE 25 — streamlined Social lobby */
 body.lobby-active #gameactivitypanel,
 body.lobby-active #scorebreakdownpanel,
 body.lobby-active #gamefeedpanel,
@@ -874,13 +874,111 @@ body.lobby-active #readybtn,
 body.lobby-active #startgame{width:100%!important;min-height:56px!important;font-size:18px!important;font-weight:900!important}
 body.lobby-active #leaveactivepanel{margin-top:8px!important}
 
+
+/* CARD RACE 25 — PLAY FIRST: required action first, information second */
+
+/* Lobby: no scrolling hunt. Game identity -> READY -> START -> players -> leave. */
+body.lobby-active #play #socialSetupHint{display:none!important}
+body.lobby-active #play .hunt-tools-note{display:none!important}
+body.lobby-active #play > h2{display:none!important}
+body.lobby-active #play #game{
+  display:flex!important;
+  flex-direction:column!important;
+}
+body.lobby-active #gamepanel{order:1!important}
+body.lobby-active #readypanel{order:2!important}
+body.lobby-active #hostpanel{order:3!important}
+body.lobby-active #playerspanel{order:4!important}
+body.lobby-active #leaveactivepanel{order:5!important}
+
+/* Remove gameplay-only clutter from the lobby entirely. */
+body.lobby-active #play #game > .grid,
+body.lobby-active #huntStatusBar,
+body.lobby-active #raceStatusSummary,
+body.lobby-active #handpanel,
+body.lobby-active #finishedcontrols,
+body.lobby-active #servedeffectpanel,
+body.lobby-active #moultpanel,
+body.lobby-active #actionpanel,
+body.lobby-active #effectpanel,
+body.lobby-active #winnerpanel,
+body.lobby-active #gameactivitypanel,
+body.lobby-active #scorebreakdownpanel,
+body.lobby-active #gamefeedpanel,
+body.lobby-active #claimresultpanel{
+  display:none!important;
+}
+
+/* Lobby card is deliberately compact. */
+body.lobby-active #gamepanel{
+  padding:12px!important;
+  margin:8px 0!important;
+}
+body.lobby-active #gamepanel #gamerules,
+body.lobby-active #gamepanel #roundstatus,
+body.lobby-active #gamepanel #visibilitystatus{
+  display:none!important;
+}
+body.lobby-active #gamepanel #code{
+  font-size:26px!important;
+  margin:4px 0!important;
+}
+body.lobby-active #readypanel{
+  padding:12px!important;
+  margin:6px 0!important;
+}
+body.lobby-active #readypanel h3{margin-bottom:4px!important}
+body.lobby-active #myreadystate{margin:6px 0!important}
+
+/* Hunt: cards are the main screen, not buried under status/instructions. */
+body.hunt-active #play #socialSetupHint,
+body.hunt-active #play .hunt-tools-note,
+body.hunt-active #play > h2,
+body.hunt-active #raceStatusSummary{
+  display:none!important;
+}
+body.hunt-active #play #game{
+  display:flex!important;
+  flex-direction:column!important;
+}
+body.hunt-active #huntStatusBar{order:1!important;margin:4px 0 8px!important}
+body.hunt-active #servedeffectpanel{order:2!important;margin:0 0 8px!important}
+body.hunt-active #handpanel{order:3!important;margin:0!important}
+body.hunt-active #moultpanel{order:4!important;margin:8px 0 0!important}
+
+/* Everything not needed to choose/play a card stays off the live hunt screen. */
+body.hunt-active #gamepanel,
+body.hunt-active #play #game > .grid,
+body.hunt-active #playerspanel,
+body.hunt-active #readypanel,
+body.hunt-active #leaveactivepanel,
+body.hunt-active #hostpanel,
+body.hunt-active #finishedcontrols,
+body.hunt-active #actionpanel,
+body.hunt-active #effectpanel,
+body.hunt-active #gameactivitypanel,
+body.hunt-active #scorebreakdownpanel,
+body.hunt-active #gamefeedpanel,
+body.hunt-active #claimresultpanel{
+  display:none!important;
+}
+
+/* Keep the cards visually dominant. */
+body.hunt-active #handpanel{
+  padding:12px!important;
+  border-width:2px!important;
+}
+body.hunt-active #handpanel .hand-header-row{
+  margin-bottom:6px!important;
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 24</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 25</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1059,7 +1157,7 @@ body.lobby-active #leaveactivepanel{margin-top:8px!important}
 <button id="join" class="btn alt">JOIN PRIVATE GAME WITH CODE</button>
 </div></div>
 <div id="game" style="display:none">
-<div class="panel">
+<div class="panel" id="gamepanel">
   <div class="small">LIVE GAME</div><h2 id="gamename"></h2><div id="code" class="code"></div>
   <div class="small" style="text-align:center" id="gamestatus">Lobby</div>
 <div class="small" style="text-align:center;margin-top:5px" id="gamerules"></div>
@@ -1084,7 +1182,7 @@ body.lobby-active #leaveactivepanel{margin-top:8px!important}
   <div id="hand" class="hand"></div>
   <button id="deal" class="btn alt" style="display:none">REFILL HAND</button>
 </div>
-<div class="panel"><h3>Players / scoreboard</h3><div id="players"></div></div>
+<div class="panel" id="playerspanel"><h3>Players / scoreboard</h3><div id="players"></div></div>
 <div class="panel" id="gameactivitypanel">
   <h3>Game activity</h3>
   <div id="gameactivity" class="small">No activity yet.</div>
@@ -2111,7 +2209,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 24',
+   'SHUTTERWING CARD RACE 25',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2564,8 +2662,9 @@ async function loadMoultStatus(){
  }
  const x=Array.isArray(r.data)?r.data[0]:r.data;
  if(!x)return null;
- $('moultpanel').style.display='block';
- $('moultcount').textContent=x.available_moults||0;
+ const available=Number(x.available_moults||0);
+ $('moultpanel').style.display=available>0?'block':'none';
+ $('moultcount').textContent=available;
  $('moulttext').textContent=`${x.base_moults||0} earned from WP${x.bonus_moults?` + ${x.bonus_moults} bonus`:''} • ${x.spent_moults||0} spent. Earn 1 per 10 WP, up to 3 per round.`;
  return x;
 }
@@ -2613,7 +2712,7 @@ async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 24: every active Social pile must remain finishable.
+ // CARD RACE 25: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -2654,7 +2753,7 @@ async function loadHand(){
  hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
 
- // CARD RACE 24: zero cards must always resolve the race and reveal results.
+ // CARD RACE 25: zero cards must always resolve the race and reveal results.
  if(game?.status==='active' && hand.length===0){
    const finished=await checkRaceWinAfterCardPlay();
    if(finished)return;
@@ -2791,7 +2890,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 24: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 25: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
@@ -3861,7 +3960,7 @@ $('soloConfirmClaim').onclick=async()=>{
    renderSoloClaimHistory();
    toast(`Claim recorded — +${wp} WP`);
 
-   // CARD RACE 24: Solo is a finite five-card hunt.
+   // CARD RACE 25: Solo is a finite five-card hunt.
    // Completed cards stay gone; there is no automatic replacement.
    if(soloHand.length===0){
      saveSoloResult(soloScore,soloCompleted);
