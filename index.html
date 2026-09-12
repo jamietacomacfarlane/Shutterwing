@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 26</title>
+<title>SHUTTERWING CARD RACE 27</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -859,7 +859,7 @@ body.hunt-active #play #hand{
 }
 
 
-/* CARD RACE 26 — streamlined Social lobby */
+/* CARD RACE 27 — streamlined Social lobby */
 body.lobby-active #gameactivitypanel,
 body.lobby-active #scorebreakdownpanel,
 body.lobby-active #gamefeedpanel,
@@ -875,7 +875,7 @@ body.lobby-active #startgame{width:100%!important;min-height:56px!important;font
 body.lobby-active #leaveactivepanel{margin-top:8px!important}
 
 
-/* CARD RACE 26 — PLAY FIRST: required action first, information second */
+/* CARD RACE 27 — PLAY FIRST: required action first, information second */
 
 /* Lobby: no scrolling hunt. Game identity -> READY -> START -> players -> leave. */
 body.lobby-active #play #socialSetupHint{display:none!important}
@@ -973,7 +973,7 @@ body.hunt-active #handpanel .hand-header-row{
 }
 
 
-/* CARD RACE 26 — unmistakable finish + clean reset */
+/* CARD RACE 27 — unmistakable finish + clean reset */
 .race-finish-overlay{
   position:fixed;inset:0;z-index:140;
   background:rgba(3,7,5,.94);
@@ -995,13 +995,20 @@ body.hunt-active #handpanel .hand-header-row{
 .race-finish-winner{font-size:24px;font-weight:950;margin-bottom:14px}
 .race-finish-standings .player{padding:9px 0}
 
+
+/* CARD RACE 27 — Plan B mismatch swap */
+#planBModal{position:fixed;inset:0;z-index:160;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:16px}
+#planBModal .modalcard{width:min(94%,520px);background:#101710;border:2px solid var(--lime);border-radius:18px;padding:18px}
+#planBModal .planbreason{width:100%;margin:6px 0;min-height:52px;font-weight:900}
+.planbbtn{margin-top:8px!important;min-height:48px!important}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 26</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 27</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1523,6 +1530,19 @@ body.hunt-active #handpanel .hand-header-row{
   </div>
 </div>
 
+
+<div id="planBModal" class="modal" style="display:none">
+  <div class="modalcard">
+    <h3>PLAN B SWAP</h3>
+    <p class="small">One free swap per game when a challenge is genuinely unsuitable.</p>
+    <div id="planBCardTitle" class="msg"></div>
+    <button class="btn planbreason" data-reason="not_here">BIRD NOT HERE</button>
+    <button class="btn planbreason" data-reason="out_of_season">OUT OF SEASON</button>
+    <button class="btn planbreason" data-reason="unsafe_or_inaccessible">UNSAFE / INACCESSIBLE</button>
+    <button class="btn planbreason" data-reason="not_achievable_today">NOT ACHIEVABLE TODAY</button>
+    <button id="planBCancel" class="btn">CANCEL</button>
+  </div>
+</div>
 <div id="nav" class="nav" style="display:none"><div class="navin"><button id="navHome" class="on" onclick="go('home',this)">HOME</button><button id="navPlay" onclick="go('play',this)">PLAY</button><button id="claimsnav" onclick="go('claims',this)">CLAIMS <span id="claimbadge" class="claimbadge" style="display:none">0</span></button><button id="navPassport" onclick="go('passport',this)">PASSPORT</button></div></div>
 
 <script type="module">
@@ -2243,7 +2263,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 26',
+   'SHUTTERWING CARD RACE 27',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2564,7 +2584,7 @@ async function showWinner(){
  $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+
    sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
 
- // CARD RACE 26: unmistakable end-of-game confirmation.
+ // CARD RACE 27: unmistakable end-of-game confirmation.
  if($('raceFinishOverlay')){
    const winnerName=raceWinner?(raceWinner.display_name||'Birder'):(winners.join(' & ')||'Winner');
    $('raceFinishWinner').textContent=`${winnerName} WINS!`;
@@ -2759,11 +2779,44 @@ async function checkRaceWinAfterCardPlay(){
  return false;
 }
 
+
+let planBSwapCard=null;
+
+async function loadPlanBStatus(){
+ if(!game||!user)return false;
+ const r=await sb.from('game_mismatch_swaps').select('id').eq('game_id',game.id).eq('user_id',user.id).limit(1);
+ if(r.error){console.warn('Plan B status failed:',r.error.message);return false;}
+ return (r.data||[]).length>0;
+}
+
+function openPlanBSwap(pc,c){
+ planBSwapCard={pc,c};
+ if($('planBCardTitle'))$('planBCardTitle').textContent=`Swap ${c.title}?`;
+ if($('planBModal'))$('planBModal').style.display='flex';
+}
+
+async function runPlanBSwap(reason){
+ if(!planBSwapCard?.pc||!game)return;
+ const modal=$('planBModal');
+ if(modal)modal.style.display='none';
+ const oldTitle=planBSwapCard.c?.title||'card';
+ const r=await sb.rpc('swap_shutterwing_mismatch_card',{
+   p_game_id:game.id,
+   p_player_card_id:planBSwapCard.pc.id,
+   p_reason:reason
+ });
+ if(r.error){planBSwapCard=null;return toast(r.error.message);}
+ const newTitle=r.data?.replacement_title||'replacement card';
+ planBSwapCard=null;
+ toast(`PLAN B — ${oldTitle} swapped for ${newTitle}`);
+ await loadHand();
+}
+
 async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 26: every active Social pile must remain finishable.
+ // CARD RACE 27: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -2804,7 +2857,7 @@ async function loadHand(){
  hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
 
- // CARD RACE 26: zero cards must always resolve the race and reveal results.
+ // CARD RACE 27: zero cards must always resolve the race and reveal results.
  if(game?.status==='active' && hand.length===0){
    const finished=await checkRaceWinAfterCardPlay();
    if(finished)return;
@@ -2829,6 +2882,7 @@ async function loadHand(){
 
  const moult=await loadMoultStatus();
  const moultAvailable=moult?.available_moults||0;
+ const planBUsed=await loadPlanBStatus();
 
  // PLAY cards should never be hidden at the far end of the hand.
  hand.sort((a,b)=>{
@@ -2860,7 +2914,7 @@ async function loadHand(){
    const mechanicSupported=cardMechanicSupported(c);
    d.className='card'+(isWild?' wildcard':(isSpecial?' specialcard':(isAction?' playcard':'')))+(!mechanicSupported?' carddisabled':'');
    const buttonLabel=!mechanicSupported?'COMING SOON':(wildPhotoClaim?'SHOW MY BEST':(isWild?'PLAY WILD':(isAction?'PLAY CARD':'CLAIM')));
-   d.innerHTML=`<div class="cardfamilyflag"><span class="cardfamilydot"></span>${familyLabel(c)} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn" ${!mechanicSupported?'disabled':''}>${buttonLabel}</button>${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
+   d.innerHTML=`<div class="cardfamilyflag"><span class="cardfamilydot"></span>${familyLabel(c)} • ${c.id}</div>${cardVisualHTML(c)}<h3>${c.title}</h3><p>${c.challenge_text}</p><div class="wp">${c.wing_points} WP</div><button class="btn maincardbtn" ${!mechanicSupported?'disabled':''}>${buttonLabel}</button>${(!isAction&&!planBUsed)?'<button class="btn planbbtn">PLAN B SWAP</button>':''}${moultAvailable>0?'<button class="btn moultbtn">MOULT THIS CARD</button>':''}`;
    d.querySelector('.maincardbtn').onclick=()=>{
      const act=()=>{
        if(!mechanicSupported){toast('This card is reserved for a later release.');return;}
@@ -2880,6 +2934,8 @@ async function loadHand(){
      };
      if(isWild || isSpecial) showWildFlash(c,act); else act();
    };
+   const pb=d.querySelector('.planbbtn');
+   if(pb)pb.onclick=()=>openPlanBSwap(pc,c);
    const mb=d.querySelector('.moultbtn');
    if(mb)mb.onclick=()=>moultCard(pc,c);
    $('hand').appendChild(d);
@@ -2941,7 +2997,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 26: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 27: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
@@ -3906,6 +3962,10 @@ document.addEventListener('visibilitychange',()=>{
 });
 
 
+
+if($('planBCancel'))$('planBCancel').onclick=()=>{planBSwapCard=null;$('planBModal').style.display='none';};
+document.querySelectorAll('.planbreason').forEach(b=>b.onclick=()=>runPlanBSwap(b.dataset.reason));
+
 if($('raceFinishHome')){
  $('raceFinishHome').onclick=()=>{
    $('raceFinishOverlay').style.display='none';
@@ -4018,7 +4078,7 @@ $('soloConfirmClaim').onclick=async()=>{
    renderSoloClaimHistory();
    toast(`Claim recorded — +${wp} WP`);
 
-   // CARD RACE 26: Solo is a finite five-card hunt.
+   // CARD RACE 27: Solo is a finite five-card hunt.
    // Completed cards stay gone; there is no automatic replacement.
    if(soloHand.length===0){
      saveSoloResult(soloScore,soloCompleted);
