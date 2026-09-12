@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 27</title>
+<title>SHUTTERWING CARD RACE 28</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -859,7 +859,7 @@ body.hunt-active #play #hand{
 }
 
 
-/* CARD RACE 27 — streamlined Social lobby */
+/* CARD RACE 28 — streamlined Social lobby */
 body.lobby-active #gameactivitypanel,
 body.lobby-active #scorebreakdownpanel,
 body.lobby-active #gamefeedpanel,
@@ -875,7 +875,7 @@ body.lobby-active #startgame{width:100%!important;min-height:56px!important;font
 body.lobby-active #leaveactivepanel{margin-top:8px!important}
 
 
-/* CARD RACE 27 — PLAY FIRST: required action first, information second */
+/* CARD RACE 28 — PLAY FIRST: required action first, information second */
 
 /* Lobby: no scrolling hunt. Game identity -> READY -> START -> players -> leave. */
 body.lobby-active #play #socialSetupHint{display:none!important}
@@ -973,7 +973,7 @@ body.hunt-active #handpanel .hand-header-row{
 }
 
 
-/* CARD RACE 27 — unmistakable finish + clean reset */
+/* CARD RACE 28 — unmistakable finish + clean reset */
 .race-finish-overlay{
   position:fixed;inset:0;z-index:140;
   background:rgba(3,7,5,.94);
@@ -996,11 +996,56 @@ body.hunt-active #handpanel .hand-header-row{
 .race-finish-standings .player{padding:9px 0}
 
 
-/* CARD RACE 27 — Plan B mismatch swap */
+/* CARD RACE 28 — Plan B mismatch swap */
 #planBModal{position:fixed;inset:0;z-index:160;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:16px}
 #planBModal .modalcard{width:min(94%,520px);background:#101710;border:2px solid var(--lime);border-radius:18px;padding:18px}
 #planBModal .planbreason{width:100%;margin:6px 0;min-height:52px;font-weight:900}
 .planbbtn{margin-top:8px!important;min-height:48px!important}
+
+
+/* CARD RACE 28 — larger, easier bottom navigation */
+.nav{
+  min-height:76px!important;
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;
+  z-index:120!important;
+}
+.navin{
+  width:min(680px,100%)!important;
+  gap:6px!important;
+}
+.nav button{
+  min-height:58px!important;
+  padding:12px 8px!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  line-height:1.15!important;
+  border-radius:12px!important;
+  border:1px solid var(--line)!important;
+  background:#151b17!important;
+  touch-action:manipulation!important;
+}
+.nav button.on{
+  background:#243019!important;
+  color:var(--lime)!important;
+  border-color:var(--lime)!important;
+}
+.nav button:focus-visible{
+  outline:3px solid var(--lime)!important;
+  outline-offset:2px!important;
+}
+
+/* Keep page content comfortably clear of the larger nav bar. */
+body{
+  padding-bottom:110px!important;
+}
+
+/* Give CLAIMS badge a larger touch/read target too. */
+.claimbadge{
+  min-width:24px!important;
+  height:24px!important;
+  line-height:24px!important;
+  font-size:12px!important;
+}
 
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
@@ -1008,7 +1053,7 @@ body.hunt-active #handpanel .hand-header-row{
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 27</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 28</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -2263,7 +2308,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 27',
+   'SHUTTERWING CARD RACE 28',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2584,7 +2629,7 @@ async function showWinner(){
  $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+
    sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
 
- // CARD RACE 27: unmistakable end-of-game confirmation.
+ // CARD RACE 28: unmistakable end-of-game confirmation.
  if($('raceFinishOverlay')){
    const winnerName=raceWinner?(raceWinner.display_name||'Birder'):(winners.join(' & ')||'Winner');
    $('raceFinishWinner').textContent=`${winnerName} WINS!`;
@@ -2816,7 +2861,7 @@ async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 27: every active Social pile must remain finishable.
+ // CARD RACE 28: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -2857,7 +2902,7 @@ async function loadHand(){
  hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
 
- // CARD RACE 27: zero cards must always resolve the race and reveal results.
+ // CARD RACE 28: zero cards must always resolve the race and reveal results.
  if(game?.status==='active' && hand.length===0){
    const finished=await checkRaceWinAfterCardPlay();
    if(finished)return;
@@ -2997,7 +3042,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 27: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 28: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
@@ -4078,7 +4123,7 @@ $('soloConfirmClaim').onclick=async()=>{
    renderSoloClaimHistory();
    toast(`Claim recorded — +${wp} WP`);
 
-   // CARD RACE 27: Solo is a finite five-card hunt.
+   // CARD RACE 28: Solo is a finite five-card hunt.
    // Completed cards stay gone; there is no automatic replacement.
    if(soloHand.length===0){
      saveSoloResult(soloScore,soloCompleted);
