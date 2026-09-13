@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SHUTTERWING CARD RACE 30</title>
+<title>SHUTTERWING CARD RACE 33</title>
 <style>
 :root{--bg:#090d0b;--panel:#151b17;--line:#344137;--lime:#93c63d;--blue:#49a8dc;--red:#c14b3a;--text:#f4f0e5;--muted:#aaa99f}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1510,#070a08);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
@@ -859,7 +859,7 @@ body.hunt-active #play #hand{
 }
 
 
-/* CARD RACE 30 — streamlined Social lobby */
+/* CARD RACE 33 — streamlined Social lobby */
 body.lobby-active #gameactivitypanel,
 body.lobby-active #scorebreakdownpanel,
 body.lobby-active #gamefeedpanel,
@@ -875,7 +875,7 @@ body.lobby-active #startgame{width:100%!important;min-height:56px!important;font
 body.lobby-active #leaveactivepanel{margin-top:8px!important}
 
 
-/* CARD RACE 30 — PLAY FIRST: required action first, information second */
+/* CARD RACE 33 — PLAY FIRST: required action first, information second */
 
 /* Lobby: no scrolling hunt. Game identity -> READY -> START -> players -> leave. */
 body.lobby-active #play #socialSetupHint{display:none!important}
@@ -973,7 +973,7 @@ body.hunt-active #handpanel .hand-header-row{
 }
 
 
-/* CARD RACE 30 — unmistakable finish + clean reset */
+/* CARD RACE 33 — unmistakable finish + clean reset */
 .race-finish-overlay{
   position:fixed;inset:0;z-index:140;
   background:rgba(3,7,5,.94);
@@ -996,14 +996,14 @@ body.hunt-active #handpanel .hand-header-row{
 .race-finish-standings .player{padding:9px 0}
 
 
-/* CARD RACE 30 — Plan B mismatch swap */
+/* CARD RACE 33 — Plan B mismatch swap */
 #planBModal{position:fixed;inset:0;z-index:160;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:16px}
 #planBModal .modalcard{width:min(94%,520px);background:#101710;border:2px solid var(--lime);border-radius:18px;padding:18px}
 #planBModal .planbreason{width:100%;margin:6px 0;min-height:52px;font-weight:900}
 .planbbtn{margin-top:8px!important;min-height:48px!important}
 
 
-/* CARD RACE 30 — larger, easier bottom navigation */
+/* CARD RACE 33 — larger, easier bottom navigation */
 .nav{
   min-height:76px!important;
   padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;
@@ -1048,7 +1048,7 @@ body{
 }
 
 
-/* CARD RACE 30 — unified card presentation across iPhone and iPad
+/* CARD RACE 33 — unified card presentation across iPhone and iPad
    Only the number of columns changes with screen width. */
 #hand .card,
 .hand .card,
@@ -1146,7 +1146,7 @@ body{
 }
 
 
-/* CARD RACE 30 — Plan B is one game-level control, not a button on every card. */
+/* CARD RACE 33 — Plan B is one game-level control, not a button on every card. */
 .hand-header-actions{
   display:flex;
   align-items:center;
@@ -1185,13 +1185,29 @@ body{
   .planb-start{flex:1}
 }
 
+
+/* CARD RACE 33 — regional deck selection */
+.deck-note{
+  margin:-3px 0 10px;
+  line-height:1.35;
+}
+.deck-status{
+  font-weight:900;
+  color:var(--lime);
+  letter-spacing:.03em;
+}
+body.lobby-active #hostpanel #lobbydeckselect,
+body.lobby-active #hostpanel #lobbydecknote{
+  display:block!important;
+}
+
 </style></head>
 <body><div id="toast" class="toast"></div><div class="app">
 <header>
   <div class="header-row">
     <div>
       <div class="logo">SHUTTERWING™</div>
-      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 30</span></div>
+      <div class="tag">SPOT IT. SHOOT IT. CLAIM IT. <span style="opacity:.65">CARD RACE 33</span></div>
     </div>
     <div id="connectionBadge" class="connection-badge offline">OFFLINE</div>
   </div>
@@ -1353,6 +1369,12 @@ body{
   <option value="10">10 cards</option>
   <option value="15">15 cards — long hunt</option>
 </select>
+<label class="small" for="deckselect">Card deck</label>
+<select id="deckselect">
+  <option value="core" selected>Core Deck</option>
+  <option value="atherton-tablelands-hasties-swamp-01">Hasties Swamp — Atherton Tablelands</option>
+</select>
+<div id="deckcreatehint" class="small deck-note">Core Deck uses the general Shutterwing challenge pool.</div>
 <div class="small race-rule-note">First player to clear their entire card pile wins. Accepted claims remove cards permanently.</div>
 <input id="loc" placeholder="Location label (optional)">
 <label class="small"><input id="newlatejoin" type="checkbox" checked style="width:auto;margin-right:8px"> Allow players to join after the hunt starts</label>
@@ -1374,6 +1396,7 @@ body{
   <div class="small">LIVE GAME</div><h2 id="gamename"></h2><div id="code" class="code"></div>
   <div class="small" style="text-align:center" id="gamestatus">Lobby</div>
 <div class="small" style="text-align:center;margin-top:5px" id="gamerules"></div>
+<div class="small deck-status" style="text-align:center;margin-top:5px" id="deckstatus">CORE DECK</div>
 <div class="small" style="text-align:center;margin-top:5px" id="roundstatus"></div>
   <div class="small" style="text-align:center;margin-top:5px" id="visibilitystatus"></div>
 </div>
@@ -1430,6 +1453,12 @@ body{
 </div>
 <div class="panel" id="hostpanel" style="display:none">
   <h3>Host controls</h3>
+  <label class="small" for="lobbydeckselect">Deck for this hunt</label>
+  <select id="lobbydeckselect">
+    <option value="core">Core Deck</option>
+    <option value="atherton-tablelands-hasties-swamp-01">Hasties Swamp — Atherton Tablelands</option>
+  </select>
+  <div id="lobbydecknote" class="small deck-note">Choose the deck before players press START GAME.</div>
   <label class="small"><input id="allowlatejoin" type="checkbox" style="width:auto;margin-right:8px"> Allow late joining</label>
   <div id="latejoinnote" class="small" style="margin-bottom:8px"></div>
   <button id="startgame" class="btn">START ROUND 1 + DEAL 5</button>
@@ -2449,7 +2478,7 @@ updateConnectionBadge();
 function getBuildDiagnostics(){
  const lastError=localStorage.getItem('sw_last_error')||'none';
  return [
-   'SHUTTERWING CARD RACE 30',
+   'SHUTTERWING CARD RACE 33',
    `online=${navigator.onLine}`,
    `mode=${typeof selectedHomeMode!=='undefined'?selectedHomeMode:'unknown'}`,
    `soloActive=${typeof soloActive!=='undefined'?soloActive:'unknown'}`,
@@ -2580,8 +2609,10 @@ $('create').onclick=async()=>{
   let s=await sb.rpc('set_shutterwing_lobby_settings',{p_game_id:gid,p_visibility:'private',p_allow_late_joining:$('newlatejoin').checked});
   if(s.error)throw s.error;
   const count=await setCardRaceCount(gid);
+  const deck=$('deckselect')?.value||'core';
+  await setGameDeck(gid,deck);
   await loadGame(gid);
-  toast(`Private card race created • ${count} cards each`);
+  toast(`Private card race created • ${count} cards each • ${deckLabel(deck)}`);
  }catch(e){toast(e.message||String(e));}
 };
 $('createpublic').onclick=async()=>{
@@ -2596,10 +2627,35 @@ $('createpublic').onclick=async()=>{
   if(r.error)throw r.error;
   const gid=r.data[0].game_id;
   const count=await setCardRaceCount(gid);
+  const deck=$('deckselect')?.value||'core';
+  await setGameDeck(gid,deck);
   await loadGame(gid);
-  toast(`Public card race created • ${count} cards each`);
+  toast(`Public card race created • ${count} cards each • ${deckLabel(deck)}`);
  }catch(e){toast(e.message||String(e));}
 };
+if($('deckselect')){
+ $('deckselect').onchange=()=>{
+   const slug=$('deckselect').value||'core';
+   if($('deckcreatehint'))$('deckcreatehint').textContent=deckHint(slug);
+   if(slug==='atherton-tablelands-hasties-swamp-01' && !$('loc').value.trim()){
+     $('loc').value='Hasties Swamp National Park';
+   }
+ };
+}
+if($('lobbydeckselect')){
+ $('lobbydeckselect').onchange=async()=>{
+   if(!game || game.status!=='lobby' || game.host_id!==user.id)return;
+   const slug=$('lobbydeckselect').value||'core';
+   try{
+     await setGameDeck(game.id,slug);
+     await loadGame(game.id);
+     toast(`${deckLabel(slug)} selected`);
+   }catch(e){
+     toast(e.message||String(e));
+     $('lobbydeckselect').value=game.deck_slug||'core';
+   }
+ };
+}
 $('refreshpublic').onclick=()=>loadPublicGames();
 $('join').onclick=async()=>{let c=$('jcode').value.trim().toUpperCase();let r=await sb.rpc('join_shutterwing_game',{p_join_code:c});if(r.error)return toast(r.error.message);await sb.rpc('note_shutterwing_join',{p_game_id:r.data[0].game_id});resetGameSpecificUI();await loadGame(r.data[0].game_id);await fillMyRaceHandIfActive();toast('Private game joined')};
 function resetGameSpecificUI(){
@@ -2646,6 +2702,21 @@ async function ensureFiveCardHand(){
 }
 
 
+function deckLabel(slug){
+ return slug==='atherton-tablelands-hasties-swamp-01'
+   ? 'HASTIES SWAMP — ATHERTON TABLELANDS'
+   : 'CORE DECK';
+}
+function deckHint(slug){
+ return slug==='atherton-tablelands-hasties-swamp-01'
+   ? 'Site-tested Hasties Swamp challenges with EXPECT / MIGHT balancing plus one simple PLAY/WILD slot.'
+   : 'General Shutterwing challenge deck.';
+}
+async function setGameDeck(gameId,slug){
+ const r=await sb.rpc('set_shutterwing_deck',{p_game_id:gameId,p_deck_slug:slug||'core'});
+ if(r.error)throw r.error;
+}
+
 async function setCardRaceCount(gameId){
  const count=Number($('cardcount')?.value||5);
  const r=await sb.rpc('set_shutterwing_card_count',{p_game_id:gameId,p_hand_size:count});
@@ -2682,9 +2753,9 @@ async function loadGame(id){
  $('gamename').textContent=game.game_name;$('code').textContent=game.join_code;
  renderGameState();
  if(game.status==='finished'){
-   await Promise.all([players(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
+   await players();
  }else{
-   await Promise.all([players(),loadHand(),pending(),loadEffects(),loadMyServedEffects(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
+   await Promise.all([players(),loadHand(),pending(),loadMyServedEffects(),loadMoultStatus()]);
    if(game.status==='active' && hand.length===0){
      await fillMyRaceHandIfActive();
      await players();
@@ -2715,6 +2786,13 @@ function renderGameState(){
  $('gamestatus').textContent=game.status==='lobby'?'Lobby — waiting for host':game.status==='active'?'HUNT IN PROGRESS':'ROUND COMPLETE';
  $('roundstatus').innerHTML=game.status==='active'?`<span class="huntpill">ROUND ${game.current_round||1} • HUNT</span>`:`ROUND ${game.current_round||1}`;
  $('visibilitystatus').textContent=(game.visibility==='public'?'PUBLIC GAME':'PRIVATE GAME')+(game.allow_late_joining?' • LATE JOINING ON':' • LATE JOINING OFF');
+ const currentDeck=game.deck_slug||'core';
+ if($('deckstatus')) $('deckstatus').textContent=deckLabel(currentDeck);
+ if($('lobbydeckselect')) {
+   $('lobbydeckselect').value=currentDeck;
+   $('lobbydeckselect').disabled=!(host && game.status==='lobby');
+ }
+ if($('lobbydecknote')) $('lobbydecknote').textContent=deckHint(currentDeck);
  if($('allowlatejoin')) $('allowlatejoin').checked=!!game.allow_late_joining;
  if($('latejoinnote')) $('latejoinnote').textContent=game.allow_late_joining?'New players may join during an active hunt.':'Joining closes once the hunt starts.';
  if($('homegamepanel')){
@@ -2770,7 +2848,7 @@ async function showWinner(){
  $('roundscores').innerHTML='<h3>Final scoreboard</h3>'+
    sorted.map((x,i)=>`<div class="player"><span>${i+1}. ${x.display_name||'Birder'}</span><b>${x.score} WP</b></div>`).join('');
 
- // CARD RACE 30: unmistakable end-of-game confirmation.
+ // CARD RACE 33: unmistakable end-of-game confirmation.
  if($('raceFinishOverlay')){
    const winnerName=raceWinner?(raceWinner.display_name||'Birder'):(winners.join(' & ')||'Winner');
    $('raceFinishWinner').textContent=`${winnerName} WINS!`;
@@ -3011,11 +3089,13 @@ async function runPlanBSwap(reason){
  await loadHand();
 }
 
+const cardDefinitionCache=new Map();
+
 async function loadHand(){
  if(soloActive){renderSoloHand();return;}
  if(!game||!user)return;
 
- // CARD RACE 30: every active Social pile must remain finishable.
+ // CARD RACE 33: every active Social pile must remain finishable.
  await sanitizeMyRaceHand();
 
  // CARD RACE 20:
@@ -3039,24 +3119,30 @@ async function loadHand(){
 
  let cardMap=new Map();
  if(cardIds.length){
-   const cr=await sb.from('cards')
-     .select('id,family,title,challenge_text,wing_points,card_type')
-     .in('id',cardIds);
+   const missingIds=cardIds.filter(id=>!cardDefinitionCache.has(id));
 
-   if(cr.error){
-     console.warn('Card definitions failed:',cr.error.message);
-     $('hand').innerHTML='<div class="msg">Your pile exists, but the card details could not be loaded. '+cr.error.message+'</div>';
-     if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(playerRows.length);
-     return;
+   if(missingIds.length){
+     const cr=await sb.from('cards')
+       .select('id,family,title,challenge_text,wing_points,card_type')
+       .in('id',missingIds);
+
+     if(cr.error){
+       console.warn('Card definitions failed:',cr.error.message);
+       $('hand').innerHTML='<div class="msg">Your pile exists, but the card details could not be loaded. '+cr.error.message+'</div>';
+       if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(playerRows.length);
+       return;
+     }
+
+     (cr.data||[]).forEach(c=>cardDefinitionCache.set(c.id,c));
    }
 
-   cardMap=new Map((cr.data||[]).map(c=>[c.id,c]));
+   cardMap=new Map(cardIds.map(id=>[id,cardDefinitionCache.get(id)]));
  }
 
  hand=playerRows.map(pc=>({...pc,cards:cardMap.get(pc.card_id)||null}));
  if($('huntCardsLeft'))$('huntCardsLeft').textContent=String(hand.length);
 
- // CARD RACE 30: zero cards must always resolve the race and reveal results.
+ // CARD RACE 33: zero cards must always resolve the race and reveal results.
  if(game?.status==='active' && hand.length===0){
    const finished=await checkRaceWinAfterCardPlay();
    if(finished)return;
@@ -3227,7 +3313,7 @@ async function playActionCard(pc,c){
    return toast(r.error.message);
  }
 
- // CARD RACE 30: played PLAY/WILD cards are spent permanently.
+ // CARD RACE 33: played PLAY/WILD cards are spent permanently.
  // Do not replace them. Clearing the final card must be able to win the race.
  $('actionlog').textContent=r.data?.message||`${c.title} played`;
  toast(`${c.title} played`);
@@ -3356,6 +3442,7 @@ $('playagain').onclick=async()=>{
    const newGameId=r.data[0].game_id;
    const keepCount=Number(oldGame.hand_size||5);
    await sb.rpc('set_shutterwing_card_count',{p_game_id:newGameId,p_hand_size:keepCount});
+   await setGameDeck(newGameId,oldGame.deck_slug||'core');
    await loadGame(newGameId);
    toast(`New ${keepCount}-card race created — share the new join code`);
  }finally{
@@ -3364,10 +3451,21 @@ $('playagain').onclick=async()=>{
 };
 async function reloadCurrentGame(){
  if(!game)return;
- let r=await sb.from('games').select('*').eq('id',game.id).single();
+ let r=await sb.from('games')
+   .select('id,host_id,join_code,game_name,game_mode,status,location_label,target_score,current_round,visibility,allow_late_joining,max_players,hand_size,winner_id,deck_slug')
+   .eq('id',game.id).single();
  if(r.error)return;
- game=r.data;renderGameState();
- await Promise.all([players(),loadHand(),pending(),loadEffects(),loadScoreBreakdown(),loadGameFeed(),loadGameActivity()]);
+ const priorStatus=game.status;
+ game={...game,...r.data};
+ renderGameState();
+
+ if(game.status==='finished'){
+   await players();
+   return;
+ }
+ if(priorStatus!==game.status){
+   await Promise.all([players(),loadHand(),pending(),loadMyServedEffects(),loadMoultStatus()]);
+ }
 }
 
 
@@ -3442,6 +3540,32 @@ $('photo').onchange=()=>{
  };
  r.readAsDataURL(f);
 };
+
+async function prepareClaimUpload(file){
+  if(!file || !/^image\//i.test(file.type||'')) return file;
+  try{
+    const bitmap=await createImageBitmap(file);
+    const maxSide=1600;
+    const scale=Math.min(1,maxSide/Math.max(bitmap.width,bitmap.height));
+    const w=Math.max(1,Math.round(bitmap.width*scale));
+    const h=Math.max(1,Math.round(bitmap.height*scale));
+
+    const canvas=document.createElement('canvas');
+    canvas.width=w; canvas.height=h;
+    const ctx=canvas.getContext('2d',{alpha:false});
+    ctx.drawImage(bitmap,0,0,w,h);
+    if(bitmap.close) bitmap.close();
+
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.78));
+    if(!blob) return file;
+
+    return blob.size < file.size ? blob : file;
+  }catch(e){
+    console.warn('Photo compression skipped:',e);
+    return file;
+  }
+}
+
 async function submitWingClaim(event){
  if(event){ event.preventDefault(); event.stopPropagation(); }
  const btn=$('submit');
@@ -3476,11 +3600,22 @@ async function submitWingClaim(event){
  if($('previewwrap')) $('previewwrap').style.display='block';
  if($('uploadstatus')) $('uploadstatus').textContent='Uploading bird photo…';
  try{
-   let ext=(f.name.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase()||'jpg';
+   const uploadFile=await prepareClaimUpload(f);
+   const converted=uploadFile!==f;
+   const ext=converted?'jpg':((f.name.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase()||'jpg');
    let path=`${userId}/${gameId}/${crypto.randomUUID()}.${ext}`;
 
-   let u=await sb.storage.from('wing-claims').upload(path,f,{
-     contentType:f.type||'image/jpeg',
+   if($('uploadstatus')){
+     const beforeMB=(f.size/1048576).toFixed(1);
+     const afterMB=(uploadFile.size/1048576).toFixed(1);
+     $('uploadstatus').textContent=converted
+       ? `Optimised ${beforeMB} MB → ${afterMB} MB. Uploading…`
+       : 'Uploading bird photo…';
+   }
+
+   let u=await sb.storage.from('wing-claims').upload(path,uploadFile,{
+     contentType:converted?'image/jpeg':(f.type||'image/jpeg'),
+     cacheControl:'3600',
      upsert:false
    });
    if(u.error)throw u.error;
@@ -3509,7 +3644,7 @@ async function submitWingClaim(event){
    // Card is now out of the visible pile while the claim is judged.
    // Accepted = gone permanently. Rejected = server restores that exact card.
    returnToSocialHunt('Wing Claim sent — card pending judgement');
-   Promise.allSettled([loadHand(),pending(),players(),loadScoreBreakdown()]).catch(()=>{});
+   Promise.allSettled([loadHand(),pending(),players()]).catch(()=>{});
  }catch(e){
    $('claimmsg').innerHTML='<div class="msg">'+String(e?.message||e)+'</div>';
  }finally{
@@ -3587,13 +3722,13 @@ async function pending(){
  }
 
  for(let c of a){
-   let su=await sb.storage.from('wing-claims').createSignedUrl(c.image_path,300);
+   const claimUrl=await getSignedClaimUrl(c.image_path);
    let d=document.createElement('div');
    d.className='panel';
    d.innerHTML=`
      <h3>${c.cards?.title||c.card_id}</h3>
      <p>${c.cards?.challenge_text||''}</p>
-     ${su.data?.signedUrl?`<img class="claimimg" src="${su.data.signedUrl}">`:''}
+     ${claimUrl?`<img class="claimimg" src="${claimUrl}" loading="lazy" decoding="async">`:''}
      <p>${c.species_name||''}</p>
      <button class="btn yes">ACCEPT</button>
      <button class="btn red no">REJECT</button>`;
@@ -3619,8 +3754,7 @@ async function vote(id,v){
    returnToSocialHunt(v?'Claim accepted — card removed':'Claim rejected — card returned');
 
    Promise.allSettled([
-     pending(),players(),getProfile(),passport(),loadGameFeed(),
-     loadScoreBreakdown(),loadHand(),loadMyServedEffects(),loadMoultStatus()
+     pending(),players(),loadHand(),loadMyServedEffects(),loadMoultStatus()
    ]).catch(()=>{});
  }catch(e){
    console.error('Vote failed',e);
@@ -4052,7 +4186,7 @@ async function loadGameFeed(){
        <span><b>${x.display_name||'Birder'}</b><br><span class="small">${x.card_title||x.card_id}</span></span>
        <span class="statuspill">${x.claim_status}</span>
      </div>
-     ${url?`<img class="feedimg" src="${url}" alt="Wing Claim photo">`:''}
+     ${url?`<img class="feedimg" src="${url}" alt="Wing Claim photo" loading="lazy" decoding="async">`:''}
      <div class="player">
        <span>${x.species_name||'Species not entered'}<br><span class="small">${x.score_note||''}</span></span>
        <b>${x.awarded_points==null?'—':`+${x.awarded_points} WP`}</b>
@@ -4063,10 +4197,19 @@ async function loadGameFeed(){
 }
 
 
+const signedClaimUrlCache=new Map();
+
 async function getSignedClaimUrl(path){
  if(!path)return null;
- const r=await sb.storage.from('wing-claims').createSignedUrl(path,300);
- return r.error?null:r.data?.signedUrl||null;
+ const cached=signedClaimUrlCache.get(path);
+ const now=Date.now();
+ if(cached && cached.expiresAt>now) return cached.url;
+
+ const r=await sb.storage.from('wing-claims').createSignedUrl(path,1800);
+ if(r.error)return null;
+ const url=r.data?.signedUrl||null;
+ if(url) signedClaimUrlCache.set(path,{url,expiresAt:now+(25*60*1000)});
+ return url;
 }
 
 
@@ -4135,7 +4278,7 @@ async function checkOwnClaimResults(){
 
  // Refresh score/hand independently. A slow request must never trap navigation.
  Promise.allSettled([
-   players(),loadScoreBreakdown(),getProfile(),loadHand(),loadMoultStatus()
+   players(),loadHand(),loadMoultStatus()
  ]).catch(()=>{});
 }
 
@@ -4147,44 +4290,44 @@ async function refreshLiveGame(){
  if(liveRefreshBusy || !sb || !user || !game || document.hidden)return;
  liveRefreshBusy=true;
  try{
-   // Keep the high-value multiplayer state fresh even when a realtime event
-   // is delayed or missed by mobile Safari.
-   await Promise.all([
-     players(),
-     pending(),
-     loadScoreBreakdown(),
-     loadGameFeed(),
-     loadEffects(),
-     loadMyServedEffects(),
-     loadMoultStatus(),
-     checkOwnClaimResults(),
-     checkTargetedAction()
-   ]);
+   const gr=await sb.from('games')
+     .select('id,status,winner_id')
+     .eq('id',game.id)
+     .maybeSingle();
 
-   // Check game status separately so finished/started state also catches up.
-   const gr=await sb.from('games').select('*').eq('id',game.id).maybeSingle();
    if(!gr.error && gr.data){
      const previousStatus=game.status;
-     const statusChanged=gr.data.status!==previousStatus;
-     game=gr.data;
+     const statusChanged=gr.data.status!==previousStatus ||
+       gr.data.winner_id!==game.winner_id;
+
+     game={...game,...gr.data};
+
      if(statusChanged){
        renderGameState();
        if(previousStatus==='lobby' && game.status==='active'){
          await fillMyRaceHandIfActive();
+       }
+       if(game.status==='finished'){
          await players();
+         return;
        }
      }
    }
+
+   if(game.status==='active') await pending();
  }catch(e){
-   console.warn('Live refresh:',e);
+   console.warn('Foreground refresh:',e);
  }finally{
    liveRefreshBusy=false;
  }
 }
 
 function startLiveRefresh(){
- if(liveRefreshTimer)clearInterval(liveRefreshTimer);
- liveRefreshTimer=setInterval(refreshLiveGame,4000);
+ if(liveRefreshTimer){
+   clearInterval(liveRefreshTimer);
+   liveRefreshTimer=null;
+ }
+ // No background polling. Realtime drives active games.
 }
 
 document.addEventListener('visibilitychange',()=>{
@@ -4224,13 +4367,38 @@ async function syncGameAndRacePile(){
 function subscribe(){
  if(channel)sb.removeChannel(channel);
  channel=sb.channel('sw-'+game.id)
-   .on('postgres_changes',{event:'*',schema:'public',table:'games',filter:`id=eq.${game.id}`},syncGameAndRacePile)
-   .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{players();loadScoreBreakdown();loadGameActivity();})
-   .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},loadHand)
-   .on('postgres_changes',{event:'*',schema:'public',table:'claims',filter:`game_id=eq.${game.id}`},()=>{pending();loadScoreBreakdown();loadGameFeed();})
+   .on('postgres_changes',{event:'*',schema:'public',table:'games',filter:`id=eq.${game.id}`},async(payload)=>{
+     const row=payload.new||{};
+     const before=game?.status;
+     game={...game,...row};
+     renderGameState();
+
+     if(before==='lobby' && game.status==='active'){
+       await fillMyRaceHandIfActive();
+     }else if(game.status==='finished'){
+       await players();
+     }
+   })
+   .on('postgres_changes',{event:'*',schema:'public',table:'game_players',filter:`game_id=eq.${game.id}`},()=>{
+     players();
+   })
+   .on('postgres_changes',{event:'*',schema:'public',table:'player_cards',filter:`game_id=eq.${game.id}`},payload=>{
+     const row=payload.new||payload.old||{};
+     if(!row.user_id || row.user_id===user.id) loadHand();
+   })
+   .on('postgres_changes',{event:'*',schema:'public',table:'claims',filter:`game_id=eq.${game.id}`},payload=>{
+     const row=payload.new||payload.old||{};
+     if(row.user_id===user.id){
+       if(row.claim_status==='accepted' || row.claim_status==='rejected'){
+         checkOwnClaimResults();
+       }
+     }else{
+       pending();
+     }
+   })
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'game_actions',filter:`game_id=eq.${game.id}`},payload=>{
-     const a=payload.new;
-     $('actionlog').textContent=a.message||`${a.card_id} played`;
+     const a=payload.new||{};
+     $('actionlog').textContent=a.message||`${a.card_id||'PLAY'} played`;
      if(a.target_user_id===user.id){
        checkTargetedAction();
        loadMyServedEffects();
@@ -4238,8 +4406,18 @@ function subscribe(){
        toast(a.card_id==='M01'?'INDIAN MYNA played':(a.message||'Action card played'));
      }
    })
-   .on('postgres_changes',{event:'*',schema:'public',table:'game_effects',filter:`game_id=eq.${game.id}`},loadEffects)
-   .subscribe();
+   .on('postgres_changes',{event:'*',schema:'public',table:'game_effects',filter:`game_id=eq.${game.id}`},payload=>{
+     const e=payload.new||payload.old||{};
+     if(!e.target_user_id || e.target_user_id===user.id){
+       loadMyServedEffects();
+     }
+   })
+   .subscribe(status=>{
+     if(status==='SUBSCRIBED'){
+       // One tiny state check after reconnect; no repeating timer.
+       refreshLiveGame();
+     }
+   });
 
  startLiveRefresh();
 }
@@ -4308,7 +4486,7 @@ $('soloConfirmClaim').onclick=async()=>{
    renderSoloClaimHistory();
    toast(`Claim recorded — +${wp} WP`);
 
-   // CARD RACE 30: Solo is a finite five-card hunt.
+   // CARD RACE 33: Solo is a finite five-card hunt.
    // Completed cards stay gone; there is no automatic replacement.
    if(soloHand.length===0){
      saveSoloResult(soloScore,soloCompleted);
