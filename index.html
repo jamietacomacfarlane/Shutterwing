@@ -3664,17 +3664,15 @@ async function submitWingClaim(event){
    if(u.error)throw u.error;
    if($('uploadstatus')) $('uploadstatus').textContent='Photo uploaded. Creating Wing Claim…';
 
-   let r=await sb.rpc('submit_wing_claim',{
+   // Claim creation and card banking happen in one database transaction.
+   let r=await sb.rpc('submit_shutterwing_claim_atomic',{
      p_game_id:gameId,
-     p_card_id:cardId,
+     p_player_card_id:playerCardId,
      p_image_path:path,
      p_species_name:$('species').value.trim()||null
    });
    if(r.error)throw r.error;
-   await broadcastGameEvent('wing_claim',{claim_id:r.data?.id||null});
-
-   let bank=await sb.from('player_cards').update({card_state:'banked',race_banked_at:new Date().toISOString()}).eq('id',playerCardId);
-   if(bank.error)throw bank.error;
+   await broadcastGameEvent('wing_claim',{claim_id:r.data||null});
 
    if($('uploadstatus')) $('uploadstatus').textContent='Wing Claim submitted successfully.';
    $('claimmsg').innerHTML='<div class="msg">Wing Claim submitted. You can keep hunting while the other player votes.</div>';
